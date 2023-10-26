@@ -4,6 +4,34 @@ BRAR is an OpenGL-based game that simulates a bipedal 5-DOF robotic arm that tri
 
 BRAR has been tested and verified on macOS Sonoma and Ubuntu 22.04.
 
+--- 
+
+## Timeline 
+### Oct 29 - Nov 4
+- Ground scene and joint limit.
+- Self-collision detection.
+- Use spheres as initial objects (for testing).
+
+### Nov 5 - Nov 11
+- Design baby robot legs onto robot. These will follow some simple back-and-fourth pattern when the robot moves.
+- Test initial tracking algorithms for the robot to chase the ball.
+
+### Nov 12 - Nov 18
+- Inverse kinematics. Will verify through user-controlled item that the robot attempts to grab.
+
+### Nov 19 - Nov 25
+
+### Nov 26 - Dec 02
+
+--- 
+## Game Modes:
+
+1) 
+
+2) 
+
+--- 
+
 ### Key bindings:
 $$ Lighting $$
     - 0: Turn off or on lighting (Default is off)
@@ -42,7 +70,3 @@ $$ End Effector $$
     - K: open gripper
 
 --- 
-
-
-### Time to complete:
-This code contains updates fullfilling two homework assignments. It took about 9 hours in total.
