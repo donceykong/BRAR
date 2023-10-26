@@ -26,9 +26,9 @@ BRAR has been tested and verified on macOS Sonoma and Ubuntu 22.04.
 --- 
 ## Game Modes:
 
-1) 
+1) User plays as robot arm and collects items to prevent a countdown timer from reaching zero.
 
-2) 
+2) User plays as item to run from robot arm as the arm gains speed and accuracy over time.
 
 --- 
 
