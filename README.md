@@ -1,15 +1,8 @@
-### HW6: Lighting and Textures
-### Doncey Albin
-### CSCI5229 Fall 2023
+# B.R.A.R. - Bipedal Robotic Arm Runner
 
----
+BRAR is an OpenGL-based game that simulates a bipedal 5-DOF robotic arm that tries to capure objects in the scene. 
 
-### Capabilities of software & how to run
-
- 1) Can turn on or off lighting, as well as move it.
- 2) Robot arm has textures, which can be turned on/off and switched.
-
---- 
+BRAR has been tested and verified on macOS Sonoma and Ubuntu 22.04.
 
 ### Key bindings:
 $$ Lighting $$
