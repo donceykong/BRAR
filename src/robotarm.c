@@ -2,8 +2,10 @@
 
 #ifdef __APPLE__
 #include <GLUT/glut.h>
+#define SPEED 1.0
 #else
 #include <GL/glut.h>
+#define SPEED 0.1
 #endif
 
 #ifndef RES
@@ -16,7 +18,7 @@
 #include <stdio.h>
 
 // In-house includes
-#include "plotter.h"
+//#include "plotter.h"
 #include "textureUtils.h"
 #include "robotLinkObject.h"
 #include "views.h"
@@ -101,7 +103,6 @@ int main(int argc, char** argv) {
   //glutMotionFunc(mouseMove);
 
   // Init texture
-  printf("HEY");
   loadTextureFromFile("./assets/cool.bmp");
 
   //init();
