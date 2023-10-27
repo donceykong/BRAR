@@ -6,6 +6,12 @@ BRAR has been tested and verified on macOS Sonoma and Ubuntu 22.04.
 
 --- 
 
+<p align="center" width="100%">
+<img src="doc/gif/BRAR.gif" width="900" height="500" />
+</p>
+
+--- 
+
 ## Timeline 
 ### Oct 29 - Nov 4
 - Ground scene and joint limit.
