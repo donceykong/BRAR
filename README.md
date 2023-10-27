@@ -42,28 +42,40 @@ $$Lighting $$
     - g: Move light to the right
     - v: Move light to the downwards
 
+
 $$ Texture $$
+
     - 4: Turn textures on/off
     - 5: Switch texture to have different Bitmap as texture
 
+
 $$ Views Modes $$
+
     - 1: Orthographic view (Default)
     - 2: Perspective view
     - 3: First-person view (Use keys to move about scene)
 
+
 $$ Joint 0 $$
+
     - A: Move base clockwise about Z
     - D: Move base joint counterclockwise about Z
 
+
 $$ Joint 1 $$
+
     - W: Tilt joint1 up
     - K: Tilt joint1 down
 
+
 $$ Joint 2 $$
+
     - Y: Tilt joint2 up
     - H: Tilt joint2 down
 
+
 $$ End Effector $$
+
     - UP: tilt gripper UP
     - DOWN: tilt gripper DOWN
     - LEFT: rotate gripper Counterclockwise
