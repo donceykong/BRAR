@@ -83,7 +83,7 @@ int main(int argc, char** argv) {
   glutInitDisplayMode(GLUT_RGB | GLUT_SINGLE | GLUT_DEPTH); 
 
   glutInitWindowPosition(0, 0);
-  glutInitWindowSize(1000, 1000);
+  glutInitWindowSize(1500, 1500);
   glutCreateWindow("Robot Arm");
 
   glutDisplayFunc(display);
