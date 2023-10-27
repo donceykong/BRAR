@@ -33,7 +33,9 @@ BRAR has been tested and verified on macOS Sonoma and Ubuntu 22.04.
 --- 
 
 ### Key bindings:
-$$ Lighting $$
+
+$$Lighting $$
+
     - 0: Turn off or on lighting (Default is off)
     - t: Move light upwards
     - f: Move light to the left
