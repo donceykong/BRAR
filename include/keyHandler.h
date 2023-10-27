@@ -290,15 +290,33 @@ void update()
   joint1Angle += joint1inc;
   joint2Angle += joint2inc;
 
+  if (joint1Angle > 180.00) {
+    joint1Angle = 180.00;
+  } else if (joint1Angle < 0.00) {
+    joint1Angle = 0.00;
+  }
+
+  if (joint2Angle > 90.00) {
+    joint2Angle = 90.00;
+  } else if (joint2Angle < -90.00) {
+    joint2Angle = -90.00;
+  }
+
   // Gripper Adjust
   joint3Angle += joint3inc;
   gripperDist += gripperDistinc;
   gripperRollAngle += gripperRollinc;
 
-  if (gripperDist > 0.3) {
-    gripperDist = 0.3;
-  } else if (gripperDist < 0.1) {
-    gripperDist = 0.1;
+  if (joint3Angle > 90.00) {
+    joint3Angle = 90.00;
+  } else if (joint3Angle < -90.00) {
+    joint3Angle = -90.00;
+  }
+
+  if (gripperDist > 0.30) {
+    gripperDist = 0.30;
+  } else if (gripperDist < 0.10) {
+    gripperDist = 0.10;
   }
 
   // Request Display update
