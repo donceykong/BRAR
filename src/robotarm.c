@@ -76,8 +76,6 @@ void display() {
   glutSwapBuffers();
 }
 
-// Initializes GLUT, the display mode, and main window; registers callbacks;
-// does application initialization; enters the main event loop.
 int main(int argc, char** argv) {
   // Init GLUT
   glutInit(&argc, argv);
