@@ -7,8 +7,16 @@ BRAR has been tested and verified on macOS Sonoma and Ubuntu 22.04.
 --- 
 
 <p align="center" width="100%">
-<img src="doc/gif/BRAR.gif" width="900" height="500" />
+<img src="doc/gif/BRAR.gif" width="450" height="250" />
 </p>
+
+The arm depicted in this simulation attempts to model that of the Tinkerbot Braccio toy (arm shown below) to some degree.
+
+<p align="center" width="100%">
+<img src="doc/image/braccio_robot.jpg" width="450" height="250" />
+</p>
+
+Depending on how the project developes, maybe a sim-to-real transfer could be attempted. This would likely require much tuning of the controller to meet real-world constraints, but it would be fun.
 
 --- 
 
