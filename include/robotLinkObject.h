@@ -1,6 +1,6 @@
 // Created by: Doncey Albin
 
-static int joint0Angle = -45, joint1Angle = 45, joint2Angle = 30, joint3Angle = -45;
+static double joint0Angle = -45, joint1Angle = 45, joint2Angle = 30, joint3Angle = -45;
 static double gripperRollAngle = 0.0;
 static double gripperDist = 0.3;
 

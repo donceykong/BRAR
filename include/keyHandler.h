@@ -198,46 +198,46 @@ void handleKeysUp(unsigned char key, int x, int y) {
 
 void update()
 {
-  int joint0inc = 0;
-  int joint1inc = 0;
-  int joint2inc = 0;
-  int joint3inc = 0;
+  double joint0inc = 0.00;
+  double joint1inc = 0.00;
+  double joint2inc = 0.00;
+  double joint3inc = 0.00;
   double gripperRollinc = 0.00;
   double gripperDistinc = 0.00;
 
   // Base Adjust 
   if (keyA)
-    joint0inc = -5;
+    joint0inc = -5.00 * SPEED;
   if (keyD)
-    joint0inc = 5;
+    joint0inc = 5.00 * SPEED;
 
   // Joint 1 Adjust
   if (keyW)
-    joint1inc = 2;
+    joint1inc = 2.00 * SPEED;
   if (keyS)
-    joint1inc = -2;
+    joint1inc = -2.00 * SPEED;
 
   // Joint 2 Adjust
   if (keyY)
-    joint2inc = 5;
+    joint2inc = 5.00 * SPEED;
   if (keyH)
-    joint2inc = -5;
+    joint2inc = -5.00 * SPEED;
 
   // Gripper Adjust
   if (keyUp)
-    joint3inc = 5;
+    joint3inc = 5.00 * SPEED;
   if (keyDown)
-    joint3inc = -5;
+    joint3inc = -5.00 * SPEED;
   if (keyRight)
-    gripperRollinc = -5;
+    gripperRollinc = -5.00 * SPEED;
   if (keyLeft)
-    gripperRollinc = 5;
+    gripperRollinc = 5.00 * SPEED;
 
   // Gripper Adjust
   if (keyJ)
-    gripperDistinc = -0.01;
+    gripperDistinc = -0.01 * SPEED;
   if (keyK)
-    gripperDistinc = 0.01;
+    gripperDistinc = 0.01 * SPEED;
 
   if (key1) {
     viewMode = 1;
@@ -249,15 +249,15 @@ void update()
 
   // Light Adjust
   if (keyT)
-    light1_Y += 0.2;
+    light1_Y += 0.2 * SPEED;
   if (keyV)
-    light1_Y -= 0.2;
+    light1_Y -= 0.2 * SPEED;
   if (keyG)
-    light1_X += 0.2;
+    light1_X += 0.2 * SPEED;
   if (keyF)
-    light1_X -= 0.2;
+    light1_X -= 0.2 * SPEED;
   
-  lightRotation += rotationSpeed;
+  lightRotation += rotationSpeed * SPEED;
 
   if (viewMode == 3) {
     // Compute the camera position using spherical coordinates.

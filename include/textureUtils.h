@@ -73,11 +73,9 @@ void loadTextureFromFile(const char* filename) {
 
 void switchBMPImage(){
     if (BMPImgNum == 1){
-        printf("Switching to cool2.bmp\n");
         loadTextureFromFile("./assets/cool2.bmp");
     }
     else {
-        printf("Switching to cool.bmp\n");
         loadTextureFromFile("./assets/cool.bmp");
     }
 
