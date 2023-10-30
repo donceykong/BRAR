@@ -1,39 +1,88 @@
 // Created by: Doncey Albin
 
-static double joint0Angle = -45, joint1Angle = 45, joint2Angle = 30, joint3Angle = -45;
+static double joint0Angle = 0.0, joint1Angle = 0.0, joint2Angle = 0.0, joint3Angle = 0.0;
+
+static double leftHipAngle = 0.0, rightHipAngle = 0.0;
+static double rightHipSign = -1.0, leftHipSign = 1.0;
+
 static double gripperRollAngle = 0.0;
 static double gripperDist = 0.3;
+static bool   gripperClosed = false;
+
+void drawNormalArrow(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat scale) {
+    glBegin(GL_LINES);
+    glVertex3f(x, y, z);  // start point of the line (original vertex)
+    glVertex3f(x + nx * scale, y + ny * scale, z + nz * scale);  // end point of the line
+    glEnd();
+}
 
 void getFrontFaceVertices(GLfloat width, GLfloat height, GLfloat depth) {
-    double textureScale = 0.3;
+    double textureScale = 0.8;
+    double normalScale = 0.5;
+    
+    GLfloat nx = 0.0f, ny = 0.0f, nz = 1.0f; // Normal for the front face
 
-    // Front face top quad
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, BMPtextureID);
+    
     glBegin(GL_QUADS);
-    glTexCoord2f(0.0f, 0.0f); glVertex3f(-width/2, height/2,  depth/2);
+    glNormal3f(nx, ny, nz);
+
+    // Front face top quad vertices
+    glTexCoord2f(0.0f, 0.0f); glVertex3f(-width/2, height/2,  depth/2); 
     glTexCoord2f(0.0f, 1.0f); glVertex3f(-width/2 + (width/2)*textureScale, height/2 - (height/2)*textureScale,  depth/2);
     glTexCoord2f(1.0f, 1.0f); glVertex3f( width/2, height/2,  depth/2);
     glTexCoord2f(1.0f, 0.0f); glVertex3f( width/2 - (width/2)*textureScale, height/2 - (height/2)*textureScale,  depth/2);
+    glEnd();
 
-    // Front face bottom quad
+    // Draw normals for the top quad
+    drawNormalArrow(-width/2, height/2, depth/2, nx, ny, nz, normalScale);
+    drawNormalArrow(-width/2 + (width/2)*textureScale, height/2 - (height/2)*textureScale, depth/2, nx, ny, nz, normalScale);
+    drawNormalArrow( width/2, height/2, depth/2, nx, ny, nz, normalScale);
+    drawNormalArrow( width/2 - (width/2)*textureScale, height/2 - (height/2)*textureScale, depth/2, nx, ny, nz, normalScale);
+
+    glBegin(GL_QUADS);
+    // Front face bottom quad vertices
     glTexCoord2f(0.0f, 0.0f); glVertex3f(-width/2, -height/2, depth/2);
     glTexCoord2f(0.0f, 1.0f); glVertex3f(-width/2 + (width/2)*textureScale, -height/2 + (height/2)*textureScale,  depth/2);
     glTexCoord2f(1.0f, 1.0f); glVertex3f( width/2, -height/2, depth/2);
     glTexCoord2f(1.0f, 0.0f); glVertex3f( width/2 - (width/2)*textureScale, -height/2 + (height/2)*textureScale,  depth/2);
+    glEnd();
 
-    // Front face left quad
+    // Draw normals for the bottom quad
+    drawNormalArrow(-width/2, -height/2, depth/2, nx, ny, nz, normalScale);
+    drawNormalArrow(-width/2 + (width/2)*textureScale, -height/2 + (height/2)*textureScale, depth/2, nx, ny, nz, normalScale);
+    drawNormalArrow( width/2, -height/2, depth/2, nx, ny, nz, normalScale);
+    drawNormalArrow( width/2 - (width/2)*textureScale, -height/2 + (height/2)*textureScale, depth/2, nx, ny, nz, normalScale);
+
+    glBegin(GL_QUADS);
+    // Front face left quad vertices
     glTexCoord2f(0.0f, 0.0f); glVertex3f(-width/2, height/2,  depth/2);
     glTexCoord2f(0.0f, 1.0f); glVertex3f(-width/2 + (width/2)*textureScale, height/2 - (height/2)*textureScale,  depth/2);
     glTexCoord2f(1.0f, 1.0f); glVertex3f(-width/2, -height/2,  depth/2);
     glTexCoord2f(1.0f, 0.0f); glVertex3f(-width/2 + (width/2)*textureScale, -height/2 + (height/2)*textureScale,  depth/2);
+    glEnd();
 
-    // Front face right quad
+    // Draw normals for the left quad
+    drawNormalArrow(-width/2, height/2, depth/2, nx, ny, nz, normalScale);
+    drawNormalArrow(-width/2 + (width/2)*textureScale, height/2 - (height/2)*textureScale, depth/2, nx, ny, nz, normalScale);
+    drawNormalArrow(-width/2, -height/2, depth/2, nx, ny, nz, normalScale);
+    drawNormalArrow(-width/2 + (width/2)*textureScale, -height/2 + (height/2)*textureScale, depth/2, nx, ny, nz, normalScale);
+
+    glBegin(GL_QUADS);
+    // Front face right quad vertices
     glTexCoord2f(0.0f, 0.0f); glVertex3f(width/2, height/2,  depth/2);
     glTexCoord2f(0.0f, 1.0f); glVertex3f(width/2 - (width/2)*textureScale, height/2 - (height/2)*textureScale,  depth/2);
     glTexCoord2f(1.0f, 1.0f); glVertex3f(width/2, -height/2,  depth/2);
     glTexCoord2f(1.0f, 0.0f); glVertex3f(width/2 - (width/2)*textureScale, -height/2 + (height/2)*textureScale,  depth/2);
     glEnd();
+
+    // Draw normals for the right quad
+    drawNormalArrow(width/2, height/2, depth/2, nx, ny, nz, normalScale);
+    drawNormalArrow(width/2 - (width/2)*textureScale, height/2 - (height/2)*textureScale, depth/2, nx, ny, nz, normalScale);
+    drawNormalArrow(width/2, -height/2, depth/2, nx, ny, nz, normalScale);
+    drawNormalArrow(width/2 - (width/2)*textureScale, -height/2 + (height/2)*textureScale, depth/2, nx, ny, nz, normalScale);
+
     glDisable(GL_TEXTURE_2D);
 }
 
@@ -139,7 +188,6 @@ void getCubeVerticesNoTexture(GLfloat width, GLfloat height, GLfloat depth) {
     glVertex3f( width/2,  height/2,  depth/2);
     glVertex3f( width/2, -height/2,  depth/2);
     glEnd();
-    glDisable(GL_TEXTURE_2D);
 
     // Top face
     glBegin(GL_QUADS);
@@ -267,20 +315,18 @@ void getCubeEdges(GLfloat width, GLfloat height, GLfloat depth) {
 }
 
 void drawSemiCylinder(GLfloat radius, GLfloat height, int segments) {
-    // Draw curved surface
-    //glColor3f(1.0, 0.5, 0.0);  // Yellowish Color
     glBegin(GL_TRIANGLE_STRIP);
     for (int i = 0; i <= segments; ++i) {
         GLfloat angle = i * M_PI / segments; 
         GLfloat x = radius * sin(angle);
         GLfloat y = radius * cos(angle);
 
+        glNormal3f(x, y, 0.0f);
         glVertex3f(x, y, -height/2);  // Lower ring
         glVertex3f(x, y, height/2);  // Upper ring
     }
     glEnd();
 
-    //glColor3f(0.0, 0.0, 1.0);   // Blue color
     glLineWidth(2.0f);          // Set line width to 2.0 pixels
     glBegin(GL_LINES);
     for (int i = 0; i <= segments; i += 60) {
@@ -294,9 +340,9 @@ void drawSemiCylinder(GLfloat radius, GLfloat height, int segments) {
     glEnd();
 
     // Draw bottom face
-    //glColor3f(1.0, 1.0, 0.0);  // Yellow Color
     glBegin(GL_TRIANGLE_FAN);
     glVertex3f(0, 0, -height); // Center vertex
+    glNormal3f(0.0f, 0.0f, -1.0f);
     for (int i = -segments; i <= segments; ++i) {
         GLfloat angle = i * M_PI / segments;
         GLfloat x = radius * sin(angle);
@@ -306,7 +352,6 @@ void drawSemiCylinder(GLfloat radius, GLfloat height, int segments) {
     }
     glEnd();
 
-    //glColor3f(0.0, 0.0, 1.0);   // Blue color
     glLineWidth(2.0f);          // Set line width to 2.0 pixels
     glBegin(GL_LINES);
     glVertex3f(0, 0, -height);  // Center vertex
@@ -320,9 +365,9 @@ void drawSemiCylinder(GLfloat radius, GLfloat height, int segments) {
     glEnd();
 
     // Draw top face
-    //glColor3f(1.0, 1.0, 0.0);   // Yellow Color
     glBegin(GL_TRIANGLE_FAN);
     glVertex3f(0, 0, height);   // Center vertex
+    glNormal3f(0.0f, 0.0f, 1.0f);
     for (int i = -segments; i <= segments; ++i) {
         GLfloat angle = i * M_PI / segments;
         GLfloat x = radius * sin(angle);
@@ -332,7 +377,6 @@ void drawSemiCylinder(GLfloat radius, GLfloat height, int segments) {
     }
     glEnd();
 
-    //glColor3f(0.0, 0.0, 1.0);   // Blue color
     glLineWidth(2.0f);          // Set line width to 2.0 pixels
     glBegin(GL_LINES);
     glVertex3f(0, 0, height);   // Center vertex
@@ -344,6 +388,58 @@ void drawSemiCylinder(GLfloat radius, GLfloat height, int segments) {
         glVertex3f(x, y, height/2);
     }
     glEnd();
+}
+
+void robotBase(GLfloat width, GLfloat height, GLfloat depth) {
+    glPushMatrix();
+
+    if (usingTextures) {
+      getCubeVertices(width, height, depth);
+    }
+    else{
+      getCubeVerticesNoTexture(width, height, depth);
+    }
+
+    glColor3f(0.0, 1.0, 0.0);  // Blue color
+    glLineWidth(4.0f); // Set line width to 2.0 pixels
+    glBegin(GL_LINES);
+      getCubeEdges(width, height, depth);
+    glEnd();
+    
+    float axisLen = 0.5;
+    drawAxes(axisLen);
+
+    // Draw first semi-cylinder
+    glTranslatef(0.0, width/2, 0.0);
+    drawSemiCylinder(height/2, depth, 1000);  // radius, height, segments
+
+    glPopMatrix();
+}
+
+void robotLeg(GLfloat width, GLfloat height, GLfloat depth) {
+    glPushMatrix();
+
+    if (usingTextures) {
+      getCubeVertices(width, height, depth);
+    }
+    else{
+      getCubeVerticesNoTexture(width, height, depth);
+    }
+
+    glColor3f(1.0, 0.0, 0.0);  // Blue color
+    glLineWidth(4.0f); // Set line width to 2.0 pixels
+    glBegin(GL_LINES);
+      getCubeEdges(width, height, depth);
+    glEnd();
+    
+    float axisLen = 0.5;
+    drawAxes(axisLen);
+
+    // Draw first semi-cylinder
+    glTranslatef(0.0, width/2, 0.0);
+    //drawSemiCylinder(height/2, depth, 1000);  // radius, height, segments
+
+    glPopMatrix();
 }
 
 void robotLink(GLfloat width, GLfloat height, GLfloat depth) {
@@ -363,7 +459,7 @@ void robotLink(GLfloat width, GLfloat height, GLfloat depth) {
     glEnd();
 
     // Draw first semi-cylinder
-    glTranslatef(0.5, 0.0, 0.0);
+    glTranslatef(width/2, 0.0, 0.0);
     drawSemiCylinder(height/2, depth, 1000);  // radius, height, segments
 
     glPopMatrix();
@@ -421,4 +517,67 @@ void robotEndEffector(GLfloat width, GLfloat height, GLfloat depth) {
     glEnd(); 
 
     glPopMatrix();
+}
+
+void drawRobotArm() {
+  float axisLen = 0.5;
+  drawAxes(axisLen);
+
+  glTranslatef(gripperRollAngle*0.10, 0.0, 0.0);
+  //glTranslatef(0.0, 0.0, 0.01*gripperRollAngle);
+
+  // Joint0: Base
+  glTranslatef(0.0, 0.0, 0.0);
+  glRotatef((GLfloat)joint0Angle, 0.0, 1.0, 0.0);
+
+  glTranslatef(0.0, 0.1, 0.0);
+  robotBase(0.2, 0.2, 0.2);
+
+  // Joint0: robotLeftLeg
+  glRotatef((GLfloat)leftHipAngle, 0.0, 0.0, 1.0);
+  glTranslatef(0.0, -1.25, 0.5);
+  robotLeg(0.2, 2.5, 0.2);
+  glTranslatef(0.0, 1.25, -0.5);
+  glRotatef((GLfloat)leftHipAngle, 0.0, 0.0, -1.0);
+
+  // Joint0: robotRightLeg
+  glRotatef((GLfloat)rightHipAngle, 0.0, 0.0, 1.0);
+  glTranslatef(0.0, -1.25, -0.5);
+  robotLeg(0.2, 2.5, 0.2);
+  glTranslatef(0.0,  1.25, 0.5);
+  glRotatef((GLfloat)rightHipAngle, 0.0, 0.0, -1.0);
+
+  // Joint1 & Link1
+  glTranslatef(0.0, 0.1, 0.0); // At origin
+  glRotatef((GLfloat)joint1Angle, 0.0, 0.0, 1.0);
+
+  drawAxes(axisLen);
+  glTranslatef(0.5, 0.0, 0.0);
+  robotLink(1.0, 0.2, 0.2);
+  
+  // Joint2 & Link2
+  glTranslatef(0.5, 0.0, 0.0);
+  glRotatef((GLfloat)joint2Angle, 0.0, 0.0, 1.0);
+
+  drawAxes(axisLen);
+  glTranslatef(0.5, 0.0, 0.0);
+  robotLink(1.0, 0.2, 0.2);
+
+  // Joint3 & Link3
+  glTranslatef(0.5, 0.0, 0.0);
+  glRotatef((GLfloat)joint3Angle, 0.0, 0.0, 1.0);
+
+  drawAxes(axisLen);
+  glTranslatef(0.25, 0.0, 0.0);
+  robotLink(0.5, 0.2, 0.2);
+
+  // Joint4 & End Effector
+  glTranslatef(0.25, 0.0, 0.0);
+  glRotatef((GLfloat)gripperRollAngle, 1.0, 0.0, 0.0);
+
+  drawAxes(axisLen);
+  glTranslatef(0.1, 0.0, 0.0);
+  robotEndEffector(1.0, 0.2, 0.2);
+
+  computeForwardKinematics();
 }

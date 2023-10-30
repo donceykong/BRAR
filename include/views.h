@@ -12,10 +12,6 @@ GLfloat distance = 0.0f;
 int mouseX, mouseY;
 int isDragging = 0;
 
-/*
- * Handles the perspective view. 
- * 
-*/
 void perspective(GLfloat fovy, GLfloat aspect, GLfloat zNear, GLfloat zFar) {
     GLfloat f = 1.0f / tan(fovy / 2.0f);
     GLfloat depth = zNear - zFar;

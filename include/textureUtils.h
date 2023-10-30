@@ -31,6 +31,7 @@ typedef struct {
 
 // Global Vars
 extern GLuint BMPtextureID = 0;
+extern GLuint GroundtextureID = 1;
 int BMPImgNum = 1;
 bool usingTextures = true;
 

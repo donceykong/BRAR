@@ -290,6 +290,16 @@ void update()
   joint1Angle += joint1inc;
   joint2Angle += joint2inc;
 
+  leftHipAngle  +=  leftHipSign*joint0inc;
+  rightHipAngle +=  rightHipSign*joint0inc;
+
+  if (fabsf(leftHipAngle) > 60.0) {
+    leftHipSign = -1*leftHipSign;
+  }
+  if (fabsf(rightHipAngle) > 60.0) {
+    rightHipSign = -1*rightHipSign;
+  }
+
   if (joint1Angle > 180.00) {
     joint1Angle = 180.00;
   } else if (joint1Angle < 0.00) {
@@ -304,21 +314,33 @@ void update()
 
   // Gripper Adjust
   joint3Angle += joint3inc;
+  
+  // Just for testing to move the robot
+  //posX -= 0.10*gripperRollinc;
+  //posY -= 0.10*joint3inc;
+
   gripperDist += gripperDistinc;
   gripperRollAngle += gripperRollinc;
 
   if (joint3Angle > 90.00) {
-    joint3Angle = 90.00;
+    joint3Angle -= joint3inc;
   } else if (joint3Angle < -90.00) {
-    joint3Angle = -90.00;
+    joint3Angle -= joint3inc;
   }
 
-  if (gripperDist > 0.30) {
-    gripperDist = 0.30;
-  } else if (gripperDist < 0.10) {
-    gripperDist = 0.10;
+  if (gripperDist >= 0.30) {
+    gripperDist -= gripperDistinc;
+  } else if (gripperDist <= 0.10) {
+    gripperDist -= gripperDistinc;
+  }
+
+  if (gripperDist <= 0.20){
+    gripperClosed = true;
+  }
+  else {
+    gripperClosed = false;
   }
 
   // Request Display update
-  glutPostRedisplay();
+  //glutPostRedisplay();
 } 
