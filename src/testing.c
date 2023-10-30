@@ -37,12 +37,10 @@
 
 bool ballInHand() {
     if (gripperClosed && fabsf(posX-endEffectorPosition.x)<0.1 &&  fabsf(posY-endEffectorPosition.y)<0.1 && fabsf(posZ-endEffectorPosition.z)<0.1) {
-        printf("Ball IS in hand!\n");
         return true;
         
     }
     else {
-        printf("Ball IS NOT in hand!\n");
         return false;
     }
 }
@@ -63,6 +61,7 @@ void display() {
     //GLfloat mat_ambient[] = {0.2, 0.2, 0.2, 1.0};  // Adjust this value as needed
     //glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_ambient);
     glRotatef((GLfloat)10.0, 1.0, 0.0, 0.0);
+    glTranslatef(0.0, -2.5, 0.0);
     drawGroundPlane();
     glDisable(GL_DEPTH_TEST);
     glPopMatrix();
