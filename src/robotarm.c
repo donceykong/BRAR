@@ -19,8 +19,11 @@
 
 // In-house includes
 //#include "plotter.h"
+#include "matrixMath.h"
+#include "forwardKinematics.h"
+#include "miscObjects.h"
 #include "textureUtils.h"
-#include "robotLinkObject.h"
+#include "robot.h"
 #include "views.h"
 #include "lighting.h"
 #include "keyHandler.h" // Add this import last
@@ -41,32 +44,11 @@ void display() {
   glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_ambient);
 
   update();
-  
-  // Joint0: Base
-  glTranslatef(0.0, 0.0, 0.0);  // At origin
-  glRotatef((GLfloat)joint0Angle, 0.0, 1.0, 0.0);
+  // Axes
+  float axisLen = 0.5;
+  drawAxes(axisLen);
 
-  // Joint1 & Link1
-  glTranslatef(0.0, 0.0, 0.0); // At origin
-  glRotatef((GLfloat)joint1Angle, 0.0, 0.0, 1.0);
-
-  glTranslatef(0.5, 0.0, 0.0);
-  robotLink(1.0, 0.2, 0.2);
-  
-  // Joint2 & Link2
-  glTranslatef(0.5, 0.0, 0.0);
-  glRotatef((GLfloat)joint2Angle, 0.0, 0.0, 1.0);
-
-  glTranslatef(0.5, 0.0, 0.0);
-  robotLink(1.0, 0.2, 0.2);
-
-  // Joint3 & Link3 :: The End Effector
-  glTranslatef(0.5, 0.0, 0.0);
-  glRotatef((GLfloat)joint3Angle, 0.0, 0.0, 1.0);
-  glRotatef((GLfloat)gripperRollAngle, 1.0, 0.0, 0.0);
-
-  glTranslatef(0.2, 0.0, 0.0);
-  robotEndEffector(1.0, 0.2, 0.2);
+  drawRobotArm();
 
   glDisable(GL_DEPTH_TEST);  // Optionally disable depth testing if not needed later
 

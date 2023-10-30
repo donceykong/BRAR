@@ -30,7 +30,7 @@ endif
 $ robotarm: $(OBJ)/robotarm.o
 	$(CC) $(CFLG) -o $@ $^ $(LIBS)
 
-$(OBJ)/robotarm.o: $(SRC)/robotarm.c
+$(OBJ)/robotarm.o: $(SRC)/testing.c
 	$(CC) $(CFLG) -I$(INC) -c $< -o $@
 
 # Clean
