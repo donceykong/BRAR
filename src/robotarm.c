@@ -37,6 +37,11 @@
 
 #include "CSCIx229.h"
 
+// Global Framerate variables
+const double FPS = 260.0;
+const double frameDelay = 1000.0 / FPS;
+double lastFrameTime = 0.00;
+
 bool ballInHand() {
     if (gripperClosed && fabsf(posX-endEffectorPosition.x)<0.1 &&  fabsf(posY-endEffectorPosition.y)<0.1 && fabsf(posZ-endEffectorPosition.z)<0.1) {
         return true;
@@ -113,6 +118,26 @@ void display() {
     glutSwapBuffers();
 }
 
+void FPSLimitedDisplay () {
+    double currentTime = glutGet(GLUT_ELAPSED_TIME);
+    double timeSinceLastFrame = currentTime - lastFrameTime;
+    
+    printf("timeSinceLastFrame: %f, frameDelay: %f\n", timeSinceLastFrame, frameDelay);
+
+    if (timeSinceLastFrame >= frameDelay) {
+        display();
+    } else {
+        double sleepTime = frameDelay - timeSinceLastFrame;
+        printf("sleepTime: %f\n", sleepTime);
+        if (sleepTime > 0.00) {
+            usleep((unsigned int)(sleepTime * 1000.00 + 0.5)); // usleep takes sleep time in microseconds
+        }
+        display();
+    }
+
+    lastFrameTime = currentTime;
+}
+
 int main(int argc, char** argv) {
   // Init GLUT
   glutInit(&argc, argv);
@@ -123,7 +148,7 @@ int main(int argc, char** argv) {
   glutInitWindowSize(1500, 1500);
   glutCreateWindow("Robot Arm");
 
-  glutDisplayFunc(display);
+  glutDisplayFunc(FPSLimitedDisplay);
 
   // Arrow key callbacks
   glutSpecialFunc(special);
@@ -141,6 +166,8 @@ int main(int argc, char** argv) {
   //loadTextureFromFile("./assets/cool.bmp");
 
   //init();
+
+  lastFrameTime = glutGet(GLUT_ELAPSED_TIME);
   glutMainLoop();
 
   return 0;
