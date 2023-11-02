@@ -6,7 +6,7 @@
 #define SPEED 1.0
 #else
 #include <GL/glut.h>
-#define SPEED 0.1
+#define SPEED 0.2
 #endif
 
 #ifndef RES
@@ -122,13 +122,13 @@ void FPSLimitedDisplay () {
     double currentTime = glutGet(GLUT_ELAPSED_TIME);
     double timeSinceLastFrame = currentTime - lastFrameTime;
     
-    printf("timeSinceLastFrame: %f, frameDelay: %f\n", timeSinceLastFrame, frameDelay);
+    //printf("timeSinceLastFrame: %f, frameDelay: %f\n", timeSinceLastFrame, frameDelay);
 
     if (timeSinceLastFrame >= frameDelay) {
         display();
     } else {
         double sleepTime = frameDelay - timeSinceLastFrame;
-        printf("sleepTime: %f\n", sleepTime);
+        //printf("sleepTime: %f\n", sleepTime);
         if (sleepTime > 0.00) {
             usleep((unsigned int)(sleepTime * 1000.00 + 0.5)); // usleep takes sleep time in microseconds
         }
