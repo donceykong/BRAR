@@ -67,6 +67,12 @@ void loadTextureFromFile(const char* filename) {
 
     GLenum format = (infoHeader.bits == 24) ? GL_RGB : GL_RGBA;
 
+    for (int i = 0; i < infoHeader.imageSize; i += 3) {
+        unsigned char tmp = data[i];
+        data[i] = data[i + 2];
+        data[i + 2] = tmp;
+    }
+
     glTexImage2D(GL_TEXTURE_2D, 0, format, infoHeader.width, infoHeader.height, 0, format, GL_UNSIGNED_BYTE, data);
 
     free(data);
@@ -74,10 +80,10 @@ void loadTextureFromFile(const char* filename) {
 
 void switchBMPImage(){
     if (BMPImgNum == 1){
-        loadTextureFromFile("./assets/cool2.bmp");
+        loadTextureFromFile("./assets/sheet_metal.bmp");
     }
     else {
-        loadTextureFromFile("./assets/cool.bmp");
+        loadTextureFromFile("./assets/cool2.bmp");
     }
 
     BMPImgNum = -1*BMPImgNum;

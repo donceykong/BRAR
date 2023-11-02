@@ -1,7 +1,7 @@
 // lighting.h
 GLfloat light1_X = -0.80, light1_Y = 2.00, light1_Z = 0.00;
 bool lightEnabled = false;
-double ambient = 0.5, diffuse = 0.9, specular = 1.0;  
+double ambient = 0.0, diffuse = 0.8, specular = 0.6;  
 GLfloat spotExponent = 1.0; // for a moderately focused light
 GLfloat spotCutoff = 60.0; // for a 45-degree cone of light
 
@@ -120,8 +120,8 @@ void setupLighting() {
         glEnable(GL_LIGHTING);
         glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
 
-        GLfloat global_ambient[] = {0.1, 0.1, 0.1, 1.0};  // This will give a very dim light to everything in the scene
-        glLightModelfv(GL_LIGHT_MODEL_AMBIENT, global_ambient);
+        //GLfloat global_ambient[] = {0.1, 0.1, 0.1, 1.0};  // This will give a very dim light to everything in the scene
+        //glLightModelfv(GL_LIGHT_MODEL_AMBIENT, global_ambient);
 
         // Set ambient, diffuse, specular components, and position of light 0
         glEnable(GL_LIGHT0);

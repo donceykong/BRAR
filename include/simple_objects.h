@@ -11,6 +11,7 @@ void Sphere(double r, int lats, int longs) {
         double z1 = sin(lat1);
         double zr1 = cos(lat1);
 
+        glColor3f(0.0, 1.0, 1.0);
         glBegin(GL_QUAD_STRIP);
         for(j = 0; j <= longs; j++) {
             double lng = 2 * M_PI * (double) (j - 1) / longs;
@@ -23,5 +24,6 @@ void Sphere(double r, int lats, int longs) {
             glVertex3f(r * x * zr1, r * y * zr1, r * z1);
         }
         glEnd();
+        glColor3f(1.0, 1.0, 1.0);
     }
 }

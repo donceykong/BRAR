@@ -30,6 +30,12 @@ bool keyF = false;
 bool keyG = false;
 bool keyV = false;
 
+// Robot position
+bool keyO = false;    // Robot +Z
+bool keyL = false;    // Robot -Z
+bool keyP = false;    // Robot +X
+bool keyI = false;    // Robot -X
+
 void special(int key, int x, int y) 
 {
   switch (key) {
@@ -108,6 +114,18 @@ void handleKeys(unsigned char key, int x, int y) {
         case 'v':
             keyV = true;
             break;
+        case 'o':
+            keyO = true;
+            break;
+        case 'l':
+            keyL = true;
+            break;
+        case 'p':
+            keyP = true;
+            break;
+        case 'i':
+            keyI = true;
+            break;
         case '0':
             lightKeyPressed = !lightKeyPressed; // Toggle the light key state
             lightEnabled = lightKeyPressed; // Update lightEnabled accordingly
@@ -173,6 +191,18 @@ void handleKeysUp(unsigned char key, int x, int y) {
         case 'v':
             keyV = false;
             break;
+        case 'o':
+            keyO = false;
+            break;
+        case 'l':
+            keyL = false;
+            break;
+        case 'p':
+            keyP = false;
+            break;
+        case 'i':
+            keyI = false;
+            break;
         case '0':
             key0 = false;
             break;
@@ -198,6 +228,8 @@ void handleKeysUp(unsigned char key, int x, int y) {
 
 void update()
 {
+  double robotXPosInc = 0.00;
+  double robotZPosInc = 0.00;
   double joint0inc = 0.00;
   double joint1inc = 0.00;
   double joint2inc = 0.00;
@@ -248,6 +280,18 @@ void update()
   }
 
   // Light Adjust
+  if (keyO)
+    robotZPosInc = 0.2 * SPEED;
+  if (keyL)
+    robotZPosInc -= 0.2 * SPEED;
+  if (keyP)
+    robotXPosInc = 0.2 * SPEED;
+  if (keyI)
+    robotXPosInc -= 0.2 * SPEED;
+  robotXPos += robotXPosInc;
+  robotZPos += robotZPosInc;
+
+  // Light Adjust
   if (keyT)
     light1_Y += 0.2 * SPEED;
   if (keyV)
@@ -256,7 +300,7 @@ void update()
     light1_X += 0.2 * SPEED;
   if (keyF)
     light1_X -= 0.2 * SPEED;
-  
+
   lightRotation += rotationSpeed * SPEED;
 
   if (viewMode == 3) {
@@ -290,8 +334,8 @@ void update()
   joint1Angle += joint1inc;
   joint2Angle += joint2inc;
 
-  leftHipAngle  +=  leftHipSign*joint0inc;
-  rightHipAngle +=  rightHipSign*joint0inc;
+  leftHipAngle  +=  leftHipSign*50.0*(0.02*joint0inc+fabsf(robotXPosInc)+fabsf(robotZPosInc));
+  rightHipAngle +=  rightHipSign*50.0*(0.02*joint0inc+fabsf(robotXPosInc)+fabsf(robotZPosInc));
 
   if (fabsf(leftHipAngle) > 60.0) {
     leftHipSign = -1*leftHipSign;
@@ -300,15 +344,15 @@ void update()
     rightHipSign = -1*rightHipSign;
   }
 
-  if (joint1Angle > 180.00) {
-    joint1Angle = 180.00;
-  } else if (joint1Angle < 0.00) {
-    joint1Angle = 0.00;
+  if (joint1Angle >= 250.00) {
+    joint1Angle = 250.00;
+  } else if (joint1Angle <= -70.00) {
+    joint1Angle = -70.00;
   }
 
-  if (joint2Angle > 90.00) {
+  if (joint2Angle >= 90.00) {
     joint2Angle = 90.00;
-  } else if (joint2Angle < -90.00) {
+  } else if (joint2Angle <= -90.00) {
     joint2Angle = -90.00;
   }
 
