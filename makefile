@@ -1,37 +1,57 @@
-# Variables
-SRC = src
-OBJ = obj
-#BIN = bin
-INC = include
+# Robot Arm Project
+# Created by Doncey Albin
+
+EXE=robotarm
+SRC=src
+OBJ=obj
+INC=include
+
+# Main target
+all: $(EXE)
 
 # Compiler
-CC = gcc
+CC=gcc
+CPP=g++
 
-#MinGW
-ifeq "$(OS)" "Windows_NT"
+# Msys/MinGW
+ifeq ($(OS),Windows_NT)
 CFLG=-O3 -Wall -DUSEGLEW
-LIBS=-lfreeglut -lglew32 -lglu32 -lopengl32
-CLEAN=rm -f $(OBJ)/*.o
+LIBS=-lfreeglut -lglew32 -lglu32 -lopengl32 -lm
+CLEAN=del /F /Q *.exe *.o *.a
 else
-#  OSX
-ifeq "$(shell uname)" "Darwin"
-CFLG=-O3 -Wall -Wno-deprecated-declarations -DRES=2
+# OSX
+ifeq ($(shell uname),Darwin)
+RES=$(shell uname -r|sed -E 's/(.).*/\1/'|tr 12 21)
+CFLG=-O3 -Wall -Wno-deprecated-declarations -DRES=$(RES)
 LIBS=-framework GLUT -framework OpenGL
-#  Linux/Unix/Solaris
+# Linux/Unix/Solaris
 else
 CFLG=-O3 -Wall
 LIBS=-lglut -lGLU -lGL -lm
 endif
-#  OSX/Linux/Unix/Solaris
-CLEAN=rm -f $(OBJ)/*.o
+# OSX/Linux/Unix/Solaris
+CLEAN=rm -f $(EXE) $(OBJ)/*.o $(OBJ)/*.a
 endif
 
-# Rules
-$ robotarm: $(OBJ)/robotarm.o
-	$(CC) $(CFLG) -o $@ $^ $(LIBS)
+# Dependencies
+DEPS = $(INC)/CSCIx229.h
 
-$(OBJ)/robotarm.o: $(SRC)/testing.c
+# Compile rules
+$(OBJ)/%.o: $(SRC)/%.c $(DEPS)
+	@mkdir -p $(OBJ)
 	$(CC) $(CFLG) -I$(INC) -c $< -o $@
+
+$(OBJ)/%.o: $(SRC)/%.cpp $(DEPS)
+	@mkdir -p $(OBJ)
+	$(CPP) $(CFLG) -I$(INC) -c $< -o $@
+
+# Create archive
+$(OBJ)/CSCIx229.a: $(OBJ)/print.o
+	ar -rcs $@ $^
+
+# Link
+$(EXE): $(OBJ)/robotarm.o $(OBJ)/CSCIx229.a
+	$(CC) $(CFLG) -o $@ $^ $(LIBS)
 
 # Clean
 clean:
