@@ -319,14 +319,6 @@ void update()
     firstPersonCamZPrev = firstPersonCamZ;
     firstPersonCamZ -= 0.01*joint3inc * (firstPersonCamZ*cos(angleYradians) - firstPersonCamX*sin(angleYradians)); //joint3inc; //distance * cosf(angleY);
     firstPersonCamX -= 0.01*joint3inc * (firstPersonCamZPrev*sin(angleYradians) + firstPersonCamX*cos(angleYradians)); //distance * sinf(angleY) * cosf(angleX);
-    
-    float xpos = firstPersonCamX;
-    float zpos = firstPersonCamZ;
-    
-    //plotData(xpos, zpos); // Save robot pos data to png file
-
-    //printf("AngleY: %.6f\n", angleY);
-    //printf("firstPersonCamX: %.6f, firstPersonCamZ: %.6f\n", firstPersonCamX, firstPersonCamZ);
   }
   
   // Adjust joint angles
