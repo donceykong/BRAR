@@ -1,3 +1,8 @@
+'''
+@Author: Doncey Albin
+
+Convinience Function for converting jpg to bmp
+'''
 from PIL import Image
 
 def convert_jpg_to_bmp(input_path, output_path):
