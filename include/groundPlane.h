@@ -19,7 +19,7 @@ void drawGroundPlane() {
     glBindTexture(GL_TEXTURE_2D, BMPtextureID);
     
     glBegin(GL_TRIANGLES);
-
+    glNormal3f(0.0f, 1.0f, 0.0f);
     for (int i = 0; i < 6 * 5; i += 5) {
         // Optionally set texture coordinates if you're using them.
         glTexCoord2f(GroundPlaneVertices[i + 3], GroundPlaneVertices[i + 4]);
