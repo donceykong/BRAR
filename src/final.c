@@ -30,6 +30,7 @@
 
 #include "matrixMath.h"
 #include "forwardKinematics.h"
+#include "robotController.h"
 
 #include "views.h"
 #include "lighting.h"
@@ -111,6 +112,9 @@ void display() {
 
     glDisable(GL_DEPTH_TEST);
     glPopMatrix();
+
+    double ballAngle = getBallAngle(posX, posZ);
+    //printf("ball angle: %f\n", ballAngle);
 
     glutPostRedisplay();
 
