@@ -1,7 +1,7 @@
 # Robot Arm Project
 # Created by Doncey Albin
 
-EXE=robotarm
+EXE=final
 SRC=src
 OBJ=obj
 INC=include
@@ -50,7 +50,7 @@ $(OBJ)/CSCIx229.a: $(OBJ)/print.o
 	ar -rcs $@ $^
 
 # Link
-$(EXE): $(OBJ)/robotarm.o $(OBJ)/CSCIx229.a
+$(EXE): $(OBJ)/$(EXE).o $(OBJ)/CSCIx229.a
 	$(CC) $(CFLG) -o $@ $^ $(LIBS)
 
 # Clean
