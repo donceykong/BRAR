@@ -2,8 +2,6 @@
 
 BRAR is an OpenGL-based game that simulates a bipedal 5-DOF robotic arm that tries to capure objects in the scene. 
 
-BRAR has been tested and verified on macOS Sonoma and Ubuntu 22.04.
-
 --- 
 
 <p align="center" width="100%">
