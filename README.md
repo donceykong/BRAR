@@ -12,6 +12,7 @@ The arm depicted in this simulation attempts to model that of the Tinkerbot Brac
 
 <p align="center" width="100%">
 <img src="doc/image/braccio_robot.png" width="450" height="350" />
+<img src="doc/image/BD-1.png" width="450" height="350" />
 </p>
 
 <p align="center" width="100%">
