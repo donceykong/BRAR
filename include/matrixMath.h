@@ -7,6 +7,10 @@
 #define PI 3.14159265358979323846
 
 typedef struct {
+    float x, y, z;
+} Vector3;
+
+typedef struct {
     float m[4][4];
 } Matrix4x4;
 
@@ -38,6 +42,14 @@ Matrix4x4 translationMatrix(float x, float y, float z) {
     result.m[1][3] = y;
     result.m[2][3] = z;
     return result;
+}
+
+Vector3 extractPosition(Matrix4x4 matrix) {
+    Vector3 position;
+    position.x = matrix.m[0][3];
+    position.y = matrix.m[1][3];
+    position.z = matrix.m[2][3];
+    return position;
 }
 
 Matrix4x4 rotationMatrix(float angle, float x, float y, float z) {
