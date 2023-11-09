@@ -11,8 +11,8 @@ BRAR is an OpenGL-based game that simulates a bipedal 5-DOF robotic arm that tri
 The arm depicted in this simulation attempts to model that of the Tinkerbot Braccio toy (orange arm shown below) to some degree. The body and legs will be modeled after StarWars' BD-1 robot shown on the right.
 
 <p align="center" width="100%">
-<img src="doc/image/braccio_robot.png" width="350" height="250" />
-<img src="doc/image/BD-1.png" width="500" height="400" />
+<img src="doc/image/braccio_robot.png" width="320" height="250" />
+<img src="doc/image/BD-1.png" width="400" height="400" />
 </p>
 
 <p align="center" width="100%">
