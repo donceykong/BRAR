@@ -546,25 +546,26 @@ void drawRobotArm() {
   float axisLen = 0.5;
   drawFrame(axisLen);
 
-  // Joint0: Base
-  glTranslatef(robotXPos, 2.50, robotZPos);
+  // // Joint0: Base
+  glTranslatef(robotXPos, 2.0, robotZPos);
   glRotatef((GLfloat)joint0Angle, 0.0, 1.0, 0.0);
 
   glTranslatef(0.0, 0.1, 0.0);
   robotBase(0.2, 0.2, 0.2);
+  drawAxes(2.0);
 
   // Joint0: robotLeftLeg
   glRotatef((GLfloat)leftHipAngle, 0.0, 0.0, 1.0);
-  glTranslatef(0.0, -1.25, 0.5);
-  robotLeg(0.2, 2.5, 0.2);
-  glTranslatef(0.0, 1.25, -0.5);
+  glTranslatef(0.0, -1.00, 0.5);
+  robotLeg(0.2, 2.0, 0.2);
+  glTranslatef(0.0, 1.0, -0.5);
   glRotatef((GLfloat)leftHipAngle, 0.0, 0.0, -1.0);
 
   // Joint0: robotRightLeg
   glRotatef((GLfloat)rightHipAngle, 0.0, 0.0, 1.0);
-  glTranslatef(0.0, -1.25, -0.5);
-  robotLeg(0.2, 2.5, 0.2);
-  glTranslatef(0.0,  1.25, 0.5);
+  glTranslatef(0.0, -1.0, -0.5);
+  robotLeg(0.2, 2.0, 0.2);
+  glTranslatef(0.0,  1.0, 0.5);
   glRotatef((GLfloat)rightHipAngle, 0.0, 0.0, -1.0);
 
   // Joint1 & Link1
