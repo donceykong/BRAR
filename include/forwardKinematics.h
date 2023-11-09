@@ -1,14 +1,3 @@
-typedef struct {
-    float x, y, z;
-} Vector3;
-
-Vector3 extractPosition(Matrix4x4 matrix) {
-    Vector3 position;
-    position.x = matrix.m[0][3];
-    position.y = matrix.m[1][3];
-    position.z = matrix.m[2][3];
-    return position;
-}
 
 Vector3 endEffectorPosition;
 
@@ -16,7 +5,7 @@ void computeForwardKinematics() {
     Matrix4x4 transformationMatrix = identityMatrix;
 
     // Joint0: Base
-    transformationMatrix = multiplyMatrix(transformationMatrix, translationMatrix(robotXPos, 2.5, robotZPos));
+    transformationMatrix = multiplyMatrix(transformationMatrix, translationMatrix(robotXPos, 2.0, robotZPos));
     transformationMatrix = multiplyMatrix(transformationMatrix, rotationMatrix(joint0Angle, 0.0, 1.0, 0.0));
     transformationMatrix = multiplyMatrix(transformationMatrix, translationMatrix(0.0, 0.1, 0.0));
 
