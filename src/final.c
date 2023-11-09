@@ -44,6 +44,120 @@ const double FPS = 260.0;
 const double frameDelay = 1000.0 / FPS;
 double lastFrameTime = 0.00;
 
+// Globals for splash screen
+GLuint splashTexture;
+bool showSplash = true;
+
+// Global variable for loading progress
+float loadingProgress = 0;
+
+void drawSplashScreen() {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    gluOrtho2D(0, 1500, 0, 1500);
+
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glLoadIdentity();
+
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, splashTexture);
+
+    glBegin(GL_QUADS);
+    glTexCoord2f(0.0, 0.0); glVertex2f(0.0, 0.0);
+    glTexCoord2f(1.0, 0.0); glVertex2f(1500.0, 0.0);
+    glTexCoord2f(1.0, 1.0); glVertex2f(1500.0, 1500.0);
+    glTexCoord2f(0.0, 1.0); glVertex2f(0.0, 1500.0);
+    glEnd();
+
+    glDisable(GL_TEXTURE_2D);
+
+    glPopMatrix();
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
+}
+
+void drawLoadingBar(float progress) {
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    gluOrtho2D(0, 1500, 0, 1500);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    // Disable texture mapping for the loading bar
+    glDisable(GL_TEXTURE_2D);
+
+    // Calculate the width of the loading bar based on progress
+    float maxBarWidth = 800.0f;
+    float barWidth = progress * maxBarWidth; // Assuming the bar is 1400 units wide at full progress
+    float barHeight = 10.0f; // Set the height of the bar
+    float barX = 100.0f; // X position of the bar
+    float barY = 300.0f; // Y position of the bar from the bottom of the window
+
+    glColor3f(1.0f, 1.0f, 1.0f);
+    glBegin(GL_QUADS);
+        glVertex2f(barX, barY+10.0f);
+        glVertex2f(barX + maxBarWidth, barY+10.0f);
+        glVertex2f(barX + maxBarWidth, barY + barHeight +10.0f);
+        glVertex2f(barX, barY + barHeight +10.0f);
+    glEnd();
+    glColor3f(1.0f, 1.0f, 1.0f);
+
+    glColor3f(1.0f, 1.0f, 1.0f);
+    glBegin(GL_QUADS);
+        glVertex2f(barX, barY-10.0f);
+        glVertex2f(barX + maxBarWidth, barY-10.0f);
+        glVertex2f(barX + maxBarWidth, barY + barHeight -10.0f);
+        glVertex2f(barX, barY + barHeight -10.0f);
+    glEnd();
+    glColor3f(1.0f, 1.0f, 1.0f);
+
+    glColor3f(1.0f, 1.0f, 1.0f);
+    glBegin(GL_QUADS);
+        glVertex2f(barX-20.0, barY-10.0f);
+        glVertex2f(barX, barY-10.0f);
+        glVertex2f(barX-20.0, barY + barHeight +10.0f);
+        glVertex2f(barX, barY + barHeight +10.0f);
+    glEnd();
+    glColor3f(1.0f, 1.0f, 1.0f);
+
+    glColor3f(1.0f, 1.0f, 1.0f);
+    glBegin(GL_QUADS);
+        glVertex2f(barX + maxBarWidth + 20.0, barY-10.0f);
+        glVertex2f(barX + maxBarWidth, barY-10.0f);
+        glVertex2f(barX + maxBarWidth + 20.0, barY + barHeight +10.0f);
+        glVertex2f(barX + maxBarWidth, barY + barHeight +10.0f);
+    glEnd();
+    glColor3f(1.0f, 1.0f, 1.0f);
+
+    glColor3f(0.0f, 1.0f, 0.0f);
+    // Draw the loading bar as a quad
+    glBegin(GL_QUADS);
+        glVertex2f(barX, barY);
+        glVertex2f(barX + barWidth, barY);
+        glVertex2f(barX + barWidth, barY + barHeight);
+        glVertex2f(barX, barY + barHeight);
+    glEnd();
+    glColor3f(1.0f, 1.0f, 1.0f);
+
+    // Restore previous state
+    glPopMatrix();
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
+
+    // Swap buffers to display the loading bar
+    //glutPostRedisplay();
+    glutSwapBuffers();
+    //glFlush();
+}
+
 bool ballInHand() {
     if (gripperClosed && fabsf(posX-endEffectorPosition.x)<0.1 &&  fabsf(posY-endEffectorPosition.y)<0.1 && fabsf(posZ-endEffectorPosition.z)<0.1) {
         return true;
@@ -141,6 +255,30 @@ void FPSLimitedDisplay () {
     lastFrameTime = currentTime;
 }
 
+void endSplash(int value) {
+    showSplash = false;
+    glutDisplayFunc(showSplash ? drawSplashScreen : FPSLimitedDisplay);
+    glutPostRedisplay();
+}
+
+void updateLoadingProgress(int value) {
+    // Increment loading progress
+    loadingProgress += (float)value*0.1; // Increment by a value that makes sense for your application's loading time
+    if (loadingProgress >= 200.0f) {
+        loadingProgress = 200.0f;
+        showSplash = false; // Hide splash screen once loading is complete
+    }
+    
+    // Redisplay to update the loading bar
+    drawLoadingBar(loadingProgress);
+    glutPostRedisplay();
+
+    // Continue updating until loading is complete
+    if (showSplash) {
+        glutTimerFunc(300, updateLoadingProgress, 1); // Adjust the timer delay as needed
+    }
+}
+
 int main(int argc, char** argv) {
   // Init GLUT
   glutInit(&argc, argv);
@@ -151,7 +289,12 @@ int main(int argc, char** argv) {
   glutInitWindowSize(1500, 1500);
   glutCreateWindow("Robot Arm");
 
-  glutDisplayFunc(FPSLimitedDisplay);
+  //glutDisplayFunc(FPSLimitedDisplay);
+  glutDisplayFunc(showSplash ? drawSplashScreen : FPSLimitedDisplay);
+  
+  // Splash Screen
+  glutTimerFunc(0, updateLoadingProgress, 1); // Adjust the timer delay as needed
+  glutTimerFunc(3000, endSplash, 0);
 
   // Arrow key callbacks
   glutSpecialFunc(special);
@@ -171,6 +314,10 @@ int main(int argc, char** argv) {
   //init();
 
   lastFrameTime = glutGet(GLUT_ELAPSED_TIME);
+  
+  // Load splash texture
+  splashTexture = loadTexture("./assets/splashscreen.bmp");
+
   glutMainLoop();
 
   return 0;
