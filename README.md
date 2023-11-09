@@ -16,7 +16,7 @@ The arm depicted in this simulation attempts to model that of the Tinkerbot Brac
 </p>
 
 <p align="center" width="100%">
-<img src="doc/image/braccio_BD1.png" width="400" height="300" />
+<img src="doc/image/braccio_BD1.png" width="400" height="400" />
 </p>
 
 Depending on how the project developes, maybe a sim-to-real transfer could be attempted. This would likely require much tuning of the controller to meet real-world constraints, but it would be fun.
