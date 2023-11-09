@@ -11,7 +11,7 @@ BRAR is an OpenGL-based game that simulates a bipedal 5-DOF robotic arm that tri
 The arm depicted in this simulation attempts to model that of the Tinkerbot Braccio toy (arm shown below) to some degree.
 
 <p align="center" width="100%">
-<img src="doc/image/braccio_robot.png" width="500" height="400" />
+<img src="doc/image/braccio_robot.png" width="450" height="350" />
 <img src="doc/image/BD-1.png" width="600" height="500" />
 </p>
 
