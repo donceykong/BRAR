@@ -101,7 +101,6 @@ void display() {
         posX = endEffectorPosition.x;
         posY = endEffectorPosition.y;
         posZ = endEffectorPosition.z;
-        printf("BALL IN HAND\n");
     }
     else {
         getPosition();
