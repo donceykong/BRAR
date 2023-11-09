@@ -1,7 +1,7 @@
 // Created by: Doncey Albin
 
 // Global Variables
-int viewMode = 1;  // 1 = Orthogonal, 2 = Perspective, 3 = First Person
+int viewMode = 1;  // 1 = Orthogonal, 2 = Perspective, 3 = First Person, 4 = Top-Down
 GLfloat perspectiveCamX = 0, perspectiveCamY = 0, perspectiveCamZ = 4;
 GLfloat firstPersonCamZPrev = 0;
 GLfloat firstPersonCamX = 0.0, firstPersonCamY = 0.0, firstPersonCamZ = 4.0;
@@ -62,6 +62,24 @@ void setFirstPersonView() {
     glTranslatef(-firstPersonCamX, -firstPersonCamY, -firstPersonCamZ);
 }
 
+void setTopDownView() {
+    GLfloat topDownCamX = 0.0f; // or any desired X position
+    GLfloat topDownCamY = 10.0f; // or any desired height
+    GLfloat topDownCamZ = 0.0f; // or any desired Z position
+    
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(-4, 4, -4, 4, -10, 20); // Adjust as necessary
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    gluLookAt(
+        topDownCamX, topDownCamY, topDownCamZ,  // Camera position
+        0, 0, 0,  // Look at the center of the scene
+        0, 0, -1  // Up is in the negative Z direction
+    );
+}
+
 void displayView() {
     if (viewMode == 1) {
         setOrthogonalProjection();
@@ -69,5 +87,7 @@ void displayView() {
         setPerspectiveProjection();
     } else if (viewMode == 3) {
         setFirstPersonView();
+    } else if (viewMode == 4) {
+        setTopDownView();
     }
 }
