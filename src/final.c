@@ -22,15 +22,16 @@
 //#include "plotter.h"
 #include "textureUtils.h"
 
+#include "matrixMath.h"
+#include "robotController.h"
+
 #include "simulateDrop.h"
 #include "simple_objects.h"
 #include "miscObjects.h"
 #include "groundPlane.h"
 #include "robot.h"
 
-#include "matrixMath.h"
 #include "forwardKinematics.h"
-#include "robotController.h"
 
 #include "views.h"
 #include "lighting.h"
@@ -69,8 +70,6 @@ void display() {
     
     //GLfloat mat_ambient[] = {0.2, 0.2, 0.2, 1.0};  // Adjust this value as needed
     //glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_ambient);
-    glRotatef((GLfloat)10.0, 1.0, 0.0, 0.0);
-    glTranslatef(0.0, 0.0, 0.0);
     drawGroundPlane();
     glDisable(GL_DEPTH_TEST);
     glPopMatrix();
@@ -102,6 +101,7 @@ void display() {
         posX = endEffectorPosition.x;
         posY = endEffectorPosition.y;
         posZ = endEffectorPosition.z;
+        printf("BALL IN HAND\n");
     }
     else {
         getPosition();
