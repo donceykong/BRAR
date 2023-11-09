@@ -277,6 +277,8 @@ void update()
     viewMode = 2;
   } else if (key3) {
     viewMode = 3;
+  } else if (key4) {
+    viewMode = 4;
   }
 
   // Light Adjust
@@ -288,8 +290,8 @@ void update()
     robotXPosInc = 0.2 * SPEED;
   if (keyI)
     robotXPosInc -= 0.2 * SPEED;
-  robotXPos += robotXPosInc;
-  robotZPos += robotZPosInc;
+  robotXPos += robotXPosInc - 0.001*(endEffectorPosition.x-posX);
+  robotZPos += robotZPosInc - 0.001*(endEffectorPosition.z-posZ);
 
   // Light Adjust
   if (keyT)
@@ -322,7 +324,9 @@ void update()
   }
   
   // Adjust joint angles
-  joint0Angle += joint0inc;
+  double roll = getRollOffset(joint0Angle, robotXPos, robotZPos, posX, posY, posZ) * 180 / PI;
+  //printf("roll: %f, joint0Angle: %f\n", roll, joint0Angle);
+  joint0Angle += joint0inc - 0.001*roll;
   joint1Angle += joint1inc;
   joint2Angle += joint2inc;
 
@@ -350,10 +354,6 @@ void update()
 
   // Gripper Adjust
   joint3Angle += joint3inc;
-  
-  // Just for testing to move the robot
-  //posX -= 0.10*gripperRollinc;
-  //posY -= 0.10*joint3inc;
 
   gripperDist += gripperDistinc;
   gripperRollAngle += gripperRollinc;
@@ -375,6 +375,9 @@ void update()
   }
   else {
     gripperClosed = false;
+    // Just for testing to move the robot
+    posX -= 0.010*gripperRollinc;
+    posZ -= 0.010*joint3inc;
   }
 
   // Request Display update
