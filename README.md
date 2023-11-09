@@ -15,6 +15,8 @@ The arm depicted in this simulation attempts to model that of the Tinkerbot Brac
 <img src="doc/image/BD-1.png" width="420" height="380" />
 </p>
 
+While the model of the robot is still in development, the image below is similar to what I am going for. I've added this image to the splashscreen of the game, which I may change, but its pretty stupid looking and I like that.
+
 <p align="center" width="100%">
 <img src="doc/image/braccio_BD1.png" width="420" height="400" />
 </p>
