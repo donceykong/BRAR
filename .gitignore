@@ -1,4 +1,7 @@
 
+# VS Code hidden folder
+.vscode/
+
 # Final Project Executable
 final
 
