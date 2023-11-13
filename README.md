@@ -36,23 +36,32 @@ Depending on how the project developes, maybe a sim-to-real transfer could be at
 - [x] Test initial tracking algorithms for the robot to chase the ball. Ball will be steered by heading.
 
 ### Nov 12 - Nov 18
-- [] Expand ground plane and map texture onto ground. 
-- [] Add gravity to robot and use the texture plane to be where robot lands. This can be seen as a weak form of ground-based collision detection.
--[] Inverse kinematics algorithm to position end-effector around object. Will verify through user-controlled item that the robot attempts to grab.
+- [ ] Inverse kinematics algorithm to position end-effector around object. Will verify through user-controlled item that the robot attempts to grab.
+- [ ] Fix design of robot. Make it look like the desired bot and make sure normals are correct.
+- [ ] Redesign object to be of a dynamic robot.
+- [ ] Turn lighting into drone-looking systems.
 
 ### Nov 19 - Nov 25
-- [] Redesign object to be of a robot.
-- [] Turn lighting into drone-looking systems. 
-- [] Add self-collision detection.
+- [ ] Expand ground plane and map texture onto ground. Maybe this plane can be genrated dynamically? I seek to have a ground plane that populates with random objects that the user has to navigate around. 
+- [ ] Create random objects that are populated in front of the user and dissapear after the user is a certain distance past them. Lets have 2 different objects that are obstructions needing to be navigated around and 2 different objects that can benefit the user or damage them. 
+- [ ] Add gravity to robot and use the texture plane to be where robot lands. This can be seen as a weak form of ground-based collision detection. 
+- [ ] Make the 
 
 ### Nov 26 - Dec 02
 **Project Review due Nov. 29th (Wednesday)**
+- [ ] Add a game begin and end that the user can select to start over. 
+- [ ] Add a game clock that begins when the game does and ends when the user is caught.
+- [ ] Add self-collision detection.
+- [ ] 
+- [ ] 
 
 ### Dec 03 - Dec 09
-
+- [ ] 
+- [ ] 
+- [ ]
 
 ### Dec 10 - Dec 12
--> Final Project due Dec. 12th (Tuesday)
+**Final Project due Dec. 12th (Tuesday)**
 
 --- 
 ## Game Modes:
