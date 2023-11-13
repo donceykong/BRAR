@@ -27,13 +27,14 @@ Depending on how the project developes, maybe a sim-to-real transfer could be at
 
 ## Timeline 
 ### Oct 29 - Nov 4
-- Ground scene and joint limit.
-- Self-collision detection.
-- Use spheres as initial objects (for testing).
+- [x] Add ground scene and joint limit.
+- [ ] Add self-collision detection.
+- [ ] Use spheres as initial objects (for testing).
+
 
 ### Nov 5 - Nov 11
-- Design baby robot legs onto robot. These will follow some simple back-and-fourth pattern when the robot moves.
-- Test initial tracking algorithms for the robot to chase the ball.
+- [x] Design baby robot legs onto robot. These will follow some simple back-and-fourth pattern when the robot moves.
+- [x] Test initial tracking algorithms for the robot to chase the ball.
 
 ### Nov 12 - Nov 18
 - Inverse kinematics. Will verify through user-controlled item that the robot attempts to grab.
