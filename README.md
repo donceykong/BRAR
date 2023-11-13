@@ -28,20 +28,31 @@ Depending on how the project developes, maybe a sim-to-real transfer could be at
 ## Timeline 
 ### Oct 29 - Nov 4
 - [x] Add ground scene and joint limit.
-- [ ] Add self-collision detection.
 - [ ] Use spheres as initial objects (for testing).
 
 
 ### Nov 5 - Nov 11
 - [x] Design baby robot legs onto robot. These will follow some simple back-and-fourth pattern when the robot moves.
-- [x] Test initial tracking algorithms for the robot to chase the ball.
+- [x] Test initial tracking algorithms for the robot to chase the ball. Ball will be steered by heading.
 
 ### Nov 12 - Nov 18
-- Inverse kinematics. Will verify through user-controlled item that the robot attempts to grab.
+- [] Expand ground plane and map texture onto ground. 
+- [] Add gravity to robot and use the texture plane to be where robot lands. This can be seen as a weak form of ground-based collision detection.
+-[] Inverse kinematics algorithm to position end-effector around object. Will verify through user-controlled item that the robot attempts to grab.
 
 ### Nov 19 - Nov 25
+- [] Redesign object to be of a robot.
+- [] Turn lighting into drone-looking systems. 
+- [] Add self-collision detection.
 
 ### Nov 26 - Dec 02
+*Project Review due Nov. 29th (Wednesday)*
+
+### Dec 03 - Dec 09
+
+
+### Dec 10 - Dec 12
+-> Final Project due Dec. 12th (Tuesday)
 
 --- 
 ## Game Modes:
