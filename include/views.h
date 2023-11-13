@@ -55,10 +55,7 @@ void setFirstPersonView() {
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    //glRotatef(-angleX, 1, 0, 0);
     glRotatef(-angleY, 0, 1, 0);
-    //glRotatef(0, 0, 0, 1);
-    
     glTranslatef(-firstPersonCamX, -firstPersonCamY, -firstPersonCamZ);
 }
 
@@ -80,11 +77,24 @@ void setTopDownView() {
     );
 }
 
+void setOrbit() {
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    perspective(45.0f, 1.0f, 1.0f, 10.0f);
+    
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    glRotatef(90, 1, 0, 0);
+    glRotatef(-angleYObject+180, 0, 1, 0);
+    glTranslatef(-posX, -posY -10, -posZ);
+}
+
 void displayView() {
     if (viewMode == 1) {
         setOrthogonalProjection();
     } else if (viewMode == 2) {
-        setPerspectiveProjection();
+        setOrbit();
     } else if (viewMode == 3) {
         setFirstPersonView();
     } else if (viewMode == 4) {

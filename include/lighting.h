@@ -106,12 +106,15 @@ void setupLighting() {
 
         // For debugging
         //printf("light1_X: %.6f, light1_Y: %.6f, light1_Z: %.6f\n", light1_X, light1_Y, light1_Z);
+        //lightRotation += 90.0f;
 
         glPushMatrix();
         glColor3f(1, 1, 1);
         glTranslatef(light1_X, light1_Y, light1_Z);
         glRotatef(lightRotation, 0.0f, 1.0f, 0.0f);
-        glRotatef(180, 0.0f, 1.0f, 0.0f);
+        glRotatef(45.0f, 1.0f, 0.0f, 0.0f);
+        glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
+        glTranslatef(0.0f, 0.0f, 3.0f);
         drawLightSource();
         drawLightSourceEdges();
         glPopMatrix();

@@ -1,4 +1,5 @@
 
+GLfloat angleYObject = 180.0f;
 
 void Sphere(double r, int lats, int longs) {
     int i, j;

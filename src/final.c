@@ -217,10 +217,14 @@ void display() {
         posZ = endEffectorPosition.z;
     }
     else {
-        getPosition();
+        getYPosition();
     }
 
     glTranslatef(posX, posY, posZ);
+    printf("Gripper Angle: %f\n\n", angleYObject);
+    glRotatef((GLfloat)angleYObject, 0.0, 1.0, 0.0);
+
+    drawAxes(2.0);
     Sphere(0.2, 100, 100);              // Draw a sphere
 
     glDisable(GL_DEPTH_TEST);

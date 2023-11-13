@@ -1,4 +1,5 @@
 // Created by: Doncey Albin
+double joint3inc = 0.00;
 
 bool keyRight = false;
 bool keyLeft = false;
@@ -34,7 +35,7 @@ bool keyV = false;
 bool keyO = false;    // Robot +Z
 bool keyL = false;    // Robot -Z
 bool keyP = false;    // Robot +X
-bool keyI = false;    // Robot -X
+bool keyI = false;    // Robot -X;
 
 void special(int key, int x, int y) 
 {
@@ -233,7 +234,7 @@ void update()
   double joint0inc = 0.00;
   double joint1inc = 0.00;
   double joint2inc = 0.00;
-  double joint3inc = 0.00;
+  joint3inc = 0.00;
   double gripperRollinc = 0.00;
   double gripperDistinc = 0.00;
 
@@ -293,34 +294,37 @@ void update()
   robotXPos += robotXPosInc - 0.01*(endEffectorPosition.x-posX);
   robotZPos += robotZPosInc - 0.01*(endEffectorPosition.z-posZ);
 
-  // Light Adjust
-  if (keyT)
-    light1_Y += 0.2 * SPEED;
-  if (keyV)
-    light1_Y -= 0.2 * SPEED;
-  if (keyG)
-    light1_X += 0.2 * SPEED;
-  if (keyF)
-    light1_X -= 0.2 * SPEED;
+  light1_X -= 0.005*(light1_X-posX);
+  light1_Y = posY + 2;
+  light1_Z -= 0.005*(light1_Z-posZ);
+  lightRotation = angleYObject;
 
-  lightRotation += rotationSpeed * SPEED;
+  // // Light Adjust
+  // if (keyT)
+  //   light1_Y += 0.2 * SPEED;
+  // if (keyV)
+  //   light1_Y -= 0.2 * SPEED;
+  // if (keyG)
+  //   light1_X += 0.2 * SPEED;
+  // if (keyF)
+  //   light1_X -= 0.2 * SPEED;
 
   if (viewMode == 3) {
     // Compute the camera position using spherical coordinates.
     angleY += 0.5*gripperRollinc;
 
-    if (angleY > 180) {
-      angleY = 180;
-    }
-    else if (angleY < -180) {
-      angleY = -180;  
-    }
+    // if (angleY > 180) {
+    //   angleY = 180;
+    // }
+    // else if (angleY < -180) {
+    //   angleY = -180;  
+    // }
 
     double angleYradians = angleY * (M_PI / 180.0); // M_PI is a constant for π provided in <cmath>
 
     firstPersonCamZPrev = firstPersonCamZ;
-    firstPersonCamZ -= 0.01*joint3inc * (firstPersonCamZ*cos(angleYradians) - firstPersonCamX*sin(angleYradians)); //joint3inc; //distance * cosf(angleY);
-    firstPersonCamX -= 0.01*joint3inc * (firstPersonCamZPrev*sin(angleYradians) + firstPersonCamX*cos(angleYradians)); //distance * sinf(angleY) * cosf(angleX);
+    firstPersonCamZ -= 0.01*joint3inc * cos(angleYradians); //joint3inc; //distance * cosf(angleY);
+    firstPersonCamX -= 0.01*joint3inc * sin(angleYradians); //distance * sinf(angleY) * cosf(angleX);
   }
   
   // Adjust joint angles
@@ -369,17 +373,20 @@ void update()
   } else if (gripperDist <= 0.10) {
     gripperDist -= gripperDistinc;
   }
-
+    
   if (gripperDist <= 0.20){
     gripperClosed = true;
   }
   else {
     gripperClosed = false;
-    // Just for testing to move the robot
-    posX -= 0.010*gripperRollinc;
-    posZ -= 0.010*joint3inc;
-  }
+    //posX -= 0.050*gripperRollinc;
+    //posX -= 0.050*joint3inc;
 
-  // Request Display update
-  //glutPostRedisplay();
+    // Just for testing to move the robot
+    angleYObject += 0.5*gripperRollinc;
+    double angleYradians = angleYObject * PI / 180;
+
+    posZ += 0.10*joint3inc*cos(angleYradians);
+    posX += 0.10*joint3inc*sin(angleYradians);
+  }
 } 
