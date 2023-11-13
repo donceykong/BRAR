@@ -46,7 +46,7 @@ Depending on how the project developes, maybe a sim-to-real transfer could be at
 - [] Add self-collision detection.
 
 ### Nov 26 - Dec 02
-*Project Review due Nov. 29th (Wednesday)*
+**Project Review due Nov. 29th (Wednesday)**
 
 ### Dec 03 - Dec 09
 
