@@ -19,7 +19,6 @@
 #include <stdio.h>
 
 // In-house includes
-//#include "plotter.h"
 #include "textureUtils.h"
 
 #include "matrixMath.h"
@@ -40,7 +39,7 @@
 #include "CSCIx229.h"
 
 // Global Framerate variables
-const double FPS = 260.0;
+const double FPS = 10000.0;
 const double frameDelay = 1000.0 / FPS;
 double lastFrameTime = 0.00;
 
@@ -171,11 +170,7 @@ bool ballInHand() {
 void display() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    update();
-    displayView();
-    setupLighting();
-
-    glPushMatrix();
+   glPushMatrix();
     glEnable(GL_DEPTH_TEST);  // Enable depth testing
     // Set up polygon mode
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -187,6 +182,10 @@ void display() {
     drawGroundPlane();
     glDisable(GL_DEPTH_TEST);
     glPopMatrix();
+    
+    update();
+    displayView();
+    setupLighting();
 
     glPushMatrix();
     glEnable(GL_DEPTH_TEST);  // Enable depth testing
@@ -221,7 +220,6 @@ void display() {
     }
 
     glTranslatef(posX, posY, posZ);
-    printf("Gripper Angle: %f\n\n", angleYObject);
     glRotatef((GLfloat)angleYObject, 0.0, 1.0, 0.0);
 
     drawAxes(2.0);
@@ -229,9 +227,6 @@ void display() {
 
     glDisable(GL_DEPTH_TEST);
     glPopMatrix();
-
-    double ballAngle = getBallAngle(posX, posZ);
-    //printf("ball angle: %f\n", ballAngle);
 
     glutPostRedisplay();
 
@@ -290,7 +285,7 @@ int main(int argc, char** argv) {
   glutInitDisplayMode(GLUT_RGB | GLUT_SINGLE | GLUT_DEPTH); 
 
   glutInitWindowPosition(0, 0);
-  glutInitWindowSize(1500, 1500);
+  glutInitWindowSize(1200, 1200);
   glutCreateWindow("Robot Arm");
 
   //glutDisplayFunc(FPSLimitedDisplay);
