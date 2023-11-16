@@ -27,6 +27,7 @@ void drawAxes(float length) {
     glVertex3d(0.0,0.0,0.0);
     glVertex3d(0.0,0.0,length);
     glEnd();
+    
     //  Label axes
     glRasterPos3d(length,0.0,0.0);
     Print("X");

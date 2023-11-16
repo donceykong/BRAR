@@ -33,7 +33,7 @@ typedef struct {
 extern GLuint BMPtextureID = 0;
 extern GLuint terrainTextureID = 0;
 int BMPImgNum = 1;
-bool usingTextures = true;
+bool usingTextures = false;
 
 GLuint loadTexture(const char* filepath) {
     FILE* file = fopen(filepath, "rb");
@@ -95,6 +95,7 @@ GLuint loadTexture(const char* filepath) {
 
     // Release the allocated memory once we have set up the texture
     free(data);
+    data = NULL; // Avoid dangling pointer
 
     return textureID;
 }
@@ -140,6 +141,7 @@ void loadGroundTextureFromFile(const char* filename) {
     glTexImage2D(GL_TEXTURE_2D, 0, format, infoHeader.width, infoHeader.height, 0, format, GL_UNSIGNED_BYTE, data);
 
     free(data);
+    data = NULL; // Avoid dangling pointer
 }
 
 void loadTextureFromFile(const char* filename) {
