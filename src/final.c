@@ -39,7 +39,7 @@
 #include "CSCIx229.h"
 
 // Global Framerate variables
-const double FPS = 10000.0;
+const double FPS = 270.0;
 const double frameDelay = 1000.0 / FPS;
 double lastFrameTime = 0.00;
 
