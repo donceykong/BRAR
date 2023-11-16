@@ -35,10 +35,10 @@ void getFrontFaceVertices(GLfloat width, GLfloat height, GLfloat depth, GLfloat 
     glTexCoord2f(1.0f, 1.0f); glVertex3f( width/2, height/2,  depth/2);
     glTexCoord2f(1.0f, 0.0f); glVertex3f( width/2 - (width/2)*textureScale, height/2 - (height/2)*textureScale,  depth/2);
     glEnd();
-    drawNormalArrow(-width/2, height/2, depth/2, nx, ny, nz, normalScale);
-    drawNormalArrow(-width/2 + (width/2)*textureScale, height/2 - (height/2)*textureScale, depth/2, nx, ny, nz, normalScale);
-    drawNormalArrow( width/2, height/2, depth/2, nx, ny, nz, normalScale);
-    drawNormalArrow( width/2 - (width/2)*textureScale, height/2 - (height/2)*textureScale, depth/2, nx, ny, nz, normalScale);
+    // drawNormalArrow(-width/2, height/2, depth/2, nx, ny, nz, normalScale);
+    // drawNormalArrow(-width/2 + (width/2)*textureScale, height/2 - (height/2)*textureScale, depth/2, nx, ny, nz, normalScale);
+    // drawNormalArrow( width/2, height/2, depth/2, nx, ny, nz, normalScale);
+    // drawNormalArrow( width/2 - (width/2)*textureScale, height/2 - (height/2)*textureScale, depth/2, nx, ny, nz, normalScale);
 
     // Front face bottom quad vertices
     glBegin(GL_QUADS);
@@ -48,10 +48,10 @@ void getFrontFaceVertices(GLfloat width, GLfloat height, GLfloat depth, GLfloat 
     glTexCoord2f(1.0f, 1.0f); glVertex3f( width/2, -height/2, depth/2);
     glTexCoord2f(1.0f, 0.0f); glVertex3f( width/2 - (width/2)*textureScale, -height/2 + (height/2)*textureScale,  depth/2);
     glEnd();
-    drawNormalArrow(-width/2, -height/2, depth/2, nx, ny, nz, normalScale);
-    drawNormalArrow(-width/2 + (width/2)*textureScale, -height/2 + (height/2)*textureScale, depth/2, nx, ny, nz, normalScale);
-    drawNormalArrow( width/2, -height/2, depth/2, nx, ny, nz, normalScale);
-    drawNormalArrow( width/2 - (width/2)*textureScale,- height/2 + (height/2)*textureScale, depth/2, nx, ny, nz, normalScale);
+    // drawNormalArrow(-width/2, -height/2, depth/2, nx, ny, nz, normalScale);
+    // drawNormalArrow(-width/2 + (width/2)*textureScale, -height/2 + (height/2)*textureScale, depth/2, nx, ny, nz, normalScale);
+    // drawNormalArrow( width/2, -height/2, depth/2, nx, ny, nz, normalScale);
+    // drawNormalArrow( width/2 - (width/2)*textureScale,- height/2 + (height/2)*textureScale, depth/2, nx, ny, nz, normalScale);
 
     // Front face left quad vertices
     glBegin(GL_QUADS);
@@ -61,10 +61,10 @@ void getFrontFaceVertices(GLfloat width, GLfloat height, GLfloat depth, GLfloat 
     glTexCoord2f(1.0f, 1.0f); glVertex3f(-width/2, -height/2,  depth/2);
     glTexCoord2f(1.0f, 0.0f); glVertex3f(-width/2 + (width/2)*textureScale, -height/2 + (height/2)*textureScale,  depth/2);
     glEnd();
-    drawNormalArrow(-width/2, height/2, depth/2, nx, ny, nz, normalScale);
-    drawNormalArrow(-width/2 + (width/2)*textureScale, height/2 - (height/2)*textureScale, depth/2, nx, ny, nz, normalScale);
-    drawNormalArrow(-width/2, -height/2, depth/2, nx, ny, nz, normalScale);
-    drawNormalArrow(-width/2 + (width/2)*textureScale, -height/2 + (height/2)*textureScale, depth/2, nx, ny, nz, normalScale);
+    // drawNormalArrow(-width/2, height/2, depth/2, nx, ny, nz, normalScale);
+    // drawNormalArrow(-width/2 + (width/2)*textureScale, height/2 - (height/2)*textureScale, depth/2, nx, ny, nz, normalScale);
+    // drawNormalArrow(-width/2, -height/2, depth/2, nx, ny, nz, normalScale);
+    // drawNormalArrow(-width/2 + (width/2)*textureScale, -height/2 + (height/2)*textureScale, depth/2, nx, ny, nz, normalScale);
 
     // Front face right quad vertices
     glBegin(GL_QUADS);
@@ -74,10 +74,10 @@ void getFrontFaceVertices(GLfloat width, GLfloat height, GLfloat depth, GLfloat 
     glTexCoord2f(1.0f, 1.0f); glVertex3f(width/2, -height/2,  depth/2);
     glTexCoord2f(1.0f, 0.0f); glVertex3f(width/2 - (width/2)*textureScale, -height/2 + (height/2)*textureScale,  depth/2);
     glEnd();
-    drawNormalArrow(width/2, height/2, depth/2, nx, ny, nz, normalScale);
-    drawNormalArrow(width/2 - (width/2)*textureScale, height/2 - (height/2)*textureScale, depth/2, nx, ny, nz, normalScale);
-    drawNormalArrow(width/2, -height/2, depth/2, nx, ny, nz, normalScale);
-    drawNormalArrow(width/2 - (width/2)*textureScale, -height/2 + (height/2)*textureScale, depth/2, nx, ny, nz, normalScale);
+    // drawNormalArrow(width/2, height/2, depth/2, nx, ny, nz, normalScale);
+    // drawNormalArrow(width/2 - (width/2)*textureScale, height/2 - (height/2)*textureScale, depth/2, nx, ny, nz, normalScale);
+    // drawNormalArrow(width/2, -height/2, depth/2, nx, ny, nz, normalScale);
+    // drawNormalArrow(width/2 - (width/2)*textureScale, -height/2 + (height/2)*textureScale, depth/2, nx, ny, nz, normalScale);
 
     glDisable(GL_TEXTURE_2D);
 }
@@ -236,6 +236,7 @@ void getCubeVerts(GLfloat width, GLfloat height, GLfloat depth) {
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, BMPtextureID);
     glBegin(GL_QUADS);
+    glNormal3f(-1.0f, 0.0f, 0.0f);
     glTexCoord2f(0.0f, 0.0f); glVertex3f(-width/2, -height/2,  depth/2);
     glTexCoord2f(0.0f, 1.0f); glVertex3f( width/2, -height/2,  depth/2);
     glTexCoord2f(1.0f, 1.0f); glVertex3f( width/2,  height/2,  depth/2);
@@ -247,6 +248,7 @@ void getCubeVerts(GLfloat width, GLfloat height, GLfloat depth) {
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, BMPtextureID);
     glBegin(GL_QUADS);
+    glNormal3f(-1.0f, 0.0f, 0.0f);
     glTexCoord2f(0.0f, 0.0f); glVertex3f(-width/2, -height/2, -depth/2);
     glTexCoord2f(0.0f, 1.0f); glVertex3f(-width/2,  height/2, -depth/2);
     glTexCoord2f(1.0f, 1.0f); glVertex3f( width/2,  height/2, -depth/2);
@@ -258,6 +260,7 @@ void getCubeVerts(GLfloat width, GLfloat height, GLfloat depth) {
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, BMPtextureID);
     glBegin(GL_QUADS);
+    glNormal3f(1.0f, 0.0f, 0.0f);
     glTexCoord2f(0.0f, 0.0f); glVertex3f(-width/2, -height/2,  depth/2);
     glTexCoord2f(0.0f, 1.0f); glVertex3f(-width/2,  height/2,  depth/2);
     glTexCoord2f(1.0f, 1.0f); glVertex3f(-width/2,  height/2, -depth/2);
@@ -269,6 +272,7 @@ void getCubeVerts(GLfloat width, GLfloat height, GLfloat depth) {
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, BMPtextureID);
     glBegin(GL_QUADS);
+    glNormal3f(1.0f, -1.0f, 0.0f);
     glTexCoord2f(0.0f, 0.0f); glVertex3f( width/2, -height/2, -depth/2);
     glTexCoord2f(0.0f, 1.0f); glVertex3f( width/2,  height/2, -depth/2);
     glTexCoord2f(1.0f, 1.0f); glVertex3f( width/2,  height/2,  depth/2);
@@ -280,6 +284,7 @@ void getCubeVerts(GLfloat width, GLfloat height, GLfloat depth) {
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, BMPtextureID);
     glBegin(GL_QUADS);
+    glNormal3f(0.0f, 1.0f, 0.0f);
     glTexCoord2f(0.0f, 0.0f); glVertex3f(-width/2,  height/2,  depth/2);
     glTexCoord2f(0.0f, 1.0f); glVertex3f( width/2,  height/2,  depth/2);
     glTexCoord2f(1.0f, 1.0f); glVertex3f( width/2,  height/2, -depth/2);
@@ -291,6 +296,7 @@ void getCubeVerts(GLfloat width, GLfloat height, GLfloat depth) {
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, BMPtextureID);
     glBegin(GL_QUADS);
+    glNormal3f(0.0f, -1.0f, 0.0f);
     glTexCoord2f(0.0f, 0.0f); glVertex3f(-width/2, -height/2,  depth/2);
     glTexCoord2f(0.0f, 1.0f); glVertex3f(-width/2, -height/2, -depth/2);
     glTexCoord2f(1.0f, 1.0f); glVertex3f( width/2, -height/2, -depth/2);
@@ -357,6 +363,7 @@ void drawSemiCylinder(GLfloat radius, GLfloat height, int segments) {
       GLfloat x = radius * sin(angle);
       GLfloat y = radius * cos(angle);
 
+      glNormal3f(x, y, 0.0f);
       glVertex3f(x, y, -height/2);  // Lower ring
       glVertex3f(x, y, height/2);   // Upper ring
     }
@@ -371,6 +378,7 @@ void drawSemiCylinder(GLfloat radius, GLfloat height, int segments) {
         GLfloat x = radius * sin(angle);
         GLfloat y = radius * cos(angle);
 
+        glNormal3f(x, y, 0.0f);
         glVertex3f(x, y, -height/2);
     }
     glEnd();
@@ -383,6 +391,7 @@ void drawSemiCylinder(GLfloat radius, GLfloat height, int segments) {
         GLfloat x = radius * sin(angle);
         GLfloat y = radius * cos(angle);
 
+        glNormal3f(x, y, -height/2);
         glVertex3f(x, y, -height/2);
     }
     glEnd();
@@ -396,6 +405,7 @@ void drawSemiCylinder(GLfloat radius, GLfloat height, int segments) {
         GLfloat x = radius * sin(angle);
         GLfloat y = radius * cos(angle);
 
+        glNormal3f(x, y, height/2);
         glVertex3f(x, y, height/2);
     }
     glEnd();
@@ -408,6 +418,7 @@ void drawSemiCylinder(GLfloat radius, GLfloat height, int segments) {
         GLfloat x = radius * sin(angle);
         GLfloat y = radius * cos(angle);
 
+        glNormal3f(x, y, height/2);
         glVertex3f(x, y, height/2);
     }
     glEnd();

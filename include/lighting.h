@@ -1,9 +1,9 @@
 // lighting.h
 GLfloat light1_X = -0.80, light1_Y = 2.00, light1_Z = 0.00;
 bool lightEnabled = false;
-double ambient = 0.0, diffuse = 0.8, specular = 0.6;  
+double ambient = 0.4, diffuse = 0.8, specular = 0.6;  
 GLfloat spotExponent = 1.0; // for a moderately focused light
-GLfloat spotCutoff = 60.0; // for a 45-degree cone of light
+GLfloat spotCutoff = 45.0; // for a 45-degree cone of light
 
 GLfloat lightRotation = 0.0f;
 const GLfloat rotationSpeed = 1.5f;

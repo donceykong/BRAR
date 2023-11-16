@@ -291,6 +291,7 @@ void update()
     robotXPosInc = 0.2 * SPEED;
   if (keyI)
     robotXPosInc -= 0.2 * SPEED;
+
   robotXPos += robotXPosInc - 0.01*(endEffectorPosition.x-posX);
   robotZPos += robotZPosInc - 0.01*(endEffectorPosition.z-posZ);
 
@@ -330,7 +331,7 @@ void update()
   // Adjust joint angles
   double roll = getRollOffset(joint0Angle, robotXPos, robotZPos, posX, posY, posZ) * 180 / PI;
   //printf("roll: %f, joint0Angle: %f\n", roll, joint0Angle);
-  joint0Angle += joint0inc - 0.01*roll;
+  joint0Angle += joint0inc - 0.1*roll;
   joint1Angle += joint1inc;
   joint2Angle += joint2inc;
 

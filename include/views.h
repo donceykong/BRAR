@@ -81,13 +81,17 @@ void setOrbit() {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     perspective(45.0f, 1.0f, 1.0f, 10.0f);
-    
+
     glMatrixMode(GL_MODELVIEW);
+    perspective(45.0f, 1.0f, 1.0f, 10.0f);
+
     glLoadIdentity();
 
     glRotatef(90, 1, 0, 0);
     glRotatef(-angleYObject+180, 0, 1, 0);
-    glTranslatef(-posX, -posY -10, -posZ);
+    //glRotatef(90, 1, 0, 0);
+    double poseDiff = 0.5*sqrt((posX-robotXPos)*(posX-robotXPos) + (posZ-robotZPos)*(posZ-robotZPos));
+    glTranslatef(-posX + (posX-robotXPos)/2.0, -10 - poseDiff, -posZ + (posZ-robotZPos)/2.0); //glTranslatef(-posX, -posY -10, -posZ);
 }
 
 void displayView() {

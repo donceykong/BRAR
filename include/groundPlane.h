@@ -2,13 +2,13 @@
 GLfloat GroundPlaneVertices[] = {
     // Position Indices:            (0 - 2)         
     // Texture Coordinates Indices: (3 - 4)
-    5.0f,  0.0f,  5.0f,  1.0f, 1.0f,
-   -5.0f,  0.0f,  5.0f,  0.0f, 1.0f,
-   -5.0f,  0.0f, -5.0f,  0.0f, 0.0f,
+    100.0f,  0.0f,  100.0f,  1.0f, 1.0f,
+   -100.0f,  0.0f,  100.0f,  0.0f, 1.0f,
+   -100.0f,  0.0f, -100.0f,  0.0f, 0.0f,
 
-    5.0f,  0.0f,  5.0f,  1.0f, 1.0f,
-   -5.0f,  0.0f, -5.0f,  0.0f, 0.0f,
-    5.0f,  0.0f, -5.0f,  1.0f, 0.0f
+    100.0f,  0.0f,  100.0f,  1.0f, 1.0f,
+   -100.0f,  0.0f, -100.0f,  0.0f, 0.0f,
+    100.0f,  0.0f, -100.0f,  1.0f, 0.0f
 };
 
 void drawGroundPlane() {
@@ -16,7 +16,8 @@ void drawGroundPlane() {
 
     glBegin(GL_TEXTURE_2D);
     glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, BMPtextureID);
+//    groundTexture = loadTexture(GroundTexturePath);
+    glBindTexture(GL_TEXTURE_2D, terrainTextureID);
     
     glBegin(GL_TRIANGLES);
     glNormal3f(0.0f, 1.0f, 0.0f);
