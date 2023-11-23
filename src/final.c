@@ -30,6 +30,8 @@
 #include "groundPlane.h"
 #include "robot.h"
 
+#include "mapManager.h"
+
 #include "forwardKinematics.h"
 
 #include "views.h"
@@ -227,6 +229,8 @@ void display() {
 
     glDisable(GL_DEPTH_TEST);
     glPopMatrix();
+
+    updateMapCenter();
 
     glutPostRedisplay();
 
