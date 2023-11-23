@@ -91,7 +91,7 @@ void setOrbit() {
     glRotatef(-angleYObject+180, 0, 1, 0);
     //glRotatef(90, 1, 0, 0);
     double poseDiff = 0.5*sqrt((posX-robotXPos)*(posX-robotXPos) + (posZ-robotZPos)*(posZ-robotZPos));
-    glTranslatef(-posX + (posX-robotXPos)/2.0, -6 - poseDiff, -posZ + (posZ-robotZPos)/2.0); //glTranslatef(-posX, -posY -10, -posZ);
+    glTranslatef(-posX + (posX-robotXPos)/2.0, -30- poseDiff, -posZ + (posZ-robotZPos)/2.0); //glTranslatef(-posX, -posY -10, -posZ);
 }
 
 void displayView() {
