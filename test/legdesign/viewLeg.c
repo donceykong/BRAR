@@ -16,6 +16,7 @@
 #include <stdbool.h>  // Add this include for bool type
 #include <stdio.h>
 
+#include "textureUtils.h"
 #include "robotLeg.h"
 
 // Global variables to store mouse state and position
@@ -79,12 +80,13 @@ void display() {
 
     glPushMatrix();
     glEnable(GL_DEPTH_TEST);  // Enable depth testing
+
     // Set up polygon mode
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
     glEnable(GL_COLOR_MATERIAL);
 
-    drawRobotArm();
+    drawRobotLeg();
     glDisable(GL_DEPTH_TEST);
     glPopMatrix();
 
@@ -94,22 +96,25 @@ void display() {
 }
 
 int main(int argc, char** argv) {
-  // Init GLUT
-  glutInit(&argc, argv);
+    // Init GLUT
+    glutInit(&argc, argv);
 
-  glutInitDisplayMode(GLUT_RGB | GLUT_SINGLE | GLUT_DEPTH); 
+    glutInitDisplayMode(GLUT_RGB | GLUT_SINGLE | GLUT_DEPTH); 
 
-  glutInitWindowPosition(0, 0);
-  glutInitWindowSize(1200, 1200);
-  glutCreateWindow("Robot Arm");
+    glutInitWindowPosition(0, 0);
+    glutInitWindowSize(1200, 1200);
+    glutCreateWindow("Robot Arm");
 
-  glutDisplayFunc(display);
-  glutReshapeFunc(reshape); // Register the reshape function
-    
-  glutMouseFunc(mouseButton); // Register the mouse button callback function
-  glutMotionFunc(mouseMove); // Register the mouse motion callback functio
+    BMPtexture1 = loadTexture("./cool.bmp");
+    BMPtexture2 = loadTexture("./sheet_metal.bmp");
 
-  glutMainLoop();
+    glutDisplayFunc(display);
+    glutReshapeFunc(reshape); // Register the reshape function
 
-  return 0;
+    glutMouseFunc(mouseButton); // Register the mouse button callback function
+    glutMotionFunc(mouseMove); // Register the mouse motion callback functio
+
+    glutMainLoop();
+
+    return 0;
 }
