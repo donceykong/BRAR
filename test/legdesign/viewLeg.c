@@ -105,8 +105,10 @@ int main(int argc, char** argv) {
     glutInitWindowSize(1200, 1200);
     glutCreateWindow("Robot Arm");
 
-    BMPtexture1 = loadTexture("./cool.bmp");
-    BMPtexture2 = loadTexture("./sheet_metal.bmp");
+    BMPtexture1 = loadTexture("./rusted_metal.bmp");
+    BMPtexture2 = loadTexture("./rusted_metal2.bmp");
+    BMPtexture3 = loadTexture("./motor_shaft.bmp");
+    BMPtexture4 = loadTexture("./sheet_metal3.bmp");
 
     glutDisplayFunc(display);
     glutReshapeFunc(reshape); // Register the reshape function
