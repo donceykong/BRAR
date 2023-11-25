@@ -47,7 +47,7 @@ double lastFrameTime = 0.00;
 
 // Globals for splash screen
 GLuint splashTexture;
-bool showSplash = true;
+bool showSplash = false;
 
 // Global variable for loading progress
 float loadingProgress = 0;
