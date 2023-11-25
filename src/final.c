@@ -20,6 +20,7 @@
 
 // In-house includes
 #include "textureUtils.h"
+#include "designShapes.h"
 
 #include "matrixMath.h"
 #include "robotController.h"
@@ -39,6 +40,9 @@
 #include "keyHandler.h" // Add this import last  
 
 #include "CSCIx229.h"
+
+// Draw frames on robot joints
+bool showFrames = false;  // Show joint frames
 
 // Global Framerate variables
 const double FPS = 270.0;
@@ -172,7 +176,7 @@ bool ballInHand() {
 void display() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-   glPushMatrix();
+    glPushMatrix();
     glEnable(GL_DEPTH_TEST);  // Enable depth testing
     // Set up polygon mode
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -198,7 +202,7 @@ void display() {
     //GLfloat mat_ambient[] = {0.2, 0.2, 0.2, 1.0};  // Adjust this value as needed
     //glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_ambient);
     drawAxes(2.0);
-    drawRobotArm();
+    drawRobot();
     glDisable(GL_DEPTH_TEST);
     glPopMatrix();
 
@@ -221,11 +225,12 @@ void display() {
         getYPosition();
     }
 
-    glTranslatef(posX, posY, posZ);
-    glRotatef((GLfloat)angleYObject, 0.0, 1.0, 0.0);
+    //glTranslatef(posX, posY, posZ);
+    //glRotatef((GLfloat)angleYObject, 0.0, 1.0, 0.0);
 
     drawAxes(2.0);
-    Sphere(0.2, 100, 100);              // Draw a sphere
+    //Sphere(0.2, 100, 100);              // Draw a sphere
+    drawMiniRobot();
 
     glDisable(GL_DEPTH_TEST);
     glPopMatrix();
@@ -283,45 +288,52 @@ void updateLoadingProgress(int value) {
 }
 
 int main(int argc, char** argv) {
-  // Init GLUT
-  glutInit(&argc, argv);
+    // Init GLUT
+    glutInit(&argc, argv);
 
-  glutInitDisplayMode(GLUT_RGB | GLUT_SINGLE | GLUT_DEPTH); 
+    glutInitDisplayMode(GLUT_RGB | GLUT_SINGLE | GLUT_DEPTH); 
 
-  glutInitWindowPosition(0, 0);
-  glutInitWindowSize(1200, 1200);
-  glutCreateWindow("Robot Arm");
+    glutInitWindowPosition(0, 0);
+    glutInitWindowSize(1200, 1200);
+    glutCreateWindow("Robot Arm");
 
-  //glutDisplayFunc(FPSLimitedDisplay);
-  glutDisplayFunc(showSplash ? drawSplashScreen : FPSLimitedDisplay);
-  
-  // Splash Screen
-  glutTimerFunc(0, updateLoadingProgress, 1); // Adjust the timer delay as needed
-  glutTimerFunc(3000, endSplash, 0);
+    //glutDisplayFunc(FPSLimitedDisplay);
+    glutDisplayFunc(showSplash ? drawSplashScreen : FPSLimitedDisplay);
+    
+    // Splash Screen
+    glutTimerFunc(0, updateLoadingProgress, 1); // Adjust the timer delay as needed
+    glutTimerFunc(3000, endSplash, 0);
 
-  // Arrow key callbacks
-  glutSpecialFunc(special);
-  glutSpecialUpFunc(specialUp);
+    // Arrow key callbacks
+    glutSpecialFunc(special);
+    glutSpecialUpFunc(specialUp);
 
-  // Keyboard callbacks
-  glutKeyboardFunc(handleKeys);
-  glutKeyboardUpFunc(handleKeysUp);
+    // Keyboard callbacks
+    glutKeyboardFunc(handleKeys);
+    glutKeyboardUpFunc(handleKeysUp);
 
-  // Mouse callbacks
-  //glutMouseFunc(mouseClick);
-  //glutMotionFunc(mouseMove);
+    // Mouse callbacks
+    //glutMouseFunc(mouseClick);
+    //glutMotionFunc(mouseMove);
 
-  // Init texture
-  //loadTextureFromFile("./assets/cool.bmp");
+    //init();
 
-  //init();
+    lastFrameTime = glutGet(GLUT_ELAPSED_TIME);
+    
+    // load splash texture
+    splashTexture = loadTexture("./assets/splashscreen.bmp");
 
-  lastFrameTime = glutGet(GLUT_ELAPSED_TIME);
-  
-  // Load splash texture
-  splashTexture = loadTexture("./assets/splashscreen.bmp");
+    // load terrain texture
+    terrainTexture = loadTexture("./assets/terrain.bmp");
 
-  glutMainLoop();
+    // load robot textures
+    BMPtexture1 = loadTexture("./assets/rusted_metal.bmp");
+    BMPtexture2 = loadTexture("./assets/rusted_metal2.bmp");
+    BMPtexture3 = loadTexture("./assets/motor_shaft.bmp");
+    BMPtexture4 = loadTexture("./assets/sheet_metal3.bmp");
+    BMPtexture5 = loadTexture("./assets/robot_body.bmp");
 
-  return 0;
+    glutMainLoop();
+
+    return 0;
 }
