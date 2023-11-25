@@ -4,8 +4,8 @@
 #include <stdlib.h>
 
 //  cos and sin in degrees
-#define Cos(th) cos(3.14159265/180*(th))
-#define Sin(th) sin(3.14159265/180*(th))
+// #define Cos(th) cos(3.14159265/180*(th))
+// #define Sin(th) sin(3.14159265/180*(th))
 
 #pragma pack(push, 1)
 typedef struct {
@@ -30,9 +30,16 @@ typedef struct {
 #pragma pack(pop)
 
 // Global Vars
-extern GLuint BMPtextureID = 0;
-extern GLuint terrainTextureID = 0;
-bool usingTextures = true;
+// extern GLuint BMPtextureID = 0;
+// extern GLuint terrainTextureID = 0;
+// bool usingTextures = true;
+
+extern GLuint BMPtexture1 = 0;
+extern GLuint BMPtexture2 = 0;
+extern GLuint BMPtexture3 = 0;
+extern GLuint BMPtexture4 = 0;
+extern GLuint BMPtexture5 = 0;
+extern GLuint BMPtexture  = 0;   // Main texture (set to 1:4 as desired)
 
 GLuint loadTexture(const char* filepath) {
     FILE* file = fopen(filepath, "rb");
@@ -99,91 +106,48 @@ GLuint loadTexture(const char* filepath) {
     return textureID;
 }
 
-void loadGroundTextureFromFile(const char* filename) {
-    FILE *file = fopen(filename, "rb");
-    if (!file) {
-        perror("Failed to open BMP file");
-    }
+// void loadGroundTextureFromFile(const char* filename) {
+//     FILE *file = fopen(filename, "rb");
+//     if (!file) {
+//         perror("Failed to open BMP file");
+//     }
 
-    BMPHeader header;
-    BMPInfoHeader infoHeader;
-    fread(&header, sizeof(header), 1, file);
-    fread(&infoHeader, sizeof(infoHeader), 1, file);
+//     BMPHeader header;
+//     BMPInfoHeader infoHeader;
+//     fread(&header, sizeof(header), 1, file);
+//     fread(&infoHeader, sizeof(infoHeader), 1, file);
 
-    // Check for valid BMP file
-    if (header.type != 0x4D42 || infoHeader.compression != 0) {
-        fprintf(stderr, "Unsupported BMP format\n");
-        fclose(file);
-    }
+//     // Check for valid BMP file
+//     if (header.type != 0x4D42 || infoHeader.compression != 0) {
+//         fprintf(stderr, "Unsupported BMP format\n");
+//         fclose(file);
+//     }
 
-    unsigned char *data = (unsigned char*)malloc(infoHeader.imageSize);
-    fseek(file, header.offset, SEEK_SET);
-    fread(data, infoHeader.imageSize, 1, file);
-    fclose(file);
+//     unsigned char *data = (unsigned char*)malloc(infoHeader.imageSize);
+//     fseek(file, header.offset, SEEK_SET);
+//     fread(data, infoHeader.imageSize, 1, file);
+//     fclose(file);
 
-    glGenTextures(1, &terrainTextureID);
-    glBindTexture(GL_TEXTURE_2D, terrainTextureID);
+//     glGenTextures(1, &terrainTextureID);
+//     glBindTexture(GL_TEXTURE_2D, terrainTextureID);
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+//     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+//     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+//     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+//     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    GLenum format = (infoHeader.bits == 24) ? GL_RGB : GL_RGBA;
+//     GLenum format = (infoHeader.bits == 24) ? GL_RGB : GL_RGBA;
 
-    for (int i = 0; i < infoHeader.imageSize; i += 3) {
-        unsigned char tmp = data[i];
-        data[i] = data[i + 2];
-        data[i + 2] = tmp;
-    }
+//     for (int i = 0; i < infoHeader.imageSize; i += 3) {
+//         unsigned char tmp = data[i];
+//         data[i] = data[i + 2];
+//         data[i + 2] = tmp;
+//     }
 
-    glTexImage2D(GL_TEXTURE_2D, 0, format, infoHeader.width, infoHeader.height, 0, format, GL_UNSIGNED_BYTE, data);
+//     glTexImage2D(GL_TEXTURE_2D, 0, format, infoHeader.width, infoHeader.height, 0, format, GL_UNSIGNED_BYTE, data);
 
-    free(data);
-    data = NULL; // Avoid dangling pointer
-}
-
-void loadTextureFromFile(const char* filename, GLuint textureID) {
-    FILE *file = fopen(filename, "rb");
-    if (!file) {
-        perror("Failed to open BMP file");
-    }
-
-    BMPHeader header;
-    BMPInfoHeader infoHeader;
-    fread(&header, sizeof(header), 1, file);
-    fread(&infoHeader, sizeof(infoHeader), 1, file);
-
-    // Check for valid BMP file
-    if (header.type != 0x4D42 || infoHeader.compression != 0) {
-        fprintf(stderr, "Unsupported BMP format\n");
-        fclose(file);
-    }
-
-    unsigned char *data = (unsigned char*)malloc(infoHeader.imageSize);
-    fseek(file, header.offset, SEEK_SET);
-    fread(data, infoHeader.imageSize, 1, file);
-    fclose(file);
-
-    glGenTextures(1, &textureID);
-    glBindTexture(GL_TEXTURE_2D, textureID);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    GLenum format = (infoHeader.bits == 24) ? GL_RGB : GL_RGBA;
-
-    for (int i = 0; i < infoHeader.imageSize; i += 3) {
-        unsigned char tmp = data[i];
-        data[i] = data[i + 2];
-        data[i + 2] = tmp;
-    }
-
-    glTexImage2D(GL_TEXTURE_2D, 0, format, infoHeader.width, infoHeader.height, 0, format, GL_UNSIGNED_BYTE, data);
-
-    free(data);
-}
+//     free(data);
+//     data = NULL; // Avoid dangling pointer
+// }
 
 #endif // TEXTURE_UTILS_H

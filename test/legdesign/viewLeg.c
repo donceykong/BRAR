@@ -17,7 +17,8 @@
 #include <stdio.h>
 
 #include "textureUtils.h"
-#include "robotLeg.h"
+#include "designShapes.h"
+#include "robot.h"
 
 // Global variables to store mouse state and position
 bool leftButtonPressed = false;
@@ -86,7 +87,8 @@ void display() {
     glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
     glEnable(GL_COLOR_MATERIAL);
 
-    drawRobotLeg();
+    drawRobot();
+    
     glDisable(GL_DEPTH_TEST);
     glPopMatrix();
 
@@ -109,6 +111,7 @@ int main(int argc, char** argv) {
     BMPtexture2 = loadTexture("./rusted_metal2.bmp");
     BMPtexture3 = loadTexture("./motor_shaft.bmp");
     BMPtexture4 = loadTexture("./sheet_metal3.bmp");
+    BMPtexture5 = loadTexture("./robot_body.bmp");
 
     glutDisplayFunc(display);
     glutReshapeFunc(reshape); // Register the reshape function
