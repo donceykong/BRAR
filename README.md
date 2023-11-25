@@ -36,7 +36,7 @@ Depending on how the project developes, maybe a sim-to-real transfer could be at
 
 ### Nov 12 - Nov 18
 - [ ] Add two more orbital tracking lights.
-- [ ] Fix design of robot. Make it look like the desired bot and make sure normals are correct.
+- [x] Fix design of robot. Make it look like the desired bot and make sure normals are correct.
 - [ ] Redesign object to be of a dynamic robot
 - [ ] Inverse kinematics algorithm to position end-effector around object. Will verify through user-controlled item that the robot attempts to grab.
 - [ ] Turn lighting into drone-looking systems.
