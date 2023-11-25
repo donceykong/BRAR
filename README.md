@@ -28,24 +28,23 @@ Depending on how the project developes, maybe a sim-to-real transfer could be at
 ## Timeline 
 ### Oct 29 - Nov 4
 - [x] Add ground scene and joint limit.
-- [ ] Use spheres as initial objects (for testing).
-
+- [x] Use spheres as initial objects (for testing).
 
 ### Nov 5 - Nov 11
 - [x] Design baby robot legs onto robot. These will follow some simple back-and-fourth pattern when the robot moves.
 - [x] Test initial tracking algorithms for the robot to chase the ball. Ball will be steered by heading.
 
 ### Nov 12 - Nov 18
+- [ ] Add two more orbital tracking lights.
+- [x] Fix design of robot. Make it look like the desired bot and make sure normals are correct.
+- [ ] Redesign object to be of a dynamic robot
 - [ ] Inverse kinematics algorithm to position end-effector around object. Will verify through user-controlled item that the robot attempts to grab.
-- [ ] Fix design of robot. Make it look like the desired bot and make sure normals are correct.
-- [ ] Redesign object to be of a dynamic robot.
 - [ ] Turn lighting into drone-looking systems.
 
 ### Nov 19 - Nov 25
 - [ ] Expand ground plane and map texture onto ground. Maybe this plane can be genrated dynamically? I seek to have a ground plane that populates with random objects that the user has to navigate around. 
 - [ ] Create random objects that are populated in front of the user and dissapear after the user is a certain distance past them. Lets have 2 different objects that are obstructions needing to be navigated around and 2 different objects that can benefit the user or damage them. 
 - [ ] Add gravity to robot and use the texture plane to be where robot lands. This can be seen as a weak form of ground-based collision detection. 
-- [ ] Make the 
 
 ### Nov 26 - Dec 02
 **Project Review due Nov. 29th (Wednesday)**

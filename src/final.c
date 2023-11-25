@@ -30,6 +30,8 @@
 #include "groundPlane.h"
 #include "robot.h"
 
+#include "mapManager.h"
+
 #include "forwardKinematics.h"
 
 #include "views.h"
@@ -45,7 +47,7 @@ double lastFrameTime = 0.00;
 
 // Globals for splash screen
 GLuint splashTexture;
-bool showSplash = true;
+bool showSplash = false;
 
 // Global variable for loading progress
 float loadingProgress = 0;
@@ -227,6 +229,8 @@ void display() {
 
     glDisable(GL_DEPTH_TEST);
     glPopMatrix();
+
+    updateMapCenter();
 
     glutPostRedisplay();
 
