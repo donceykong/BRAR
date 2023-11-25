@@ -16,26 +16,27 @@ bool keyH = false;
 bool keyJ = false;
 bool keyK = false;
 
+// Light control
+// TODO: REMOVE ca[ability
+bool keyT = false;  // UNUSED
+bool keyF = false;  // UNUSED
+bool keyG = false;  // UNUSED
+bool keyV = false;  // UNUSED
+
+// Robot position
+bool keyO = false;  // Robot +Z
+bool keyL = false;  // Robot -Z
+bool keyP = false;  // Robot +X
+bool keyI = false;  // Robot -X;
+
+bool key0 = false;
 bool key1 = false;
 bool key2 = false;
 bool key3 = false;
+bool key4 = false;  // UNUSED
+bool key5 = false;  // UNUSED
 
-bool key4 = false;             // Toggle Texture on/off
-bool key5 = false;             // Switch texture Bitmap
-
-bool key0 = false;
 bool lightKeyPressed = false;  // Keep track of whether '0' key is pressed
-
-bool keyT = false;
-bool keyF = false;
-bool keyG = false;
-bool keyV = false;
-
-// Robot position
-bool keyO = false;    // Robot +Z
-bool keyL = false;    // Robot -Z
-bool keyP = false;    // Robot +X
-bool keyI = false;    // Robot -X;
 
 void special(int key, int x, int y) 
 {
@@ -141,14 +142,14 @@ void handleKeys(unsigned char key, int x, int y) {
         case '3':
             key3 = true;
             break;
-        case '4':
-            usingTextures = !usingTextures;
-            key4 = true;
-            break;
-        case '5':
-            switchBMPImage();
-            key5 = true;
-            break;
+        // case '4':
+        //     //usingTextures = !usingTextures;
+        //     key4 = true;
+        //     break;
+        // case '5':
+        //     //switchBMPImage();
+        //     key5 = true;
+        //     break;
         default:
             return;
     }
@@ -216,12 +217,12 @@ void handleKeysUp(unsigned char key, int x, int y) {
         case '3':
             key3 = false;
             break;
-        case '4':
-            key4 = false;
-            break;
-        case '5':
-            key5 = false;
-            break;
+        // case '4':
+        //     key4 = false;
+        //     break;
+        // case '5':
+        //     key5 = false;
+        //     break;
         default:
             return;
     }
@@ -292,8 +293,9 @@ void update()
   if (keyI)
     robotXPosInc -= 0.2 * SPEED;
 
-  robotXPos += robotXPosInc - 0.01*(endEffectorPosition.x-posX);
-  robotZPos += robotZPosInc - 0.01*(endEffectorPosition.z-posZ);
+  double monsterRobotSpeed = 0.02;
+  robotXPos += robotXPosInc - monsterRobotSpeed*(endEffectorPosition.x-posX);
+  robotZPos += robotZPosInc - monsterRobotSpeed*(endEffectorPosition.z-posZ);
 
   light1_X -= 0.005*(light1_X-posX);
   light1_Y = posY + 2;
@@ -312,20 +314,15 @@ void update()
 
   if (viewMode == 3) {
     // Compute the camera position using spherical coordinates.
+
     angleY += 0.5*gripperRollinc;
+    // double angleYradians = angleY * (M_PI / 180.0); // M_PI is a constant for π provided in <cmath>
+    // firstPersonCamZPrev = firstPersonCamZ;
+    // firstPersonCamZ -= 0.01*joint3inc * cos(angleYradians);
+    // firstPersonCamX -= 0.01*joint3inc * sin(angleYradians);
 
-    // if (angleY > 180) {
-    //   angleY = 180;
-    // }
-    // else if (angleY < -180) {
-    //   angleY = -180;  
-    // }
-
-    double angleYradians = angleY * (M_PI / 180.0); // M_PI is a constant for π provided in <cmath>
-
-    firstPersonCamZPrev = firstPersonCamZ;
-    firstPersonCamZ -= 0.01*joint3inc * cos(angleYradians); //joint3inc; //distance * cosf(angleY);
-    firstPersonCamX -= 0.01*joint3inc * sin(angleYradians); //distance * sinf(angleY) * cosf(angleX);
+    firstPersonCamZ = posZ - 20.0/2.0;
+    firstPersonCamX = posX;
   }
   
   // Adjust joint angles

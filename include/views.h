@@ -4,7 +4,7 @@
 int viewMode = 1;  // 1 = Orthogonal, 2 = Perspective, 3 = First Person, 4 = Top-Down
 GLfloat perspectiveCamX = 0, perspectiveCamY = 0, perspectiveCamZ = 4;
 GLfloat firstPersonCamZPrev = 0;
-GLfloat firstPersonCamX = 0.0, firstPersonCamY = 0.0, firstPersonCamZ = 4.0;
+GLfloat firstPersonCamX = 0.0, firstPersonCamY = 5.0, firstPersonCamZ = 0.0;
 
 GLfloat angleX = 0.0f;
 GLfloat angleY = 0.0f;

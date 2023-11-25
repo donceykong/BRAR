@@ -1,10 +1,13 @@
-/*
- * matrixMath.h
-*/
+#ifndef MATRIX_MATH_H
+#define MATRIX_MATH_H
 
 #include <math.h>
 
 #define PI 3.14159265358979323846
+
+//  cos and sin in degrees
+// #define Cos(th) cos(3.14159265/180*(th))
+// #define Sin(th) sin(3.14159265/180*(th))
 
 typedef struct {
     float x, y, z;
@@ -80,3 +83,5 @@ Matrix4x4 rotationMatrix(float angle, float x, float y, float z) {
 
     return result;
 }
+
+#endif // MATRIX_MATH_H

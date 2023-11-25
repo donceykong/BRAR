@@ -16,8 +16,7 @@ void drawGroundPlane() {
 
     glBegin(GL_TEXTURE_2D);
     glEnable(GL_TEXTURE_2D);
-//    groundTexture = loadTexture(GroundTexturePath);
-    glBindTexture(GL_TEXTURE_2D, terrainTextureID);
+    glBindTexture(GL_TEXTURE_2D, terrainTexture);
     
     glBegin(GL_TRIANGLES);
     glNormal3f(0.0f, 1.0f, 0.0f);

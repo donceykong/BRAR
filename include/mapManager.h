@@ -4,7 +4,7 @@ double mapCenterX = 0.0;
 double mapCenterZ = 0.0;
 double mapRadius = 20.0;
 
-void drawSemiCylinderEdges(GLfloat radius, int segments, double percentFull) {
+void drawSemiCylinderEdgesMap(GLfloat radius, int segments, double percentFull) {
     glColor3f(1.0, 0.0, 0.0);  // Red color
 
     glLineWidth(4.0f);          // Set line width to 2.0 pixels
@@ -35,7 +35,7 @@ void plotMapBorder () {
     // drawSemiCylinderEdges(2.0, 0.0, 100, 100.0);
 
     glTranslatef(mapCenterX, 1.0, mapCenterZ);
-    drawSemiCylinderEdges(mapRadius, 10000, 100.0);
+    drawSemiCylinderEdgesMap(mapRadius, 10000, 100.0);
     // Sphere(mapRadius, 100, 100);              // Draw a sphere
 
     glDisable(GL_DEPTH_TEST);
@@ -45,10 +45,11 @@ void plotMapBorder () {
 void updateMapCenter () {
     double dist = getEulerDistanceXZ(mapCenterX, mapCenterZ, posX, posZ);
     if (dist > mapRadius) {
-        printf("Map center updated\n");
+        // printf("Map center updated\n");
         mapCenterX = posX;
         mapCenterZ = posZ;
     }
     plotMapBorder();
-    printf("mapCenterX: %f, mapCenterZ: %f\n\n", mapCenterX, mapCenterZ);
+    
+    // printf("mapCenterX: %f, mapCenterZ: %f\n\n", mapCenterX, mapCenterZ);
 }
