@@ -19,14 +19,16 @@
 #include <stdio.h>
 
 // In-house includes
+#include "CSCIx229.h"
+
 #include "textureUtils.h"
 #include "designShapes.h"
-
 #include "matrixMath.h"
+
+#include "robotStateModels.h"
 #include "robotController.h"
 
 #include "simulateDrop.h"
-#include "simple_objects.h"
 #include "miscObjects.h"
 #include "groundPlane.h"
 #include "robot.h"
@@ -39,10 +41,12 @@
 #include "lighting.h"
 #include "keyHandler.h" // Add this import last  
 
-#include "CSCIx229.h"
 
 // Draw frames on robot joints
-bool showFrames = false;  // Show joint frames
+bool showFrames = true;
+
+// set initial runner speed
+double runnerSpeed = 1.0;
 
 // Global Framerate variables
 const double FPS = 270.0;
@@ -163,16 +167,8 @@ void drawLoadingBar(float progress) {
     //glFlush();
 }
 
-bool ballInHand() {
-    if (gripperClosed && fabsf(posX-endEffectorPosition.x)<0.1 &&  fabsf(posY-endEffectorPosition.y)<0.1 && fabsf(posZ-endEffectorPosition.z)<0.1) {
-        return true;
-        
-    }
-    else {
-        return false;
-    }
-}
-
+int iter = 0;
+int numberPoses = 0;
 void display() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -214,26 +210,55 @@ void display() {
     glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
     glEnable(GL_COLOR_MATERIAL);
 
-    bool ballInHandBool = ballInHand();
+    ballInHandBool = ballInHand();
 
     if (ballInHandBool) {
-        posX = endEffectorPosition.x;
-        posY = endEffectorPosition.y;
-        posZ = endEffectorPosition.z;
+        runnerPosX = endEffectorPosition.x;
+        runnerPosY = endEffectorPosition.y;
+        runnerPosZ = endEffectorPosition.z;
     }
     else {
         getYPosition();
     }
 
-    //glTranslatef(posX, posY, posZ);
-    //glRotatef((GLfloat)angleYObject, 0.0, 1.0, 0.0);
-
     drawAxes(2.0);
-    //Sphere(0.2, 100, 100);              // Draw a sphere
     drawMiniRobot();
 
     glDisable(GL_DEPTH_TEST);
     glPopMatrix();
+
+    drawText3D();
+    // // Show text on screen
+    // glMatrixMode(GL_PROJECTION);
+    // glPushMatrix();
+    // glLoadIdentity();
+    // gluOrtho2D(0, 1500, 0, 1500);
+
+    // glMatrixMode(GL_MODELVIEW);
+    // glLoadIdentity();
+
+    // // Disable texture mapping for the loading bar
+    // glDisable(GL_TEXTURE_2D);
+    // Print("runner speed: %f", runnerSpeed);
+
+    /*
+     * Add poses to map
+    */
+    // iter++;
+    // //printf("numberPoses: %d, iterDIV10: %d\n", numberPoses, iter/10);
+    // if (iter / 10 == 1 & numberPoses < 1000) {
+    //     updateRunnerPoseList(numberPoses);
+    //     iter = 0;
+    //     numberPoses++;
+    // }
+    // for (int i = 0; i < numberPoses; i++) {
+    //     glPushMatrix();
+    //     glTranslatef(runnerPoseList[i][0], runnerPoseList[i][1], runnerPoseList[i][2]);
+    //     glRotatef((GLfloat)runnerPoseList[i][3], 0.0, 1.0, 0.0);
+    //     drawFrame(2.0);
+    //     Sphere(0.5, 4, 4);              
+    //     glPopMatrix();
+    // }
 
     updateMapCenter();
 
@@ -293,7 +318,7 @@ int main(int argc, char** argv) {
 
     glutInitDisplayMode(GLUT_RGB | GLUT_SINGLE | GLUT_DEPTH); 
 
-    glutInitWindowPosition(0, 0);
+    glutInitWindowPosition(600, 100);
     glutInitWindowSize(1200, 1200);
     glutCreateWindow("Robot Arm");
 
@@ -332,6 +357,8 @@ int main(int argc, char** argv) {
     BMPtexture3 = loadTexture("./assets/motor_shaft.bmp");
     BMPtexture4 = loadTexture("./assets/sheet_metal3.bmp");
     BMPtexture5 = loadTexture("./assets/robot_body.bmp");
+
+    setRunnerPoseList();
 
     glutMainLoop();
 
