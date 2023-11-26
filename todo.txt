@@ -1,16 +1,11 @@
 _________________________________________________________________________________
-                        FRIDAY
-
-- Remove texture switching.
-
-_________________________________________________________________________________
                         SATURDAY
 
-- Redesign robot arm.
+- Add objects that the robot can grab to level up or level down.
 
-- Use new design of robot.
+- Fix algorithm to position lighting at objects.
 
-- Fix forward kinematics to meet design of new robot.
+- Fix forward kinematics to FULLY meet design of new robot.
 
 - Add Inverse kinematics.
 
@@ -23,12 +18,13 @@ ________________________________________________________________________________
 _________________________________________________________________________________
                         SUNDAY
 
-
-- Fix orbiting camera angle. Maybe add keys to zoom in/out?
-
-- Fix algorithm to position lighting at objects.
+- Redesign robot arm.
 
 - Design small robot dog for player.
+
+- Use new design of robot.
+
+- Fix orbiting camera to strictly follow behind runner. Maybe add keys to zoom in/out?
 
 _________________________________________________________________________________
                         MONDAY
