@@ -1,7 +1,8 @@
-// Created by: Doncey Albin
+#ifndef VIEWS_H
+#define VIEWS_H
 
 // Global Variables
-int viewMode = 1;  // 1 = Orthogonal, 2 = Perspective, 3 = First Person, 4 = Top-Down
+int viewMode = 1;  // 1 = First Person, 2 = Orbit
 GLfloat perspectiveCamX = 0, perspectiveCamY = 0, perspectiveCamZ = 4;
 GLfloat firstPersonCamZPrev = 0;
 GLfloat firstPersonCamX = 0.0, firstPersonCamY = 5.0, firstPersonCamZ = 0.0;
@@ -25,13 +26,13 @@ void perspective(GLfloat fovy, GLfloat aspect, GLfloat zNear, GLfloat zFar) {
     glMultMatrixf(m);
 }
 
-void setOrthogonalProjection() {
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glOrtho(-4, 4, -4, 4, -4, 4);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-}
+// void setOrthogonalProjection() {
+//     glMatrixMode(GL_PROJECTION);
+//     glLoadIdentity();
+//     glOrtho(-4, 4, -4, 4, -4, 4);
+//     glMatrixMode(GL_MODELVIEW);
+//     glLoadIdentity();
+// }
 
 void setPerspectiveProjection() {
     glMatrixMode(GL_PROJECTION);
@@ -55,27 +56,28 @@ void setFirstPersonView() {
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
+    glTranslatef(0.0, -5.0, -10.0);
     glRotatef(-angleY, 0, 1, 0);
     glTranslatef(-firstPersonCamX, -firstPersonCamY, -firstPersonCamZ);
 }
 
-void setTopDownView() {
-    GLfloat topDownCamX = 0.0f; // or any desired X position
-    GLfloat topDownCamY = 10.0f; // or any desired height
-    GLfloat topDownCamZ = 0.0f; // or any desired Z position
+// void setTopDownView() {
+//     GLfloat topDownCamX = 0.0f; // or any desired X position
+//     GLfloat topDownCamY = 10.0f; // or any desired height
+//     GLfloat topDownCamZ = 0.0f; // or any desired Z position
     
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glOrtho(-4, 4, -4, 4, -10, 20); // Adjust as necessary
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
+//     glMatrixMode(GL_PROJECTION);
+//     glLoadIdentity();
+//     glOrtho(-4, 4, -4, 4, -10, 20); // Adjust as necessary
+//     glMatrixMode(GL_MODELVIEW);
+//     glLoadIdentity();
 
-    gluLookAt(
-        topDownCamX, topDownCamY, topDownCamZ,  // Camera position
-        0, 0, 0,  // Look at the center of the scene
-        0, 0, -1  // Up is in the negative Z direction
-    );
-}
+//     gluLookAt(
+//         topDownCamX, topDownCamY, topDownCamZ,  // Camera position
+//         0, 0, 0,  // Look at the center of the scene
+//         0, 0, -1  // Up is in the negative Z direction
+//     );
+// }
 
 void setOrbit() {
     glMatrixMode(GL_PROJECTION);
@@ -88,20 +90,18 @@ void setOrbit() {
     glLoadIdentity();
 
     glRotatef(90, 1, 0, 0);
-    glRotatef(-angleYObject+180, 0, 1, 0);
+    glRotatef(-runnerYawAngle+180, 0, 1, 0);
     //glRotatef(90, 1, 0, 0);
-    double poseDiff = 0.5*sqrt((posX-robotXPos)*(posX-robotXPos) + (posZ-robotZPos)*(posZ-robotZPos));
-    glTranslatef(-posX + (posX-robotXPos)/2.0, -10 - poseDiff, -posZ + (posZ-robotZPos)/2.0); //glTranslatef(-posX, -posY -10, -posZ);
+    double poseDiff = 0.5*sqrt((runnerPosX-robotXPos)*(runnerPosX-robotXPos) + (runnerPosZ-robotZPos)*(runnerPosZ-robotZPos));
+    glTranslatef(-runnerPosX + (runnerPosX-robotXPos)/2.0, -10 - poseDiff, -runnerPosZ + (runnerPosZ-robotZPos)/2.0); //glTranslatef(-posX, -posY -10, -posZ);
 }
 
 void displayView() {
     if (viewMode == 1) {
-        setOrthogonalProjection();
+        setFirstPersonView();
     } else if (viewMode == 2) {
         setOrbit();
-    } else if (viewMode == 3) {
-        setFirstPersonView();
-    } else if (viewMode == 4) {
-        setTopDownView();
     }
 }
+
+#endif // VIEWS_H

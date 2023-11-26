@@ -1,5 +1,5 @@
-
-Vector3 endEffectorPosition;
+#ifndef FORWARD_KINEMATICS_H
+#define FORWARD_KINEMATICS_H
 
 void computeForwardKinematics() {
     Matrix4x4 transformationMatrix = identityMatrix;
@@ -34,3 +34,5 @@ void computeForwardKinematics() {
     // Print or store the end effector position as required.
     //printf("End Effector Position: X=%f, Y=%f, Z=%f\n", endEffectorPosition.x, endEffectorPosition.y, endEffectorPosition.z);
 }
+
+#endif // FORWARD_KINEMATICS_H

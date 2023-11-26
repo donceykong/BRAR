@@ -1,3 +1,5 @@
+#ifndef GROUND_PLANE_H
+#define GROUND_PLANE_H
 
 GLfloat GroundPlaneVertices[] = {
     // Position Indices:            (0 - 2)         
@@ -30,3 +32,5 @@ void drawGroundPlane() {
 
     glColor3f(1.0, 1.0, 1.0);     // Back to white
 }
+
+#endif // GROUND_PLANE_H

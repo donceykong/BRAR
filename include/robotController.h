@@ -1,5 +1,5 @@
-#ifndef ROBOTCONTROLLER_H
-#define ROBOTCONTROLLER_H
+#ifndef ROBOT_CONTROLLER_H
+#define ROBOT_CONTROLLER_H
 
 double getBallAngle(double posX, double posZ) {
     double ballAngle = atan2(posZ, posX);
@@ -23,7 +23,7 @@ double getEulerDistanceXZ(double robotXPos, double robotZPos, double posX, doubl
     return eulerDist;
 }
 
-double getRollOffset(double joint0Angle, double robotXPos, double robotZPos, double objPosX, double objPosY, double objPosZ) {
+double getYawOffset(double joint0Angle, double robotXPos, double robotZPos, double objPosX, double objPosY, double objPosZ) {
 
     Matrix4x4 transformationMatrix = identityMatrix;
     Vector3 axisOfRotation = {0.0f, 1.0f, 0.0f}; // Rotate around the y-axis
@@ -38,9 +38,28 @@ double getRollOffset(double joint0Angle, double robotXPos, double robotZPos, dou
     Vector3 relativeObjPos = extractPosition(transformationMatrix);
     //printf("relativeObjPos.x: %f, relativeObjPos.z: %f\n\n", relativeObjPos.x, relativeObjPos.z);
 
-    double rollAngle = atanf(relativeObjPos.z / relativeObjPos.x);
+    double yawAngle = atanf(relativeObjPos.z / relativeObjPos.x);
 
-    return rollAngle;
+    return yawAngle;
 }
 
-#endif // ROBOTCONTROLLER_H
+double getPitchOffset(double joint1Angle, double robotXPos, double robotZPos, double objPosX, double objPosY, double objPosZ) {
+    Matrix4x4 transformationMatrix = identityMatrix;
+    Vector3 axisOfRotation = {1.0f, 0.0f, 0.0f}; // Rotate around the x-axis
+    Matrix4x4 rMatrix = rotationMatrix(-joint1Angle, axisOfRotation.x, axisOfRotation.y, axisOfRotation.z);
+    
+    transformationMatrix = multiplyMatrix(rMatrix, transformationMatrix);
+
+    // Set Obj pos as a Matrix
+    Matrix4x4 objPosMatrix = translationMatrix(objPosX - endEffectorPosition.x, objPosY - endEffectorPosition.y, objPosZ - endEffectorPosition.z);
+    transformationMatrix = multiplyMatrix(transformationMatrix, objPosMatrix);
+
+    Vector3 relativeObjPos = extractPosition(transformationMatrix);
+    //printf("relativeObjPos.x: %f, relativeObjPos.z: %f\n\n", relativeObjPos.x, relativeObjPos.z);
+
+    double pitchAngle = atanf(relativeObjPos.y / relativeObjPos.z);
+
+    return pitchAngle;
+}
+
+#endif // ROBOT_CONTROLLER_H

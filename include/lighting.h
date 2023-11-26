@@ -1,4 +1,6 @@
-// lighting.h
+#ifndef LIGHTING_H
+#define LIGHTING_H
+
 GLfloat light1_X = -0.80, light1_Y = 2.00, light1_Z = 0.00;
 GLfloat light2_X = 0.80, light2_Y = 2.00, light2_Z = 0.00;
 
@@ -196,3 +198,5 @@ void setupLighting() {
         glDisable(GL_LIGHT1);
     }
 }
+
+#endif // LIGHTING_H

@@ -1,16 +1,5 @@
-// Created by: Doncey Albin
-
-static double joint0Angle = 0.0, joint1Angle = 0.0, joint2Angle = 0.0, joint3Angle = 0.0;
-double joint1AngleSign = 1.0, joint2AngleSign = 1.0, joint3AngleSign = 1.0;
-
-static double leftHipAngle = 0.0, rightHipAngle = 0.0;
-static double rightHipSign = -1.0, leftHipSign = 1.0;
-
-static double robotXPos = 0.00, robotZPos = 0.00;
-
-static double gripperRollAngle = 0.0;
-static double gripperDist = 0.3;
-static bool   gripperClosed = false;
+#ifndef ROBOT_ARM_H
+#define ROBOT_ARM_H
 
 void drawNormalArrow(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat scale) {
     glBegin(GL_LINES);
@@ -149,3 +138,5 @@ void drawRobotArm() {
   //adjustAngles();
   computeForwardKinematics();
 }
+
+#endif // ROBOT_ARM_H

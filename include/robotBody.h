@@ -1,3 +1,5 @@
+#ifndef ROBOT_BODY_H
+#define ROBOT_BODY_H
 
 void robotTorso(double percentFull, double thickness, double faceC[3], bool topLayer) {
     glPushMatrix();
@@ -73,3 +75,5 @@ void drawBody() {
     robotTorso(0.4, thickness, faceC, true);          // Draw thigh top layer
     prevThickness = thickness;
 }
+
+#endif // ROBOT_BODY_H

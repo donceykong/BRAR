@@ -1,4 +1,5 @@
-// Created by: Doncey Albin
+#ifndef ROBOT_LEGS_H
+#define ROBOT_LEGS_H
 
 // Right Leg params
 double rightThighBendAngle = -60.0; // Init right thigh angle
@@ -341,3 +342,5 @@ void drawLeg(bool rightLeg) {
   drawFrame(1.0);  
   robotFoot();                                      // Draw foot
 }
+
+#endif // ROBOT_LEGS_H

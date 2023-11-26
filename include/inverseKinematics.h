@@ -1,3 +1,5 @@
+#ifndef INVERSE_KINEMATICS_H
+#define INVERSE_KINEMATICS_H
 
 // Jacobian-inverse IK
 void computeInverseKinematics(Vector3 targetPosition) {
@@ -24,3 +26,4 @@ void computeInverseKinematics(Vector3 targetPosition) {
     }
 }
 
+#endif // INVERSE_KINEMATICS_H

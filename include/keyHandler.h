@@ -1,4 +1,6 @@
-// Created by: Doncey Albin
+#ifndef KEY_HANDLER_H
+#define KEY_HANDLER_H
+
 double joint3inc = 0.00;
 
 bool keyRight = false;
@@ -142,14 +144,16 @@ void handleKeys(unsigned char key, int x, int y) {
         case '3':
             key3 = true;
             break;
-        // case '4':
-        //     //usingTextures = !usingTextures;
-        //     key4 = true;
-        //     break;
-        // case '5':
-        //     //switchBMPImage();
-        //     key5 = true;
-        //     break;
+        case '4':
+            //usingTextures = !usingTextures;
+            runnerSpeed += 1.0;
+            key4 = true;
+            break;
+        case '5':
+            //switchBMPImage();
+            runnerSpeed -= 1.0;
+            key5 = true;
+            break;
         default:
             return;
     }
@@ -217,12 +221,12 @@ void handleKeysUp(unsigned char key, int x, int y) {
         case '3':
             key3 = false;
             break;
-        // case '4':
-        //     key4 = false;
-        //     break;
-        // case '5':
-        //     key5 = false;
-        //     break;
+        case '4':
+            key4 = false;
+            break;
+        case '5':
+            key5 = false;
+            break;
         default:
             return;
     }
@@ -279,8 +283,6 @@ void update()
     viewMode = 2;
   } else if (key3) {
     viewMode = 3;
-  } else if (key4) {
-    viewMode = 4;
   }
 
   // Light Adjust
@@ -293,14 +295,23 @@ void update()
   if (keyI)
     robotXPosInc -= 0.2 * SPEED;
 
-  double monsterRobotSpeed = 0.02;
-  robotXPos += robotXPosInc - monsterRobotSpeed*(endEffectorPosition.x-posX);
-  robotZPos += robotZPosInc - monsterRobotSpeed*(endEffectorPosition.z-posZ);
+  if (!ballInHandBool) {
+    robotXPos += robotXPosInc - monsterRobotSpeed*0.02*(endEffectorPosition.x-runnerPosX);
+    robotZPos += robotZPosInc - monsterRobotSpeed*0.02*(endEffectorPosition.z-runnerPosZ);
+  }
+  else if (ballInHandBool){
+    //joint0Angle += monsterRobotSpeed*0.5*gripperRollinc;
+    //joint1Angle = 90.0;
+    //double angleYradians = joint0Angle * PI / 180;
 
-  light1_X -= 0.005*(light1_X-posX);
-  light1_Y = posY + 2;
-  light1_Z -= 0.005*(light1_Z-posZ);
-  lightRotation = angleYObject;
+    //robotZPos += monsterRobotSpeed*0.1*joint3inc*cos(angleYradians);
+    //robotXPos += monsterRobotSpeed*0.1*joint3inc*sin(angleYradians);
+  }
+
+  light1_X -= 0.005*(light1_X-runnerPosX);
+  light1_Y = runnerPosY + 2;
+  light1_Z -= 0.005*(light1_Z-runnerPosZ);
+  lightRotation = runnerYawAngle;
 
   // // Light Adjust
   // if (keyT)
@@ -312,7 +323,7 @@ void update()
   // if (keyF)
   //   light1_X -= 0.2 * SPEED;
 
-  if (viewMode == 3) {
+  if (viewMode == 1) {
     // Compute the camera position using spherical coordinates.
 
     angleY += 0.5*gripperRollinc;
@@ -321,15 +332,16 @@ void update()
     // firstPersonCamZ -= 0.01*joint3inc * cos(angleYradians);
     // firstPersonCamX -= 0.01*joint3inc * sin(angleYradians);
 
-    firstPersonCamZ = posZ - 20.0/2.0;
-    firstPersonCamX = posX;
+    firstPersonCamZ = runnerPosZ;// - 20.0/2.0;
+    firstPersonCamX = runnerPosX;
   }
   
   // Adjust joint angles
-  double roll = getRollOffset(joint0Angle, robotXPos, robotZPos, posX, posY, posZ) * 180 / PI;
+  double yaw = getYawOffset(joint0Angle, robotXPos, robotZPos, runnerPosX, runnerPosY, runnerPosZ) * 180 / PI;
+  double pitch = getPitchOffset(joint0Angle, robotXPos, robotZPos, runnerPosX, runnerPosY, runnerPosZ) * 180 / PI;
   //printf("roll: %f, joint0Angle: %f\n", roll, joint0Angle);
-  joint0Angle += joint0inc - 0.1*roll;
-  joint1Angle += joint1inc;
+  joint0Angle += joint0inc - monsterRobotSpeed*0.1*yaw;
+  joint1Angle += joint1inc + monsterRobotSpeed*(runnerPosY - endEffectorPosition.y);// 0.1*pitch;
   joint2Angle += joint2inc;
 
   leftHipAngle  +=  leftHipSign*50.0*(0.02*joint0inc+fabsf(robotXPosInc)+fabsf(robotZPosInc));
@@ -355,8 +367,11 @@ void update()
   }
 
   // Gripper Adjust
-  joint3Angle += joint3inc;
+  if (!gripperClosed && fabsf(runnerPosX-endEffectorPosition.x)<0.1 && fabsf(runnerPosY-endEffectorPosition.y)<0.1 && fabsf(runnerPosZ-endEffectorPosition.z)<0.1) {
+      gripperDistinc = -0.01;
+  }
 
+  joint3Angle += joint3inc;
   gripperDist += gripperDistinc;
   gripperRollAngle += gripperRollinc;
 
@@ -381,10 +396,12 @@ void update()
     //posX -= 0.050*joint3inc;
 
     // Just for testing to move the robot
-    angleYObject += 0.5*gripperRollinc;
-    double angleYradians = angleYObject * PI / 180;
+    runnerYawAngle += runnerSpeed*0.5*gripperRollinc;
+    double angleYradians = runnerYawAngle * PI / 180;
 
-    posZ += 0.10*joint3inc*cos(angleYradians);
-    posX += 0.10*joint3inc*sin(angleYradians);
+    runnerPosZ += runnerSpeed*0.1*joint3inc*cos(angleYradians);
+    runnerPosX += runnerSpeed*0.1*joint3inc*sin(angleYradians);
   }
 } 
+
+#endif // KEY_HANDLER_H
