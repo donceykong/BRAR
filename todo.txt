@@ -1,22 +1,9 @@
 _________________________________________________________________________________
-                        SATURDAY
-
-- Add objects that the robot can grab to level up or level down.
-
-- Fix algorithm to position lighting at objects.
-
-- Fix forward kinematics to FULLY meet design of new robot.
-
-- Add Inverse kinematics.
-
-- Remove keys to control robot arm (After validating inverse kinematics algorithm).
-
-- New header file for splash screen.
-
-- Make splash screen cooler or remove?
-
-_________________________________________________________________________________
                         SUNDAY
+
+- Make lighting standard. Fix algorithm to position lighting at objects.
+
+- Add obstructions that the user cannot go through. Suchs as walls/boxes.
 
 - Redesign robot arm.
 
@@ -26,17 +13,18 @@ ________________________________________________________________________________
 
 - Fix orbiting camera to strictly follow behind runner. Maybe add keys to zoom in/out?
 
+- Remove keys to control robot arm (After validating inverse kinematics algorithm).
+
+- New header file for splash screen.
+
+- Make splash screen cooler (or remove?)
 _________________________________________________________________________________
                         MONDAY
 
-- Create random objects that are populated in front of the user and dissapear after the user is 
-  a certain distance past them. Lets have 2 different objects that are obstructions needing to be 
-  navigated around and 2 different objects that can benefit the user or damage them. 
-
 - Create simple drone robots for lighting.
 
-- Use robot design instead of ball.
-
+_________________________________________________________________________________
+                        TUESDAY
 
 _________________________________________________________________________________
                         STRETCH
