@@ -19,24 +19,24 @@ bool keyJ = false;
 bool keyK = false;
 
 // Light control
-// TODO: REMOVE ca[ability
+// TODO: REMOVE capability
 bool keyT = false;  // UNUSED
 bool keyF = false;  // UNUSED
 bool keyG = false;  // UNUSED
 bool keyV = false;  // UNUSED
 
 // Robot position
-bool keyO = false;  // Robot +Z
-bool keyL = false;  // Robot -Z
-bool keyP = false;  // Robot +X
-bool keyI = false;  // Robot -X;
+bool keyO = false;  // UNUSED
+bool keyL = false;  // UNUSED
+bool keyP = false;  // UNUSED
+bool keyI = false;  // UNUSED
 
 bool key0 = false;
 bool key1 = false;
 bool key2 = false;
-bool key3 = false;
-bool key4 = false;  // UNUSED
-bool key5 = false;  // UNUSED
+bool key3 = false;  // UNUSED
+bool key4 = false;  // Inc runner speed
+bool key5 = false;  // dec runner speed
 
 bool lightKeyPressed = false;  // Keep track of whether '0' key is pressed
 
@@ -281,19 +281,16 @@ void update()
     viewMode = 1;
   } else if (key2) {
     viewMode = 2;
-  } else if (key3) {
-    viewMode = 3;
   }
 
-  // Light Adjust
-  if (keyO)
-    robotZPosInc = 0.2 * SPEED;
-  if (keyL)
-    robotZPosInc -= 0.2 * SPEED;
-  if (keyP)
-    robotXPosInc = 0.2 * SPEED;
-  if (keyI)
-    robotXPosInc -= 0.2 * SPEED;
+  // if (keyO) 
+  //  robotZPosInc = 0.2 * SPEED;
+  // if (keyL)
+  //   robotZPosInc -= 0.2 * SPEED;
+  // if (keyP)
+  //   robotXPosInc = 0.2 * SPEED;
+  // if (keyI)
+  //   robotXPosInc -= 0.2 * SPEED;
 
   if (!ballInHandBool) {
     robotXPos += robotXPosInc - monsterRobotSpeed*0.02*(endEffectorPosition.x-runnerPosX);
@@ -308,20 +305,36 @@ void update()
     //robotXPos += monsterRobotSpeed*0.1*joint3inc*sin(angleYradians);
   }
 
-  light1_X -= 0.005*(light1_X-runnerPosX);
-  light1_Y = runnerPosY + 2;
-  light1_Z -= 0.005*(light1_Z-runnerPosZ);
-  lightRotation = runnerYawAngle;
+  // TODO: FIX THE LIGHTING
+  light1_X = runnerPosX;
+  light1_Y = runnerPosY;
+  light1_Z = runnerPosZ;
+  light1Rotation = runnerYawAngle;
 
-  // // Light Adjust
-  // if (keyT)
-  //   light1_Y += 0.2 * SPEED;
-  // if (keyV)
-  //   light1_Y -= 0.2 * SPEED;
-  // if (keyG)
-  //   light1_X += 0.2 * SPEED;
-  // if (keyF)
-  //   light1_X -= 0.2 * SPEED;
+  light2_X = runnerPosX;
+  light2_Y = runnerPosY;
+  light2_Z = runnerPosZ;
+  light2Rotation = runnerYawAngle + 45.0;
+
+  light3_X = runnerPosX;
+  light3_Y = runnerPosY;
+  light3_Z = runnerPosZ;
+  light3Rotation = runnerYawAngle - 45.0;
+
+  // light1_X -= 0.005*(light1_X-runnerPosX);
+  // light1_Y = runnerPosY + 0.1;
+  // light1_Z -= 0.005*(light1_Z-runnerPosZ);
+  // light1Rotation = runnerYawAngle;
+
+  // light2_X -= 0.005*(light2_X-runnerPosX) + 0.2;
+  // light2_Y = runnerPosY + 0.4;
+  // light2_Z -= 0.005*(light2_Z-runnerPosZ) + 0.2;
+  // light2Rotation = runnerYawAngle;
+
+  // light3_X -= 0.005*(light3_X-runnerPosX) - 0.2;
+  // light3_Y = runnerPosY + 0.2;
+  // light3_Z -= 0.005*(light3_Z-runnerPosZ) + 0.2;
+  // light3Rotation = runnerYawAngle;
 
   if (viewMode == 1) {
     // Compute the camera position using spherical coordinates.

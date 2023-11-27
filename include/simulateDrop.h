@@ -11,10 +11,10 @@ double timestep     =   0.005;  // Simulation timestep
 double gY           =  -9.81;   // Gravitational accel
 
 void getNormalForce() {
-    if (runnerPosY > 0) {
+    if (runnerPosY > 2) {
         forceY = 0;
     }
-    else if (runnerPosY <= 0) {
+    else if (runnerPosY <= 2) {
         forceY = fabs(gY) * mass;
     }
 }

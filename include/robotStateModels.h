@@ -34,7 +34,7 @@ extern double runnerSpeed;   // Speed of runner robot
 double accelSumY    =   0.00;   // Sum total Accel in Y direction
 double runnerVelY   =   0.00;   // Initial velocity 0.00 m/s
 double runnerPosX   =   1.00;   // Initial X position is 0.00 meters
-double runnerPosY   =   4.00;   // Initial Y position is 100.00 meters
+double runnerPosY   =   3.00;   // Initial Y position is 100.00 meters
 double runnerPosZ   =   0.00;   // Initial Z position is 0.00 meters
 double mass         =   0.50;   // mass is 1.50 kg
 double forceY       =   0.00;   // Init force in Y direction is 0.00 Newtons
