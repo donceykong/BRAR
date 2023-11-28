@@ -3,22 +3,21 @@
 
 #include <stdlib.h>
 #include <time.h>
-
 #include "mapObjects.h"
 
 double mapCenterX = 0.0;
 double mapCenterZ = 0.0;
 double mapRadius = 100.0;
+double map_time = 0.0;
 
 // Create an array to hold 10 map objects
-MapObject objectList[100];
+MapObject objectList[10];
 
 void drawSemiCylinderEdgesMap(GLfloat radius, int segments, double percentFull) {
     glColor3f(1.0, 0.0, 0.0);  // Red color
-
-    glLineWidth(4.0f);          // Set line width to 2.0 pixels
+    glLineWidth(4.0f);         // Set line width to 2.0 pixels
     glBegin(GL_LINES);
-    glVertex3f(0, 0, 0);  // Center vertex
+    glVertex3f(0, 0, 0);        // Center vertex
     for (int i = 0; i <= segments; i += 2) {
         GLfloat angle = -M_PI/2.0 + i * percentFull*2.0*M_PI / segments; 
         GLfloat z = -radius * sin(angle);
@@ -47,7 +46,7 @@ void plotMapBorder () {
 
 void addObjectsToMapList() {
     srand(time(NULL));  // set rand generator seed
-    for (int i = 0; i < 100; i++) {
+    for (int i = 0; i < 10; i++) {
         //get rand x, y, z within map bounds
         //srand(time(NULL));  // set rand generator seed
         double lowerObjPosX = mapCenterX - mapRadius; // lower X bound
@@ -94,32 +93,51 @@ void addObjectsToMapList() {
         MapObject mapObj;
         mapObj.type = randObjType;
         mapObj.posX = randObjPosX;
-        mapObj.posY = 0.0;
+        mapObj.posY = (double)rand() / (RAND_MAX / 3.0);            // rand Y init pos between 0 and 3
         mapObj.posZ = randObjPosZ;
         mapObj.yawAngle = randObjYaw;
         mapObj.runnerSpeedAdjust = runnerSpeedAdjust;
         mapObj.robotSpeedAdjust = robotSpeedAdjust;
+        mapObj.baseHeight = (double)rand() / (RAND_MAX / 0.5);      // rand Y min between 0 and 1
+        mapObj.maxHeight = (double)rand() / (RAND_MAX / 10.0);      // rand Y max between 0 and 10
+        mapObj.verticalSpeed = (double)rand() / (RAND_MAX / 4.0);   // rand Y velocity between 0 and 4
 
         objectList[i] = mapObj;
     }
 }
 
 void plotMapObjects() {
+    map_time += 0.01;
     //printf("Plotting Map Objects: \n");
-    for (int i = 0; i < 100; i++) {
+    for (int i = 0; i < 10; i++) {
         // If Obj pos = runner pos, set runner adjust and robot adjust based on type
-        if (abs(runnerPosX - objectList[i].posX) < 0.1 & abs(runnerPosZ - objectList[i].posZ) < 0.1) {
+        if (abs(runnerPosX - objectList[i].posX) < 1.0 && abs(runnerPosY - objectList[i].posY) < 1.0 && abs(runnerPosZ - objectList[i].posZ) < 1.0) {
             objectList[i].type = (enum objType)(4);
             objectList[i].posX = -999999999.0;
+            objectList[i].posY = -999999999.0;
             objectList[i].posZ = -999999999.0;
             runnerSpeed += objectList[i].runnerSpeedAdjust;
             monsterRobotSpeed += objectList[i].robotSpeedAdjust;
+
+            if (runnerSpeed < 0.0) {
+                runnerSpeed = 0.0;
+            }
+            if (monsterRobotSpeed < 0.0) {
+                monsterRobotSpeed = 0.0;
+            }
+
+            continue;
         }
+
+        // Update vertical position based on a sine wave
+        objectList[i].posY = objectList[i].baseHeight + objectList[i].maxHeight * sin(objectList[i].verticalSpeed * map_time);
 
         enum objType currentObjType = objectList[i].type;
         double currentObjPosX = objectList[i].posX;
         double currentObjPosY = objectList[i].posY;
         double currentObjPosZ = objectList[i].posZ;
+
+        objectList[i].yawAngle += 1.0;
         double currentObjYawAngle = objectList[i].yawAngle;
 
         // Translate then rotate obj
@@ -132,19 +150,19 @@ void plotMapObjects() {
                 //printf("    - Map obj %d is a PARALELLOGRAM.\n", i);
                 glColor3f(0.0, 1.0, 0.0);       // face color
                 //BMPtexture = BMPtexture5;
-                getParallelogram(1.0, 1.0, 1.0);// Draw parallelogram
+                getParallelogram(2.0, 2.0, 2.0);// Draw parallelogram
                 break;
             case SPHERE:
                 //printf("    - Map obj %d is a SPHERE.\n", i);
                 glColor3f(0.0, 1.0, 1.0);       // face color
                 //BMPtexture = BMPtexture5;
-                Sphere(1.0, 4, 4);              // Draw a sphere
+                Sphere(2.0, 4, 4);              // Draw a sphere
                 break;
             case CUBE:
                 //printf("    - Map obj %d is a CUBE.\n", i);
                 glColor3f(1.0, 0.0, 0.0);        // face color
                 //BMPtexture = BMPtexture5;
-                getCube(1.0, 1.0, 1.0);
+                getCube(2.0, 2.0, 2.0);
                 break;
             case EMPTY:
                 //printf("    - Map obj %d is EMPTY.\n", i);

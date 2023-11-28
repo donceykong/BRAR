@@ -19,6 +19,10 @@ typedef struct {
     double posZ;
     GLfloat yawAngle;
 
+    double verticalSpeed; // Speed of vertical movement
+    double maxHeight;     // Maximum height for oscillation
+    double baseHeight;    // Base height (starting height)
+    
 } MapObject;
 
 #endif // MAP_OBJECTS_H
