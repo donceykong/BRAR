@@ -17,8 +17,6 @@ double leftKneeSign = 1.0;
 double leftAnkleBendAngle = 0.0;  // Knee angle
 double leftAnkleSign = 1.0;
 
-double runSpeed = 5.0;
-
 // Joint to Joint length is 0.66
 void robotThigh(double percentFull, double thickness, double faceC[3], bool topLayer) {
     glPushMatrix();
@@ -175,7 +173,7 @@ void robotFoot() {
     glPopMatrix();
 }
 
-void drawLeg(bool rightLeg) {
+void drawLeg(bool rightLeg, double runSpeed) {
   double *thighBendAngle;
   double *thighSign;
   double *kneeBendAngle;
@@ -204,7 +202,7 @@ void drawLeg(bool rightLeg) {
   double prevThickness = 0.0;
   
   /*
-   * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+   * * * * * * * * * * * ballInHandBool* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
    * Begin Thigh
    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
   */

@@ -17,14 +17,14 @@ void drawRobot() {
     // robot left leg
     glPushMatrix();
     glTranslatef(0.0, 0.0, 0.5);
-    drawLeg(true);
+    drawLeg(true, monsterRobotSpeed);
     glPopMatrix();
 
     // robot right leg
     glPushMatrix();
     glTranslatef(0.0, 0.0, -0.5);
     //glRotatef(180.0f, 0.0, 1.0, 0.0);  // Rotate thigh 180
-    drawLeg(false);
+    drawLeg(false, monsterRobotSpeed);
     glPopMatrix();
 
     // robot arm
@@ -47,14 +47,14 @@ void drawMiniRobot() {
     // robot left leg
     glPushMatrix();
     glTranslatef(0.0, 0.0, 0.5);
-    drawLeg(true);
+    drawLeg(true, runnerSpeed);
     glPopMatrix();
 
     // robot right leg
     glPushMatrix();
     glTranslatef(0.0, 0.0, -0.5);
     //glRotatef(180.0f, 0.0, 1.0, 0.0);  // Rotate thigh 180
-    drawLeg(false);
+    drawLeg(false, runnerSpeed);
     glPopMatrix();
 
     /*
@@ -78,14 +78,14 @@ void drawMiniRobot() {
     // robot left leg
     glPushMatrix();
     glTranslatef(0.0, 0.0, 0.5);
-    drawLeg(true);
+    drawLeg(true, runnerSpeed);
     glPopMatrix();
 
     // robot right leg
     glPushMatrix();
     glTranslatef(0.0, 0.0, -0.5);
     //glRotatef(180.0f, 0.0, 1.0, 0.0);  // Rotate thigh 180
-    drawLeg(false);
+    drawLeg(false, runnerSpeed);
     glPopMatrix();
 
     // robot arm
