@@ -181,7 +181,9 @@ void display() {
     
     //GLfloat mat_ambient[] = {0.2, 0.2, 0.2, 1.0};  // Adjust this value as needed
     //glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_ambient);
+    glTranslatef(mapCenterX, 0.00, mapCenterZ);
     drawGroundPlane();
+    drawPortals();
     glDisable(GL_DEPTH_TEST);
     glPopMatrix();
     
@@ -256,7 +258,7 @@ void display() {
     //     glTranslatef(runnerPoseList[i][0], runnerPoseList[i][1], runnerPoseList[i][2]);
     //     glRotatef((GLfloat)runnerPoseList[i][3], 0.0, 1.0, 0.0);
     //     drawFrame(2.0);
-    //     Sphere(0.5, 4, 4);              
+    //     //Sphere(0.5, 4, 4);              
     //     glPopMatrix();
     // }
 
@@ -350,6 +352,9 @@ int main(int argc, char** argv) {
 
     // load terrain texture
     terrainTexture = loadTexture("./assets/terrain.bmp");
+
+    // load portal texture
+    portalTexture = loadTexture("./assets/portal.bmp");
 
     // load robot textures
     BMPtexture1 = loadTexture("./assets/rusted_metal.bmp");
