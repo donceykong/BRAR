@@ -27,6 +27,7 @@ typedef struct {
 
 // Ground texture
 extern GLuint terrainTexture = 0;
+extern GLuint portalTexture = 0;
 
 // Robot textures
 extern GLuint BMPtexture1 = 0;
