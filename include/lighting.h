@@ -18,8 +18,8 @@ double ambient = 0.4, diffuse = 0.8, specular = 0.6;
 GLfloat spotExponent = 1.0; // for a moderately focused light
 GLfloat spotCutoff = 45.0; // for a 45-degree cone of light
 
-const GLfloat rectangleWidth = 0.2, rectangleHeight = 0.2;
-const GLfloat prismHeight = 0.4, prismBase = 0.2;
+const GLfloat rectangleWidth = 0.5, rectangleHeight = 0.5;
+const GLfloat prismHeight = 1.0, prismBase = 0.5;
 
 void drawLightSource() {
     GLfloat emissiveColor[] = {1.0f, 1.0f, 1.0f, 1.0f}; // RGBA
@@ -188,7 +188,7 @@ void DrawLight3() {
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
     glEnable(GL_COLOR_MATERIAL);
-    
+
     glColor3f(1, 1, 1);
     glTranslatef(light3_X, light3_Y, light3_Z);
     glRotatef(light3Rotation+180.0, 0.0f, 1.0f, 0.0f);
