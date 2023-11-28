@@ -276,6 +276,10 @@ void update()
     gripperDistinc = -0.01 * SPEED;
   if (keyK)
     gripperDistinc = 0.01 * SPEED;
+  // Grab runner robot
+  if (!gripperClosed && fabsf(runnerPosX-endEffectorPosition.x)<0.1 && fabsf(runnerPosY-endEffectorPosition.y)<0.1 && fabsf(runnerPosZ-endEffectorPosition.z)<0.1) {
+      gripperDistinc = -0.01;
+  }
 
   if (key1) {
     viewMode = 1;
@@ -293,16 +297,26 @@ void update()
   //   robotXPosInc -= 0.2 * SPEED;
 
   if (!ballInHandBool) {
+    // Move runner if
+    runnerYawAngle += runnerSpeed*0.5*gripperRollinc;
+    double angleYradians = runnerYawAngle * PI / 180;
+
+    runnerPosZ += runnerSpeed*0.1*joint3inc*cos(angleYradians);
+    runnerPosX += runnerSpeed*0.1*joint3inc*sin(angleYradians);
+
+    // Move chaser
     robotXPos += robotXPosInc - monsterRobotSpeed*0.02*(endEffectorPosition.x-runnerPosX);
     robotZPos += robotZPosInc - monsterRobotSpeed*0.02*(endEffectorPosition.z-runnerPosZ);
   }
   else if (ballInHandBool){
-    //joint0Angle += monsterRobotSpeed*0.5*gripperRollinc;
-    //joint1Angle = 90.0;
-    //double angleYradians = joint0Angle * PI / 180;
+    joint0Angle += monsterRobotSpeed*0.5*gripperRollinc;
+    double angleYradians = joint0Angle * PI / 180;
+    robotZPos -= monsterRobotSpeed*0.1*joint3inc*cos(angleYradians);
+    robotXPos -= monsterRobotSpeed*0.1*joint3inc*sin(angleYradians);
 
-    //robotZPos += monsterRobotSpeed*0.1*joint3inc*cos(angleYradians);
-    //robotXPos += monsterRobotSpeed*0.1*joint3inc*sin(angleYradians);
+    if (joint1Angle <= 90.0) {
+      joint1Angle += 1.0;
+    }
   }
 
   // TODO: FIX THE LIGHTING
@@ -379,11 +393,6 @@ void update()
     joint2Angle = -90.00;
   }
 
-  // Gripper Adjust
-  if (!gripperClosed && fabsf(runnerPosX-endEffectorPosition.x)<0.1 && fabsf(runnerPosY-endEffectorPosition.y)<0.1 && fabsf(runnerPosZ-endEffectorPosition.z)<0.1) {
-      gripperDistinc = -0.01;
-  }
-
   joint3Angle += joint3inc;
   gripperDist += gripperDistinc;
   gripperRollAngle += gripperRollinc;
@@ -405,15 +414,6 @@ void update()
   }
   else {
     gripperClosed = false;
-    //posX -= 0.050*gripperRollinc;
-    //posX -= 0.050*joint3inc;
-
-    // Just for testing to move the robot
-    runnerYawAngle += runnerSpeed*0.5*gripperRollinc;
-    double angleYradians = runnerYawAngle * PI / 180;
-
-    runnerPosZ += runnerSpeed*0.1*joint3inc*cos(angleYradians);
-    runnerPosX += runnerSpeed*0.1*joint3inc*sin(angleYradians);
   }
 } 
 
