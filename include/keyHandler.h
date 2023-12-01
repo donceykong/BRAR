@@ -496,10 +496,10 @@ void updateTimeCrunch()
   //double yaw = getYawOffset(joint0Angle, chaserPosX, chaserPosZ, nearestObj->posX, nearestObj->posY, nearestObj->posZ) * 180 / PI;
   //joint0Angle += runnerSpeed*0.5*gripperRollinc* PI / 180;;
   
-  joint1Angle += 5.0*(nearestObj->posY - endEffectorPosition.y);
-  double diffX = nearestObj->posX - endEffectorPosition.x;
-  double diffY = nearestObj->posY - endEffectorPosition.y;
-  double diffZ = nearestObj->posZ - endEffectorPosition.z;
+  joint1Angle += 5.0*(nearestMapItem->posY - endEffectorPosition.y);
+  double diffX = nearestMapItem->posX - endEffectorPosition.x;
+  double diffY = nearestMapItem->posY - endEffectorPosition.y;
+  double diffZ = nearestMapItem->posZ - endEffectorPosition.z;
   // printf("nearestObjX: %f, endEffX: %f, diffX: %f\n\n", nearestObj->posX, endEffectorPosition.x, diffX);
   // printf("nearestObjY: %f, endEffY: %f, diffY: %f\n\n", nearestObj->posY, endEffectorPosition.y, diffY);
   // printf("nearestObjZ: %f, endEffY: %f, diffZ: %f\n\n", nearestObj->posZ, endEffectorPosition.z, diffZ);

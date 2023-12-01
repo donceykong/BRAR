@@ -1,21 +1,21 @@
 #ifndef MAP_OBJECTS_H
 #define MAP_OBJECTS_H
 
-enum objType {
+enum mapItemType {
     PARALELLOGRAM,  // 0
     SPHERE,         // 1
     CUBE,           // 2
     EMPTY           // 3
 };
 
-enum objState {
+enum mapItemState {
     AVAILABLE,      // 0
     COLLECTED           // 1
 };
 
 typedef struct {
-    enum objType type;
-    enum objState state;
+    enum mapItemType type;
+    enum mapItemState state;
 
     double size;
 
@@ -32,7 +32,7 @@ typedef struct {
     double maxHeight;     // Maximum height for oscillation
     double baseHeight;    // Base height (starting height)
     
-} MapObject;
+} MapItem;
 
 // // Map obstacles
 // enum obstacleType {

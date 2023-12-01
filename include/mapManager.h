@@ -15,10 +15,10 @@ double objAbsorberY;
 double objAbsorberZ;
 
 // Create an array to hold 10 map objects
-MapObject objectList[10];
+MapItem mapItemList[10];
 
-MapObject randMapObj;
-MapObject *nearestObj = &randMapObj;
+MapItem randMapItem;
+MapItem *nearestMapItem = &randMapItem;
 
 time_t beginTime, currentTime;
 double prevTime;
@@ -86,7 +86,7 @@ void addObjectsToMapList() {
 
         //get rand enum type
         int numEnums = 3; // Number of enumerators in objType, not including EMPTY
-        enum objType randObjType = (enum objType)(rand() % numEnums);
+        enum mapItemType randObjType = (enum mapItemType)(rand() % numEnums);
         
         //set runner adjust and robot adjust based on type
         double runnerSpeedAdjust;
@@ -115,30 +115,30 @@ void addObjectsToMapList() {
         }
 
         // Set ran values to obj struct
-        MapObject mapObj;
-        mapObj.type = randObjType;
-        mapObj.posX = randObjPosX;
-        mapObj.posY = (double)rand() / (RAND_MAX / 3.0) + 1.0;            // rand Y init pos between 0 and 3
-        mapObj.posZ = randObjPosZ;
-        mapObj.yawAngle = randObjYaw;
-        mapObj.runnerSpeedAdjust = runnerSpeedAdjust;
-        mapObj.robotSpeedAdjust = robotSpeedAdjust;
-        mapObj.baseHeight = (double)rand() / (RAND_MAX / 1.0);     // rand Y min between 0 and 1
-        mapObj.maxHeight = (double)rand() / (RAND_MAX / 3.0);      // rand Y max between 0 and 10
-        mapObj.verticalSpeed = 1.0; //(double)rand() / (RAND_MAX / 4.0);   // rand Y velocity between 0 and 4
-        mapObj.timeValue = timeValue;
-        mapObj.state = AVAILABLE;
-        mapObj.size = 2.0;
+        MapItem mapItem;
+        mapItem.type = randObjType;
+        mapItem.posX = randObjPosX;
+        mapItem.posY = (double)rand() / (RAND_MAX / 3.0) + 1.0;            // rand Y init pos between 0 and 3
+        mapItem.posZ = randObjPosZ;
+        mapItem.yawAngle = randObjYaw;
+        mapItem.runnerSpeedAdjust = runnerSpeedAdjust;
+        mapItem.robotSpeedAdjust = robotSpeedAdjust;
+        mapItem.baseHeight = (double)rand() / (RAND_MAX / 1.0);     // rand Y min between 0 and 1
+        mapItem.maxHeight = (double)rand() / (RAND_MAX / 3.0);      // rand Y max between 0 and 10
+        mapItem.verticalSpeed = 1.0; //(double)rand() / (RAND_MAX / 4.0);   // rand Y velocity between 0 and 4
+        mapItem.timeValue = timeValue;
+        mapItem.state = AVAILABLE;
+        mapItem.size = 2.0;
 
-        objectList[i] = mapObj;
+        mapItemList[i] = mapItem;
     }
 }
 
 void setNearest(int listIter) {
-    double currentEucDistXYZ = getEulerDistanceXYZ(chaserPosX, chaserPosY, chaserPosZ, objectList[listIter].posX, objectList[listIter].posY, objectList[listIter].posZ);
-    double nearestEucDistXYZ = getEulerDistanceXYZ(chaserPosX, chaserPosY, chaserPosZ, nearestObj->posX, nearestObj->posY, nearestObj->posZ);
+    double currentEucDistXYZ = getEulerDistanceXYZ(chaserPosX, chaserPosY, chaserPosZ, mapItemList[listIter].posX, mapItemList[listIter].posY, mapItemList[listIter].posZ);
+    double nearestEucDistXYZ = getEulerDistanceXYZ(chaserPosX, chaserPosY, chaserPosZ, nearestMapItem->posX, nearestMapItem->posY, nearestMapItem->posZ);
     if (currentEucDistXYZ <= nearestEucDistXYZ) {
-        nearestObj = &objectList[listIter];
+        nearestMapItem = &mapItemList[listIter];
     }
 }
 
@@ -147,24 +147,24 @@ void plotMapObjects() {
     //printf("Plotting Map Objects: \n");
     for (int i = 0; i < 10; i++) {
         // If Obj pos = runner pos, set runner adjust and robot adjust based on type
-        if (objectList[i].type == EMPTY) {
-            objectList[i].posX = -999999999.0;
-            objectList[i].posY = -999999999.0;
-            objectList[i].posZ = -999999999.0;
+        if (mapItemList[i].type == EMPTY) {
+            mapItemList[i].posX = -999999999.0;
+            mapItemList[i].posY = -999999999.0;
+            mapItemList[i].posZ = -999999999.0;
             continue;
         }
-        else if (abs(objAbsorberX - objectList[i].posX) < 4.0 && abs(objAbsorberY - objectList[i].posY) < 1.0 && abs(objAbsorberZ - objectList[i].posZ) < 4.0) {
-            objectList[i].state = COLLECTED;
-            runnerSpeed += objectList[i].runnerSpeedAdjust;
-            chaserSpeed += objectList[i].robotSpeedAdjust;
+        else if (abs(objAbsorberX - mapItemList[i].posX) < 4.0 && abs(objAbsorberY - mapItemList[i].posY) < 1.0 && abs(objAbsorberZ - mapItemList[i].posZ) < 4.0) {
+            mapItemList[i].state = COLLECTED;
+            runnerSpeed += mapItemList[i].runnerSpeedAdjust;
+            chaserSpeed += mapItemList[i].robotSpeedAdjust;
 
             if (remainingTime > 0) {
                 if (totalElapsedTime >= 10.0) {
                     rewardDiminish = rewardDiminish*0.99;
                     beginTime = time(NULL);
                 }
-                remainingTime += objectList[i].timeValue*rewardDiminish;
-                totalScore += objectList[i].timeValue*rewardDiminish;
+                remainingTime += mapItemList[i].timeValue*rewardDiminish;
+                totalScore += mapItemList[i].timeValue*rewardDiminish;
             }
 
             if (runnerSpeed < 0.0) {
@@ -176,59 +176,59 @@ void plotMapObjects() {
         }
 
         // Update vertical position based on a sine wave
-        objectList[i].posY = objectList[i].baseHeight + objectList[i].maxHeight + objectList[i].maxHeight * sin(objectList[i].verticalSpeed * map_time);
+        mapItemList[i].posY = mapItemList[i].baseHeight + mapItemList[i].maxHeight + mapItemList[i].maxHeight * sin(mapItemList[i].verticalSpeed * map_time);
 
-        enum objType currentObjType = objectList[i].type;
-        double currentObjPosX = objectList[i].posX;
-        double currentObjPosY = objectList[i].posY;
-        double currentObjPosZ = objectList[i].posZ;
+        enum mapItemType currentMapItemType = mapItemList[i].type;
+        double currentMapItemPosX = mapItemList[i].posX;
+        double currentMapItemPosY = mapItemList[i].posY;
+        double currentMapItemPosZ = mapItemList[i].posZ;
 
         setNearest(i);
 
-        if (objectList[i].state == COLLECTED && objectList[i].size < 10.0) {
-            objectList[i].size += 1.0;
+        if (mapItemList[i].state == COLLECTED && mapItemList[i].size < 10.0) {
+            mapItemList[i].size += 1.0;
         }
-        else if (objectList[i].state == COLLECTED && objectList[i].size >= 10.0) {
-            objectList[i].type = EMPTY;
+        else if (mapItemList[i].state == COLLECTED && mapItemList[i].size >= 10.0) {
+            mapItemList[i].type = EMPTY;
         }
 
-        objectList[i].yawAngle += 1.0;
-        double currentObjYawAngle = objectList[i].yawAngle;
+        mapItemList[i].yawAngle += 1.0;
+        double currentObjYawAngle = mapItemList[i].yawAngle;
         // Translate then rotate obj
         glPushMatrix();
-        glTranslatef(currentObjPosX, currentObjPosY, currentObjPosZ);
+        glTranslatef(currentMapItemPosX, currentMapItemPosY, currentMapItemPosZ);
         glRotatef((GLfloat)currentObjYawAngle, 0.0, 1.0, 0.0);
         // Draw shape based on rand enum type
-        switch (currentObjType) {
+        switch (currentMapItemType) {
             case PARALELLOGRAM:
-                if (objectList[i].state == COLLECTED) {
+                if (mapItemList[i].state == COLLECTED) {
                     glColor3f(0.8, 1.0, 0.8);
                 }
                 else {
                     glColor3f(0.0, 1.0, 0.0);
                 }
                 //BMPtexture = BMPtexture5;
-                getParallelogram(objectList[i].size, objectList[i].size, objectList[i].size);
+                getParallelogram(mapItemList[i].size, mapItemList[i].size, mapItemList[i].size);
                 break;
             case SPHERE:
-                if (objectList[i].state == COLLECTED) {
+                if (mapItemList[i].state == COLLECTED) {
                     glColor3f(0.8, 1.0, 0.8);
                 }
                 else {
                     glColor3f(0.0, 1.0, 1.0);
                 }
                 //BMPtexture = BMPtexture5;
-                Sphere(objectList[i].size/2.0, 4, 4);
+                Sphere(mapItemList[i].size/2.0, 4, 4);
                 break;
             case CUBE:
-                if (objectList[i].state == COLLECTED) {
+                if (mapItemList[i].state == COLLECTED) {
                     glColor3f(0.8, 1.0, 0.8);
                 }
                 else {
                     glColor3f(1.0, 0.0, 0.0);
                 }
                 //BMPtexture = BMPtexture5;
-                getCube(objectList[i].size, objectList[i].size, objectList[i].size);
+                getCube(mapItemList[i].size, mapItemList[i].size, mapItemList[i].size);
                 break;
             case EMPTY:
                 //printf("    - Map obj %d is EMPTY.\n", i);

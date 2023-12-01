@@ -44,18 +44,18 @@ void drawAxes(float length) {
     Print("Z");
 }
 
-void drawNearestLine(double nearestObjX, double nearestObjY, double nearestObjZ) {
+void drawNearestLine(double nearestMapItemX, double nearestMapItemY, double nearestMapItemZ) {
     glBegin(GL_LINES);
     glVertex3d(chaserPosX, chaserPosY, chaserPosZ);
-    glVertex3d(nearestObjX, nearestObjY, nearestObjZ);
+    glVertex3d(nearestMapItemX, nearestMapItemY, nearestMapItemZ);
 
     glVertex3d(endEffectorPosition.x, endEffectorPosition.y, endEffectorPosition.z);
-    glVertex3d(nearestObjX, nearestObjY, nearestObjZ);
+    glVertex3d(nearestMapItemX, nearestMapItemY, nearestMapItemZ);
     glEnd();
     
     //  Label axes
-    glRasterPos3d(nearestObjX,nearestObjY,nearestObjZ);
-    Print("NEAREST OBJ");
+    glRasterPos3d(nearestMapItemX, nearestMapItemY, nearestMapItemZ);
+    Print("NEAREST ITEM");
 }
 
 void drawText3D() {
