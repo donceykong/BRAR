@@ -197,7 +197,7 @@ void plotMapObjects() {
         // Translate then rotate obj
         glPushMatrix();
         glTranslatef(currentObjPosX, currentObjPosY, currentObjPosZ);
-        //glRotatef((GLfloat)currentObjYawAngle, 0.0, 1.0, 0.0);
+        glRotatef((GLfloat)currentObjYawAngle, 0.0, 1.0, 0.0);
         // Draw shape based on rand enum type
         switch (currentObjType) {
             case PARALELLOGRAM:
