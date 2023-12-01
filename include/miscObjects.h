@@ -44,6 +44,20 @@ void drawAxes(float length) {
     Print("Z");
 }
 
+void drawNearestLine(double nearestObjX, double nearestObjY, double nearestObjZ) {
+    glBegin(GL_LINES);
+    glVertex3d(chaserPosX, chaserPosY, chaserPosZ);
+    glVertex3d(nearestObjX, nearestObjY, nearestObjZ);
+
+    glVertex3d(endEffectorPosition.x, endEffectorPosition.y, endEffectorPosition.z);
+    glVertex3d(nearestObjX, nearestObjY, nearestObjZ);
+    glEnd();
+    
+    //  Label axes
+    glRasterPos3d(nearestObjX,nearestObjY,nearestObjZ);
+    Print("NEAREST OBJ");
+}
+
 void drawText3D() {
     if (false) { //ballInHandBool) {
         for (double i = 0.0; i < 2*M_PI; i+=0.5) {
@@ -58,7 +72,7 @@ void drawText3D() {
     }
     else {
         glRasterPos3d(runnerPosX + 1.0, runnerPosY + 0.5, runnerPosZ - 2.0);
-        Print("runner speed: %f, chaser speed %f", runnerSpeed, monsterRobotSpeed);
+        Print("runner speed: %f, chaser speed %f", runnerSpeed, chaserSpeed);
     }
 }
 

@@ -17,7 +17,7 @@ typedef struct {
     float m[4][4];
 } Matrix4x4;
 
-extern Matrix4x4 identityMatrix = {
+Matrix4x4 identityMatrix = {
     .m = {
         {1, 0, 0, 0},
         {0, 1, 0, 0},

@@ -61,24 +61,6 @@ void setFirstPersonView() {
     glTranslatef(-firstPersonCamX, -firstPersonCamY, -firstPersonCamZ);
 }
 
-// void setTopDownView() {
-//     GLfloat topDownCamX = 0.0f; // or any desired X position
-//     GLfloat topDownCamY = 10.0f; // or any desired height
-//     GLfloat topDownCamZ = 0.0f; // or any desired Z position
-    
-//     glMatrixMode(GL_PROJECTION);
-//     glLoadIdentity();
-//     glOrtho(-4, 4, -4, 4, -10, 20); // Adjust as necessary
-//     glMatrixMode(GL_MODELVIEW);
-//     glLoadIdentity();
-
-//     gluLookAt(
-//         topDownCamX, topDownCamY, topDownCamZ,  // Camera position
-//         0, 0, 0,  // Look at the center of the scene
-//         0, 0, -1  // Up is in the negative Z direction
-//     );
-// }
-
 void setOrbit() {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -92,8 +74,8 @@ void setOrbit() {
     glRotatef(90, 1, 0, 0);
     glRotatef(-runnerYawAngle+180, 0, 1, 0);
     //glRotatef(90, 1, 0, 0);
-    double poseDiff = 0.5*sqrt((runnerPosX-robotXPos)*(runnerPosX-robotXPos) + (runnerPosZ-robotZPos)*(runnerPosZ-robotZPos));
-    glTranslatef(-runnerPosX + (runnerPosX-robotXPos)/2.0, -10 - poseDiff, -runnerPosZ + (runnerPosZ-robotZPos)/2.0); //glTranslatef(-posX, -posY -10, -posZ);
+    double poseDiff = 0.5*sqrt((runnerPosX-chaserPosX)*(runnerPosX-chaserPosX) + (runnerPosZ-chaserPosZ)*(runnerPosZ-chaserPosZ));
+    glTranslatef(-runnerPosX + (runnerPosX-chaserPosX)/2.0, -10 - poseDiff, -runnerPosZ + (runnerPosZ-chaserPosZ)/2.0); //glTranslatef(-posX, -posY -10, -posZ);
 }
 
 void displayView() {

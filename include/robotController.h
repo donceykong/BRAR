@@ -6,25 +6,27 @@ double getBallAngle(double posX, double posZ) {
     return ballAngle;
 }
 
-double getXDist(double robotXPos, double posX) {
-    double xDist = posX - robotXPos;
-    return xDist;
-}
-
-double getZDist(double robotZPos, double posZ) {
-    double zDist = posZ - robotZPos;
-    return zDist;
+double getDist(double robotPos, double pos) {
+    double dist = pos - robotPos;
+    return dist;
 }
 
 double getEulerDistanceXZ(double robotXPos, double robotZPos, double posX, double posZ) {
-    double xDist = getXDist(robotXPos, posX);
-    double zDist = getZDist(robotZPos, posZ);
+    double xDist = getDist(robotXPos, posX);
+    double zDist = getDist(robotZPos, posZ);
     double eulerDist = sqrt(xDist * xDist + zDist * zDist);
     return eulerDist;
 }
 
-double getYawOffset(double joint0Angle, double robotXPos, double robotZPos, double objPosX, double objPosY, double objPosZ) {
+double getEulerDistanceXYZ(double robotXPos, double robotYPos, double robotZPos, double posX, double posY, double posZ) {
+    double xDist = getDist(robotXPos, posX);
+    double yDist = getDist(robotYPos, posY);
+    double zDist = getDist(robotZPos, posZ);
+    double eulerDist = sqrt(xDist * xDist + yDist * yDist + zDist * zDist);
+    return eulerDist;
+}
 
+double getYawOffset(double joint0Angle, double robotXPos, double robotZPos, double objPosX, double objPosY, double objPosZ) {
     Matrix4x4 transformationMatrix = identityMatrix;
     Vector3 axisOfRotation = {0.0f, 1.0f, 0.0f}; // Rotate around the y-axis
     Matrix4x4 rMatrix = rotationMatrix(-joint0Angle, axisOfRotation.x, axisOfRotation.y, axisOfRotation.z);

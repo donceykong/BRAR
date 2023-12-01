@@ -1,125 +1,96 @@
 # B.R.A.R. - Bipedal Robotic Arm Runner
 
-BRAR is an OpenGL-based game that simulates a bipedal 5-DOF robotic arm that tries to capure objects in the scene. 
+BRAR is an OpenGL-based game that kinematically simulates a bipedal 5-DOF robotic arm that tries to capure objects in the scene. The goal of this project is fuse my interest in robotics with concepts learned in the course. The majority of this project has focused on functionality and user interaction up to this point. There are still bugs that I am resolving within the funtionality itself, but it has come a very long way. Here are some of the major functionalities:
+
+A. Forward kinematics - based controller to guide "chaser robot" to follow "runner robot." This was a pretty tricky concept to wrap my head around, but after many rounds of testing, it is working well. The utility of forward kinematics is extremly useful in robotics and robotics-based games, such as this one. The utility of forward kinematics is best observed in game mode 1, where the user needs to move around and collect items.
+
+B. Orbiting lights on player's robot. These are now turned on by default.
+
+C. Main menu with different game modes to choose from. 
+
+D. Procedural object generation and object culling. As the robot(s) traverses through the scene, objects within a specified radius are removed and new ones are generated with random speeds, positions and values.  
+
+E. Runner is no longer a simple ball. A small robot dog has been designed for runner.
+
+### Future work:
+
+A. Coundown clock and timer for game modes (chaser will become faster over time, item values will be worth less over time, too).
+
+B. As robot grabs items, then an animation will happen.
+
+B. Scoreboard (using txt file).
+
+C. While a redesign of the robot's legs has been completed, the arm will need more work. Also, the gripper will likely be larger, so that it will better appear to "clamp" items. 
+
+D. Redesign of value-based items. The items have been primarily tested for function up to this point, so now I will be redesigning them to have a bit cooler appearence. Can I use obj files for these?
+
+E. Redesign of more realistic terrain and simulate surface contact normal to it.
+
+F. Add objects user (and computer) needs to navigate around. This will be a set of three objects.
+
+G. RRT* algorithm for chaser (computer) to move around obstacles to get runner robot autonomously. This will serve as another integration of robotics into the course. RRT* is a very famous path-finding algorithm in robotics and implementing it correctly in the project would be great.
+
+H. Many bug/functionality resolutions. For example, the objects go beyond I intended as I generate them. Another example is that the runner robot can simple leave the chaser's grip - that's a new one. 
+
+### Game Modes:
+
+0) User plays as robot arm and collects items to prevent a countdown timer from reaching zero.
+
+1) User plays as item to run from robot arm as the arm gains speed and accuracy over time.
+
+
+---
+
+## DEPENDENCIES:
+
+FreeType
+
+>> sudo apt-get install libfreetype6-dev
 
 --- 
 
-<!--p align="center" width="100%">
-<img src="doc/gif/BRAR.gif" width="450" height="250" />
-</p-->
-
-The arm depicted in this simulation attempts to model that of the Tinkerbot Braccio toy (orange arm shown below) to some degree. The body and legs will be modeled after StarWars' BD-1 robot shown on the right.
-
-<p align="center" width="100%">
-<img src="doc/image/braccio_robot.png" width="320" height="250" />
-<img src="doc/image/BD-1.png" width="420" height="380" />
-</p>
-
-While the model of the robot is still in development, the image below is similar to what I am going for. I've added this image to the splashscreen of the game, which I may change, but its pretty stupid looking and I like that.
-
-<p align="center" width="100%">
-<img src="doc/image/braccio_BD1.png" width="420" height="400" />
-</p>
-
-Depending on how the project developes, maybe a sim-to-real transfer could be attempted. This would likely require much tuning of the controller to meet real-world constraints, but it would be fun.
-
---- 
-
-## Timeline 
-### Oct 29 - Nov 4
-- [x] Add ground scene and joint limit.
-- [x] Use spheres as initial objects (for testing).
-
-### Nov 5 - Nov 11
-- [x] Design baby robot legs onto robot. These will follow some simple back-and-fourth pattern when the robot moves.
-- [x] Test initial tracking algorithms for the robot to chase the ball. Ball will be steered by heading.
-
-### Nov 12 - Nov 18
-- [ ] Add two more orbital tracking lights.
-- [x] Fix design of robot. Make it look like the desired bot and make sure normals are correct.
-- [ ] Redesign object to be of a dynamic robot
-- [ ] Inverse kinematics algorithm to position end-effector around object. Will verify through user-controlled item that the robot attempts to grab.
-- [ ] Turn lighting into drone-looking systems.
-
-### Nov 19 - Nov 25
-- [ ] Expand ground plane and map texture onto ground. Maybe this plane can be genrated dynamically? I seek to have a ground plane that populates with random objects that the user has to navigate around. 
-- [ ] Create random objects that are populated in front of the user and dissapear after the user is a certain distance past them. Lets have 2 different objects that are obstructions needing to be navigated around and 2 different objects that can benefit the user or damage them. 
-- [ ] Add gravity to robot and use the texture plane to be where robot lands. This can be seen as a weak form of ground-based collision detection. 
-
-### Nov 26 - Dec 02
-**Project Review due Nov. 29th (Wednesday)**
-- [ ] Add a game begin and end that the user can select to start over. 
-- [ ] Add a game clock that begins when the game does and ends when the user is caught.
-- [ ] Add self-collision detection.
-- [ ] 
-- [ ] 
-
-### Dec 03 - Dec 09
-- [ ] 
-- [ ] 
-- [ ]
-
-### Dec 10 - Dec 12
-**Final Project due Dec. 12th (Tuesday)**
-
---- 
 ## Game Modes:
 
-1) User plays as robot arm and collects items to prevent a countdown timer from reaching zero.
+0) User plays as robot and runs around while arm automatically adjusts to collect items. This is all done in an effort to prevent a countdown timer from reaching zero.
 
-2) User plays as item to run from robot arm as the arm gains speed and accuracy over time.
+1) User plays as item to run from robot arm as the arm gains speed and accuracy over time.
+
+--- 
+
+### Item Values:
+
+$$ RED SQUARE $$
+
+    - Increses speed of robot with arm by 1, decreases runner robot speed by 1.
+
+$$ BLUE CIRCLE $$
+
+    - Increases runner by 1 and does not affect other robot.
+
+$$ GREEN PARALLELOGRAM $$
+
+    - Increases runner by 1 and decreaes speed of robot with arm by 1.
 
 --- 
 
 ### Key bindings:
 
-$$Lighting $$
+$$ Lighting $$
 
-    - 0: Turn off or on lighting (Default is off)
-    - t: Move light upwards
-    - f: Move light to the left
-    - g: Move light to the right
-    - v: Move light to the downwards
+    - 0: Turn off or on lighting (Default is on)
 
+$$ Moving around $$
 
-$$ Texture $$
-
-    - 4: Turn textures on/off
-    - 5: Switch texture to have different Bitmap as texture
-
+    - ARROW KEYS: Using the arrow keys on your keyboard, you will be able to move the runner robot in game mode 0 and the collector robot in game mode 1.
 
 $$ Views Modes $$
 
-    - 1: Orthographic view (Default)
-    - 2: Perspective view
-    - 3: First-person view (Use keys to move about scene)
+    - 1: Orbiting camera view
+    - 2: Top-Down View
 
+$$ Runner Speed $$
 
-$$ Joint 0 $$
-
-    - A: Move base clockwise about Z
-    - D: Move base joint counterclockwise about Z
-
-
-$$ Joint 1 $$
-
-    - W: Tilt joint1 up
-    - K: Tilt joint1 down
-
-
-$$ Joint 2 $$
-
-    - Y: Tilt joint2 up
-    - H: Tilt joint2 down
-
-
-$$ End Effector $$
-
-    - UP: tilt gripper UP
-    - DOWN: tilt gripper DOWN
-    - LEFT: rotate gripper Counterclockwise
-    - RIGHT: rotate gripper Clockwise
-    - J: close gripper
-    - K: open gripper
+    - 4: Increase runner speed 
+    - 5: Decrease runner speed
 
 --- 

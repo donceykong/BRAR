@@ -6,8 +6,9 @@
 #include "robotArm.h"
 
 void drawRobot() {
-    glTranslatef(robotXPos, 2.0, robotZPos);
-    glRotatef((GLfloat)joint0Angle, 0.0, 1.0, 0.0);
+    glPushMatrix();
+    glTranslatef(chaserPosX, chaserPosY, chaserPosZ);
+    glRotatef((GLfloat)chaserYawAngle + chaserYawAdd, 0.0, 1.0, 0.0);
 
     // robot body
     glPushMatrix();
@@ -17,24 +18,24 @@ void drawRobot() {
     // robot left leg
     glPushMatrix();
     glTranslatef(0.0, 0.0, 0.5);
-    drawLeg(true, monsterRobotSpeed);
+    drawLeg(true, chaserSpeed);
     glPopMatrix();
 
     // robot right leg
     glPushMatrix();
     glTranslatef(0.0, 0.0, -0.5);
     //glRotatef(180.0f, 0.0, 1.0, 0.0);  // Rotate thigh 180
-    drawLeg(false, monsterRobotSpeed);
+    drawLeg(false, chaserSpeed);
     glPopMatrix();
 
-    // robot arm
     drawRobotArm();
+    glPopMatrix();
 }
 
 void drawMiniRobot() {
     glPushMatrix();
     glTranslatef(runnerPosX, runnerPosY, runnerPosZ);
-    glRotatef((GLfloat)runnerYawAngle - 90.0, 0.0, 1.0, 0.0);
+    glRotatef((GLfloat)runnerYawAngle - 90, 0.0, 1.0, 0.0);
 
     /*
      * Back legs 
@@ -44,17 +45,25 @@ void drawMiniRobot() {
     drawBody();
     glPopMatrix();
 
+    double viewableRunnerSpeed;
+    if (runnerVelHeading == 0.0) {
+        viewableRunnerSpeed = 0.0;
+    }
+    else {
+        viewableRunnerSpeed = runnerSpeed;
+    }
+    
     // robot left leg
     glPushMatrix();
     glTranslatef(0.0, 0.0, 0.5);
-    drawLeg(true, runnerSpeed);
+    drawLeg(true, viewableRunnerSpeed);
     glPopMatrix();
 
     // robot right leg
     glPushMatrix();
     glTranslatef(0.0, 0.0, -0.5);
     //glRotatef(180.0f, 0.0, 1.0, 0.0);  // Rotate thigh 180
-    drawLeg(false, runnerSpeed);
+    drawLeg(false, viewableRunnerSpeed);
     glPopMatrix();
 
     /*
@@ -78,14 +87,14 @@ void drawMiniRobot() {
     // robot left leg
     glPushMatrix();
     glTranslatef(0.0, 0.0, 0.5);
-    drawLeg(true, runnerSpeed);
+    drawLeg(true, viewableRunnerSpeed);
     glPopMatrix();
 
     // robot right leg
     glPushMatrix();
     glTranslatef(0.0, 0.0, -0.5);
     //glRotatef(180.0f, 0.0, 1.0, 0.0);  // Rotate thigh 180
-    drawLeg(false, runnerSpeed);
+    drawLeg(false, viewableRunnerSpeed);
     glPopMatrix();
 
     // robot arm

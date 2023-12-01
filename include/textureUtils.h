@@ -26,16 +26,17 @@ typedef struct {
 #pragma pack(pop)
 
 // Ground texture
-extern GLuint terrainTexture = 0;
-extern GLuint portalTexture = 0;
+GLuint terrainTexture = 0;
+GLuint portalTexture = 0;
+GLuint splashTexture = 0;
 
 // Robot textures
-extern GLuint BMPtexture1 = 0;
-extern GLuint BMPtexture2 = 0;
-extern GLuint BMPtexture3 = 0;
-extern GLuint BMPtexture4 = 0;
-extern GLuint BMPtexture5 = 0;
-extern GLuint BMPtexture  = 0;   // Main texture (set to 1:4 as desired)
+GLuint BMPtexture1 = 0;
+GLuint BMPtexture2 = 0;
+GLuint BMPtexture3 = 0;
+GLuint BMPtexture4 = 0;
+GLuint BMPtexture5 = 0;
+GLuint BMPtexture  = 0;   // Main texture (set to 1:4 as desired)
 
 GLuint loadTexture(const char* filepath) {
     FILE* file = fopen(filepath, "rb");

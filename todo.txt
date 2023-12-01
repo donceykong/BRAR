@@ -29,4 +29,26 @@ ________________________________________________________________________________
 _________________________________________________________________________________
                         STRETCH
 
+---
+
+## TODO:
+
+- [ ] Fix design of arm to meet design of Braccio arm.
+
+- [ ] Make objects in game more interesting. (use obj?)
+
+- [ ] Add ground scene with texture.
+
+- [ ] Add objects user needs to navigate around.
+
+- [ ] Add a game clock that begins when the game does and ends when the user is caught.
+
+- [ ] RRT* for chaser to move around obstacles to get runner robot?
+
+- [x] Add lights to track robot.
+- [ ] Design drone to hold lights.
+- [ ] Fix orbiting pattern of drone lights.
+
+- [ ] Add gravity to robot and use the texture plane to be where robot lands. This can be seen as a weak form of ground-based collision detection. 
+
 - Use distance from hip to bottom of foot as how much to displace robot in y-direction to better simulate trot/gait.

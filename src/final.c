@@ -17,11 +17,19 @@
 #include <math.h>
 #include <stdbool.h>  // Add this include for bool type
 #include <stdio.h>
+#include <ft2build.h>   // FreeType (used in main screen buttons)
+#include FT_FREETYPE_H
 
 // In-house includes
-#include "CSCIx229.h"
+#include "GameModes.h"      // TOP IMPORT
 
 #include "textureUtils.h"
+#include "windowHandler.h"
+#include "ftTextHandler.h"
+#include "buttonHandler.h"
+#include "screenInfo.h"
+#include "CSCIx229.h"
+
 #include "designShapes.h"
 #include "matrixMath.h"
 
@@ -30,244 +38,149 @@
 
 #include "simulateDrop.h"
 #include "miscObjects.h"
-#include "groundPlane.h"
 #include "robot.h"
 
 #include "mapManager.h"
+#include "groundPlane.h"
 
 #include "forwardKinematics.h"
 
 #include "views.h"
 #include "lighting.h"
-#include "keyHandler.h" // Add this import last  
-
+#include "keyHandler.h"         // Add this import last  
 
 // Draw frames on robot joints
 bool showFrames = true;
 
-// set initial runner speed
-double runnerSpeed = 1.0;
+// Draw robot pose history on map
+bool showPoseHist = false;
 
 // Global Framerate variables
 const double FPS = 270.0;
 const double frameDelay = 1000.0 / FPS;
 double lastFrameTime = 0.00;
 
-// Globals for splash screen
-GLuint splashTexture;
-bool showSplash = false;
+// Globals for main screen options
+bool showMain = true;
 
-// Global variable for loading progress
-float loadingProgress = 0;
-
-void drawSplashScreen() {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    glMatrixMode(GL_PROJECTION);
-    glPushMatrix();
-    glLoadIdentity();
-    gluOrtho2D(0, 1500, 0, 1500);
-
-    glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();
-    glLoadIdentity();
-
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, splashTexture);
-
-    glBegin(GL_QUADS);
-    glTexCoord2f(0.0, 0.0); glVertex2f(0.0, 0.0);
-    glTexCoord2f(1.0, 0.0); glVertex2f(1500.0, 0.0);
-    glTexCoord2f(1.0, 1.0); glVertex2f(1500.0, 1500.0);
-    glTexCoord2f(0.0, 1.0); glVertex2f(0.0, 1500.0);
-    glEnd();
-
-    glDisable(GL_TEXTURE_2D);
-
-    glPopMatrix();
-    glMatrixMode(GL_PROJECTION);
-    glPopMatrix();
-    glMatrixMode(GL_MODELVIEW);
-}
-
-void drawLoadingBar(float progress) {
-    glMatrixMode(GL_PROJECTION);
-    glPushMatrix();
-    glLoadIdentity();
-    gluOrtho2D(0, 1500, 0, 1500);
-
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-
-    // Disable texture mapping for the loading bar
-    glDisable(GL_TEXTURE_2D);
-
-    // Calculate the width of the loading bar based on progress
-    float maxBarWidth = 800.0f;
-    float barWidth = progress * maxBarWidth; // Assuming the bar is 1400 units wide at full progress
-    float barHeight = 10.0f; // Set the height of the bar
-    float barX = 100.0f; // X position of the bar
-    float barY = 300.0f; // Y position of the bar from the bottom of the window
-
-    glColor3f(1.0f, 1.0f, 1.0f);
-    glBegin(GL_QUADS);
-        glVertex2f(barX, barY+10.0f);
-        glVertex2f(barX + maxBarWidth, barY+10.0f);
-        glVertex2f(barX + maxBarWidth, barY + barHeight +10.0f);
-        glVertex2f(barX, barY + barHeight +10.0f);
-    glEnd();
-    glColor3f(1.0f, 1.0f, 1.0f);
-
-    glColor3f(1.0f, 1.0f, 1.0f);
-    glBegin(GL_QUADS);
-        glVertex2f(barX, barY-10.0f);
-        glVertex2f(barX + maxBarWidth, barY-10.0f);
-        glVertex2f(barX + maxBarWidth, barY + barHeight -10.0f);
-        glVertex2f(barX, barY + barHeight -10.0f);
-    glEnd();
-    glColor3f(1.0f, 1.0f, 1.0f);
-
-    glColor3f(1.0f, 1.0f, 1.0f);
-    glBegin(GL_QUADS);
-        glVertex2f(barX-20.0, barY-10.0f);
-        glVertex2f(barX, barY-10.0f);
-        glVertex2f(barX-20.0, barY + barHeight +10.0f);
-        glVertex2f(barX, barY + barHeight +10.0f);
-    glEnd();
-    glColor3f(1.0f, 1.0f, 1.0f);
-
-    glColor3f(1.0f, 1.0f, 1.0f);
-    glBegin(GL_QUADS);
-        glVertex2f(barX + maxBarWidth + 20.0, barY-10.0f);
-        glVertex2f(barX + maxBarWidth, barY-10.0f);
-        glVertex2f(barX + maxBarWidth + 20.0, barY + barHeight +10.0f);
-        glVertex2f(barX + maxBarWidth, barY + barHeight +10.0f);
-    glEnd();
-    glColor3f(1.0f, 1.0f, 1.0f);
-
-    glColor3f(0.0f, 1.0f, 0.0f);
-    // Draw the loading bar as a quad
-    glBegin(GL_QUADS);
-        glVertex2f(barX, barY);
-        glVertex2f(barX + barWidth, barY);
-        glVertex2f(barX + barWidth, barY + barHeight);
-        glVertex2f(barX, barY + barHeight);
-    glEnd();
-    glColor3f(1.0f, 1.0f, 1.0f);
-
-    // Restore previous state
-    glPopMatrix();
-    glMatrixMode(GL_PROJECTION);
-    glPopMatrix();
-    glMatrixMode(GL_MODELVIEW);
-
-    // Swap buffers to display the loading bar
-    //glutPostRedisplay();
-    glutSwapBuffers();
-    //glFlush();
-}
+// Mouse callback for game options
+int mouseCallbackEnabled = 1; // Global variable to control the callback
 
 int iter = 0;
 int numberPoses = 0;
-void display() {
+void displayPoseHistory() {
+    /*
+     * Add poses to map
+    */
+    if (showPoseHist) {
+        iter++;
+        //printf("numberPoses: %d, iterDIV10: %d\n", numberPoses, iter/10);
+        if (iter / 10 == 1 & numberPoses < 1000) {
+            updateRunnerPoseList(numberPoses);
+            iter = 0;
+            numberPoses++;
+        }
+        for (int i = 0; i < numberPoses; i++) {
+            glPushMatrix();
+            glTranslatef(runnerPoseList[i][0], runnerPoseList[i][1], runnerPoseList[i][2]);
+            glRotatef((GLfloat)runnerPoseList[i][3], 0.0, 1.0, 0.0);
+            drawFrame(2.0);
+            //Sphere(0.5, 4, 4);              
+            glPopMatrix();
+        }
+    }
+}
+
+void displayTimeCrunch() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glPushMatrix();
-    glEnable(GL_DEPTH_TEST);  // Enable depth testing
-    // Set up polygon mode
+    updateTimeCrunch(); // Needs to use nearest map object pose as controller basis for arm
+    displayView();
+    setupLighting();
+
+    glEnable(GL_DEPTH_TEST);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
     glEnable(GL_COLOR_MATERIAL);
-    
     //GLfloat mat_ambient[] = {0.2, 0.2, 0.2, 1.0};  // Adjust this value as needed
     //glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_ambient);
-    glTranslatef(mapCenterX, 0.00, mapCenterZ);
     drawGroundPlane();
-    drawPortals();
+    drawRobot();                    // Draw chaser (collector)
+    computeForwardKinematics();
     glDisable(GL_DEPTH_TEST);
-    glPopMatrix();
-    
+
+    glDisable(GL_LIGHTING);
+    displayPoseHistory();
+    setObjAbsorberPos(chaserPosX, chaserPosY, chaserPosZ);
+    updateMapTimeCrunch();
+    drawNearestLine(nearestObj->posX, nearestObj->posY, nearestObj->posZ);
+
+    currentTime = time(NULL);
+    elapsedTime = difftime(currentTime, prevTime);
+    totalElapsedTime = difftime(currentTime, beginTime);
+    if (remainingTime > 0.0) {
+        remainingTime -= elapsedTime;
+    }
+    prevTime = currentTime; 
+    sprintf(SIstr1, "Remaining Time: %.5f", remainingTime);
+    sprintf(SIstr2, "Total Score: %.5f", totalScore);
+    drawSI(SIstr1, SIstr2);
+
+    glutPostRedisplay();
+    glFlush();
+    glutSwapBuffers();
+}
+
+void displayRunner() {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    checkRobotCaptured();
     update();
     displayView();
     setupLighting();
 
-    glPushMatrix();
-    glEnable(GL_DEPTH_TEST);  // Enable depth testing
-    // Set up polygon mode
+    glEnable(GL_DEPTH_TEST);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
     glEnable(GL_COLOR_MATERIAL);
     //GLfloat mat_ambient[] = {0.2, 0.2, 0.2, 1.0};  // Adjust this value as needed
     //glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_ambient);
-    drawAxes(2.0);
-    drawRobot();
+    drawGroundPlane();
+    drawRobot();                    // Draw chaser (collector)
+    drawMiniRobot();                 // Draw runner
+    computeForwardKinematics();
     glDisable(GL_DEPTH_TEST);
-    glPopMatrix();
-
-    // Draw sphere simulation
-    glPushMatrix();
-    glEnable(GL_DEPTH_TEST);  // Enable depth testing
-
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-    glEnable(GL_COLOR_MATERIAL);
-
-    ballInHandBool = ballInHand();
-
-    if (ballInHandBool) {
-        runnerPosX = endEffectorPosition.x;
-        runnerPosY = endEffectorPosition.y;
-        runnerPosZ = endEffectorPosition.z;
-    }
-    else {
-        getYPosition();
-    }
-
-    drawAxes(2.0);
-    drawMiniRobot();
-
-    glDisable(GL_DEPTH_TEST);
-    glPopMatrix();
 
     drawText3D();
-    // // Show text on screen
-    // glMatrixMode(GL_PROJECTION);
-    // glPushMatrix();
-    // glLoadIdentity();
-    // gluOrtho2D(0, 1500, 0, 1500);
-
-    // glMatrixMode(GL_MODELVIEW);
-    // glLoadIdentity();
-
-    // // Disable texture mapping for the loading bar
-    // glDisable(GL_TEXTURE_2D);
-    // Print("runner speed: %f", runnerSpeed);
-
-    /*
-     * Add poses to map
-    */
-    // iter++;
-    // //printf("numberPoses: %d, iterDIV10: %d\n", numberPoses, iter/10);
-    // if (iter / 10 == 1 & numberPoses < 1000) {
-    //     updateRunnerPoseList(numberPoses);
-    //     iter = 0;
-    //     numberPoses++;
-    // }
-    // for (int i = 0; i < numberPoses; i++) {
-    //     glPushMatrix();
-    //     glTranslatef(runnerPoseList[i][0], runnerPoseList[i][1], runnerPoseList[i][2]);
-    //     glRotatef((GLfloat)runnerPoseList[i][3], 0.0, 1.0, 0.0);
-    //     drawFrame(2.0);
-    //     //Sphere(0.5, 4, 4);              
-    //     glPopMatrix();
-    // }
-
+    displayPoseHistory();
+    setObjAbsorberPos(runnerPosX, runnerPosY, runnerPosZ);
     updateMapCenter();
 
     glutPostRedisplay();
-
     glFlush();
     glutSwapBuffers();
+}
+
+void display() {
+    switch (GAME_MODE) {
+        case RUNNER:
+            displayRunner();
+            break;
+        case TIME_CRUNCH:
+            displayTimeCrunch();
+            chaserYawAdd = 90.0;
+            break;
+        default:
+            break;
+    }   
+
+    /*
+    * Should I add an escape button? It looks like the following still show even during gameplay
+    * Maybe I can add the overhead view in the corner too?
+    * Or add robot states?????
+    * 
+    */
+    // drawButtonScreen(); 
 }
 
 void FPSLimitedDisplay () {
@@ -290,27 +203,35 @@ void FPSLimitedDisplay () {
     lastFrameTime = currentTime;
 }
 
-void endSplash(int value) {
-    showSplash = false;
-    glutDisplayFunc(showSplash ? drawSplashScreen : FPSLimitedDisplay);
-    glutPostRedisplay();
-}
 
-void updateLoadingProgress(int value) {
-    // Increment loading progress
-    loadingProgress += (float)value*0.1; // Increment by a value that makes sense for your application's loading time
-    if (loadingProgress >= 200.0f) {
-        loadingProgress = 200.0f;
-        showSplash = false; // Hide splash screen once loading is complete
+// GLUT Mouse Button Callback
+void mouseButtonCallback(int button, int state, int x, int y) {
+    if (!mouseCallbackEnabled) {
+        return; // Do nothing if the callback is disabled
     }
-    
-    // Redisplay to update the loading bar
-    drawLoadingBar(loadingProgress);
-    glutPostRedisplay();
+    else if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
+        // Convert from window coordinates to OpenGL coordinates
+        y = windowYDiff - y;
+        
+        // Check if the click is within the bounds of Button 1
+        if (x > button1XMin && x < button1XMax && y > button1YMin && y < button1YMax) {
+            setGameMode(1);
+            showMain = false;
+            mouseCallbackEnabled = 0;
+            beginTime = time(NULL);
+            prevTime = beginTime;
+        }
 
-    // Continue updating until loading is complete
-    if (showSplash) {
-        glutTimerFunc(300, updateLoadingProgress, 1); // Adjust the timer delay as needed
+        // Check if the click is within the bounds of Button 2
+        if (x > button2XMin && x < button2XMax && y > button2YMin && y < button2YMax) {
+            setGameMode(0);
+            showMain = false;
+            mouseCallbackEnabled = 0;
+            beginTime = time(NULL);
+            prevTime = beginTime;
+        }
+        glutDisplayFunc(showMain ? drawButtonScreen : FPSLimitedDisplay);
+        glutPostRedisplay();
     }
 }
 
@@ -320,16 +241,29 @@ int main(int argc, char** argv) {
 
     glutInitDisplayMode(GLUT_RGB | GLUT_SINGLE | GLUT_DEPTH); 
 
-    glutInitWindowPosition(600, 100);
-    glutInitWindowSize(1200, 1200);
+    glutInitWindowPosition(windowXPos, windowYPos);
+    glutInitWindowSize(windowXDiff, windowYDiff);
     glutCreateWindow("Robot Arm");
 
-    //glutDisplayFunc(FPSLimitedDisplay);
-    glutDisplayFunc(showSplash ? drawSplashScreen : FPSLimitedDisplay);
-    
-    // Splash Screen
-    glutTimerFunc(0, updateLoadingProgress, 1); // Adjust the timer delay as needed
-    glutTimerFunc(3000, endSplash, 0);
+    FT_Library ft;
+    if (FT_Init_FreeType(&ft)) {
+        fprintf(stderr, "Could not init FreeType Library\n");
+        return 1;
+    }
+
+    FT_Face face;
+    if (FT_New_Face(ft, "./assets/tff/Roboto-Bold.ttf", 0, &face)) {
+        fprintf(stderr, "Failed to load font\n");
+        return 1;
+    }
+
+    setupTextRendering(face); // Call this after FT_New_Face and before the main loop
+
+    // Game play
+    // glutDisplayFunc(FPSLimitedDisplay);
+
+    // Main Screen
+    glutDisplayFunc(showMain ? drawButtonScreen : FPSLimitedDisplay);
 
     // Arrow key callbacks
     glutSpecialFunc(special);
@@ -342,6 +276,7 @@ int main(int argc, char** argv) {
     // Mouse callbacks
     //glutMouseFunc(mouseClick);
     //glutMotionFunc(mouseMove);
+    glutMouseFunc(mouseButtonCallback);
 
     //init();
 
@@ -364,8 +299,13 @@ int main(int argc, char** argv) {
     BMPtexture5 = loadTexture("./assets/robot_body.bmp");
 
     setRunnerPoseList();
+    addObjectsToMapList();
 
     glutMainLoop();
+
+    // Cleanup FreeType resources
+    FT_Done_Face(face);
+    FT_Done_FreeType(ft);
 
     return 0;
 }

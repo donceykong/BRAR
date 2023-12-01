@@ -76,19 +76,6 @@ void robotEndEffector(GLfloat width, GLfloat height, GLfloat depth, double faceC
     glPopMatrix();
 }
 
-void adjustAngles() {
-  joint1Angle = joint1Angle + joint1AngleSign*0.2;
-  if (joint1Angle > 210.0 || joint1Angle < -30.0) { joint1AngleSign = -1.0*joint1AngleSign; }
-
-  joint2Angle = joint2Angle + joint2AngleSign*0.2;
-  if (joint2Angle > 90.0 || joint2Angle < -90.0) { joint2AngleSign = -1.0*joint2AngleSign; }
-
-  joint3Angle = joint3Angle + joint3AngleSign*0.2;
-  if (joint3Angle > 90.0 || joint3Angle < -90.0) { joint3AngleSign = -1.0*joint3AngleSign; }
-  // printf("joint2angle: %f\n", joint2Angle);
-
-}
-
 void drawRobotArm() {
   float axisLen = 0.5;
   drawFrame(axisLen);
@@ -97,7 +84,6 @@ void drawRobotArm() {
   double faceC[3] = {1.0, 1.0, 1.0};              // White face color
 
   // // Joint0: Base
-  //glTranslatef(robotXPos, 0.2, robotZPos);
   //glRotatef((GLfloat)joint0Angle, 0.0, 1.0, 0.0);
 
   glTranslatef(0.0, 0.1, 0.0);
@@ -136,7 +122,6 @@ void drawRobotArm() {
   robotEndEffector(1.0, 0.2, 0.2, faceC);
 
   //adjustAngles();
-  computeForwardKinematics();
 }
 
 #endif // ROBOT_ARM_H

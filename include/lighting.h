@@ -165,6 +165,10 @@ void DrawLight2() {
     drawLightSourceEdges();
     glPopMatrix();
 
+    glEnable(GL_NORMALIZE);
+    glEnable(GL_LIGHTING);
+    glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
+
     // Set ambient, diffuse, specular components, position, and direction of light 1
     glEnable(GL_LIGHT2);
     glLightfv(GL_LIGHT2, GL_AMBIENT,  ambientColor);
@@ -199,6 +203,10 @@ void DrawLight3() {
     drawLightSourceEdges();
     glPopMatrix();
 
+    glEnable(GL_NORMALIZE);
+    glEnable(GL_LIGHTING);
+    glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
+
     // Set ambient, diffuse, specular components, position, and direction of light 1
     glEnable(GL_LIGHT3);
     glLightfv(GL_LIGHT3, GL_AMBIENT,  ambientColor);
@@ -213,34 +221,9 @@ void DrawLight3() {
 
 void setupLighting() {
     if (lightEnabled) {
-        // glEnable(GL_NORMALIZE);
-        // glEnable(GL_LIGHTING);
-        // glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
-
-        DrawLight1();
+        //DrawLight1();
         DrawLight2();
         DrawLight3();
-
-        //GLfloat global_ambient[] = {0.1, 0.1, 0.1, 1.0};  // This will give a very dim light to everything in the scene
-        //glLightModelfv(GL_LIGHT_MODEL_AMBIENT, global_ambient);
-
-        // // Set ambient, diffuse, specular components, and position of light 0
-        // glEnable(GL_LIGHT0);
-        // glLightfv(GL_LIGHT0, GL_AMBIENT,  ambientColor);
-        // glLightfv(GL_LIGHT0, GL_DIFFUSE,  diffuseColor);
-        // glLightfv(GL_LIGHT0, GL_SPECULAR, specularColor);
-        // glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);   // Translate the light
-
-        // // Set ambient, diffuse, specular components, position, and direction of light 1
-        // glEnable(GL_LIGHT1);
-        // glLightfv(GL_LIGHT1, GL_AMBIENT,  ambientColor);
-        // glLightfv(GL_LIGHT1, GL_DIFFUSE,  diffuseColor);
-        // glLightfv(GL_LIGHT1, GL_SPECULAR, specularColor);
-        // glLightf(GL_LIGHT1, GL_SPOT_EXPONENT, spotExponent);
-        // glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, spotCutoff);
-        // glLightfv(GL_LIGHT1, GL_POSITION, lightPosition);   // Translate the light
-        // GLfloat light1Direction[] = {sin(lightRotation * M_PI / 180.0), 0.0, cos(lightRotation * M_PI / 180.0), 1.0};
-        // glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, light1Direction);  
     } 
     else {
         glDisable(GL_LIGHTING);

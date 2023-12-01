@@ -5,8 +5,8 @@ void computeForwardKinematics() {
     Matrix4x4 transformationMatrix = identityMatrix;
 
     // Joint0: Base
-    transformationMatrix = multiplyMatrix(transformationMatrix, translationMatrix(robotXPos, 2.0, robotZPos));
-    transformationMatrix = multiplyMatrix(transformationMatrix, rotationMatrix(joint0Angle, 0.0, 1.0, 0.0));
+    transformationMatrix = multiplyMatrix(transformationMatrix, translationMatrix(chaserPosX, chaserPosY, chaserPosZ));
+    transformationMatrix = multiplyMatrix(transformationMatrix, rotationMatrix(chaserYawAngle + chaserYawAdd, 0.0, 1.0, 0.0));
     transformationMatrix = multiplyMatrix(transformationMatrix, translationMatrix(0.0, 0.1, 0.0));
 
     // Joint1 & Link1
@@ -30,9 +30,6 @@ void computeForwardKinematics() {
     transformationMatrix = multiplyMatrix(transformationMatrix, translationMatrix(0.1, 0.0, 0.0));
 
     endEffectorPosition = extractPosition(transformationMatrix);
-    
-    // Print or store the end effector position as required.
-    //printf("End Effector Position: X=%f, Y=%f, Z=%f\n", endEffectorPosition.x, endEffectorPosition.y, endEffectorPosition.z);
 }
 
 #endif // FORWARD_KINEMATICS_H

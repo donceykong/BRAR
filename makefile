@@ -26,8 +26,8 @@ CFLG=-O3 -Wall -Wno-deprecated-declarations -DRES=$(RES)
 LIBS=-framework GLUT -framework OpenGL
 # Linux/Unix/Solaris
 else
-CFLG=-O3 -Wall
-LIBS=-lglut -lGLU -lGL -lm
+CFLG=-O3 -Wall -I/usr/include/freetype2
+LIBS=-lglut -lGLU -lGL -lm -lfreetype
 endif
 # OSX/Linux/Unix/Solaris
 CLEAN=rm -f $(EXE) $(OBJ)/*.o $(OBJ)/*.a

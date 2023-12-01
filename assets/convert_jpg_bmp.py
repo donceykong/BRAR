@@ -26,4 +26,4 @@ def convert_jpg_to_bmp(input_path, output_path):
         print(f"An error occurred: {e}")
 
 # Example usage:
-convert_jpg_to_bmp("portal.png", "portal.bmp")
+convert_jpg_to_bmp("blackhole.jpg", "portal.bmp")
