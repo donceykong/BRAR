@@ -13,6 +13,13 @@ enum mapItemState {
     COLLECTED           // 1
 };
 
+typedef struct
+{
+    double x;
+    double y;
+    double z;
+} ObjectPosition;
+
 typedef struct {
     enum mapItemType type;
     enum mapItemState state;
@@ -23,9 +30,8 @@ typedef struct {
     double robotSpeedAdjust;
     double timeValue;
 
-    double posX;
-    double posY;
-    double posZ;
+    ObjectPosition position;
+
     GLfloat yawAngle;
 
     double verticalSpeed; // Speed of vertical movement

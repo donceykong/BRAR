@@ -117,9 +117,9 @@ void addObjectsToMapList() {
         // Set ran values to obj struct
         MapItem mapItem;
         mapItem.type = randObjType;
-        mapItem.posX = randObjPosX;
-        mapItem.posY = (double)rand() / (RAND_MAX / 3.0) + 1.0;            // rand Y init pos between 0 and 3
-        mapItem.posZ = randObjPosZ;
+        mapItem.position.x = randObjPosX;
+        mapItem.position.y = (double)rand() / (RAND_MAX / 3.0) + 1.0;            // rand Y init pos between 0 and 3
+        mapItem.position.z = randObjPosZ;
         mapItem.yawAngle = randObjYaw;
         mapItem.runnerSpeedAdjust = runnerSpeedAdjust;
         mapItem.robotSpeedAdjust = robotSpeedAdjust;
@@ -135,8 +135,8 @@ void addObjectsToMapList() {
 }
 
 void setNearest(int listIter) {
-    double currentEucDistXYZ = getEulerDistanceXYZ(chaserPosX, chaserPosY, chaserPosZ, mapItemList[listIter].posX, mapItemList[listIter].posY, mapItemList[listIter].posZ);
-    double nearestEucDistXYZ = getEulerDistanceXYZ(chaserPosX, chaserPosY, chaserPosZ, nearestMapItem->posX, nearestMapItem->posY, nearestMapItem->posZ);
+    double currentEucDistXYZ = getEulerDistanceXYZ(chaserPosX, chaserPosY, chaserPosZ, mapItemList[listIter].position.x, mapItemList[listIter].position.y, mapItemList[listIter].position.z);
+    double nearestEucDistXYZ = getEulerDistanceXYZ(chaserPosX, chaserPosY, chaserPosZ, nearestMapItem->position.x, nearestMapItem->position.y, nearestMapItem->position.z);
     if (currentEucDistXYZ <= nearestEucDistXYZ) {
         nearestMapItem = &mapItemList[listIter];
     }
@@ -148,12 +148,12 @@ void plotMapObjects() {
     for (int i = 0; i < 10; i++) {
         // If Obj pos = runner pos, set runner adjust and robot adjust based on type
         if (mapItemList[i].type == EMPTY) {
-            mapItemList[i].posX = -999999999.0;
-            mapItemList[i].posY = -999999999.0;
-            mapItemList[i].posZ = -999999999.0;
+            mapItemList[i].position.x = -999999999.0;
+            mapItemList[i].position.y = -999999999.0;
+            mapItemList[i].position.z = -999999999.0;
             continue;
         }
-        else if (abs(objAbsorberX - mapItemList[i].posX) < 4.0 && abs(objAbsorberY - mapItemList[i].posY) < 1.0 && abs(objAbsorberZ - mapItemList[i].posZ) < 4.0) {
+        else if (abs(objAbsorberX - mapItemList[i].position.x) < 4.0 && abs(objAbsorberY - mapItemList[i].position.y) < 1.0 && abs(objAbsorberZ - mapItemList[i].position.z) < 4.0) {
             mapItemList[i].state = COLLECTED;
             runnerSpeed += mapItemList[i].runnerSpeedAdjust;
             chaserSpeed += mapItemList[i].robotSpeedAdjust;
@@ -176,12 +176,12 @@ void plotMapObjects() {
         }
 
         // Update vertical position based on a sine wave
-        mapItemList[i].posY = mapItemList[i].baseHeight + mapItemList[i].maxHeight + mapItemList[i].maxHeight * sin(mapItemList[i].verticalSpeed * map_time);
+        mapItemList[i].position.y = mapItemList[i].baseHeight + mapItemList[i].maxHeight + mapItemList[i].maxHeight * sin(mapItemList[i].verticalSpeed * map_time);
 
         enum mapItemType currentMapItemType = mapItemList[i].type;
-        double currentMapItemPosX = mapItemList[i].posX;
-        double currentMapItemPosY = mapItemList[i].posY;
-        double currentMapItemPosZ = mapItemList[i].posZ;
+        double currentMapItemPosX = mapItemList[i].position.x;
+        double currentMapItemPosY = mapItemList[i].position.y;
+        double currentMapItemPosZ = mapItemList[i].position.z;
 
         setNearest(i);
 

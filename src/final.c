@@ -113,7 +113,7 @@ void displayTimeCrunch() {
     displayPoseHistory();
     setObjAbsorberPos(chaserPosX, chaserPosY, chaserPosZ);
     updateMapTimeCrunch();
-    drawNearestLine(nearestMapItem->posX, nearestMapItem->posY, nearestMapItem->posZ);
+    drawNearestLine(nearestMapItem->position.x, nearestMapItem->position.y, nearestMapItem->position.z);
 
     currentTime = time(NULL);
     elapsedTime = difftime(currentTime, prevTime);
