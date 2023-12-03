@@ -6,10 +6,13 @@ int viewMode = 1;  // 1 = First Person, 2 = Orbit
 GLfloat perspectiveCamX = 0, perspectiveCamY = 0, perspectiveCamZ = 4;
 GLfloat firstPersonCamZPrev = 0;
 GLfloat firstPersonCamX = 0.0, firstPersonCamY = 5.0, firstPersonCamZ = 0.0;
+GLfloat fpCamZoomX = 0.0, fpCamZoomY = 5.0, fpCamZoomZ = 10.0;
+GLfloat fpCamZoom = 1.0;
 
 GLfloat angleX = 0.0f;
 GLfloat angleY = 0.0f;
 GLfloat distance = 0.0f;
+
 int mouseX, mouseY;
 int isDragging = 0;
 
@@ -56,7 +59,7 @@ void setFirstPersonView() {
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    glTranslatef(0.0, -5.0, -10.0);
+    glTranslatef(0.0, -fpCamZoomY*fpCamZoom, -fpCamZoomZ*fpCamZoom);
     glRotatef(-angleY, 0, 1, 0);
     glTranslatef(-firstPersonCamX, -firstPersonCamY, -firstPersonCamZ);
 }

@@ -14,13 +14,14 @@ GLfloat light3Rotation = 0.0f;
 const GLfloat light3RotationSpeed = 1.5f;
 
 bool lightEnabled = true;
-double ambient = 0.4, diffuse = 0.8, specular = 0.6;  
+double ambient = 0.1, diffuse = 0.8, specular = 0.6;  
 GLfloat spotExponent = 1.0; // for a moderately focused light
 GLfloat spotCutoff = 45.0; // for a 45-degree cone of light
 
 const GLfloat rectangleWidth = 0.5, rectangleHeight = 0.5;
 const GLfloat prismHeight = 1.0, prismBase = 0.5;
 
+double lightRot = 0.0;
 void drawLightSource() {
     GLfloat emissiveColor[] = {1.0f, 1.0f, 1.0f, 1.0f}; // RGBA
     glMaterialfv(GL_FRONT, GL_EMISSION, emissiveColor);
@@ -195,10 +196,11 @@ void DrawLight3() {
 
     glColor3f(1, 1, 1);
     glTranslatef(light3_X, light3_Y, light3_Z);
-    glRotatef(light3Rotation+180.0, 0.0f, 1.0f, 0.0f);
+    glRotatef(lightRot+light3Rotation+180.0, 0.0f, 1.0f, 0.0f);
     //glRotatef(45.0f, 1.0f, 0.0f, 0.0f);
     //glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
-    glTranslatef(0.0f, 0.0f, 3.0f);
+    glTranslatef(0.0f, 0.0f, 10.0f);
+    //glRotatef(-45.0, 1.0f, 0.0f, 0.0f);
     drawLightSource();
     drawLightSourceEdges();
     glPopMatrix();
@@ -215,14 +217,15 @@ void DrawLight3() {
     glLightf(GL_LIGHT3, GL_SPOT_EXPONENT, spotExponent);
     glLightf(GL_LIGHT3, GL_SPOT_CUTOFF, spotCutoff);
     glLightfv(GL_LIGHT3, GL_POSITION, light3Position);   // Translate the light
-    GLfloat light3Direction[] = {sin(light3Rotation * M_PI / 180.0), 0.0, cos(light3Rotation * M_PI / 180.0), 1.0};
+    GLfloat light3Direction[] = {sin((lightRot+light3Rotation) * M_PI / 180.0), 0.0, cos((lightRot+light3Rotation) * M_PI / 180.0), 1.0};
     glLightfv(GL_LIGHT3, GL_SPOT_DIRECTION, light3Direction);
 }
 
 void setupLighting() {
     if (lightEnabled) {
         //DrawLight1();
-        DrawLight2();
+        lightRot++;
+        //DrawLight2();
         DrawLight3();
     } 
     else {

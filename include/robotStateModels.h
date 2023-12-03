@@ -1,6 +1,42 @@
 #ifndef ROBOT_STATE_MODELS_H
 #define ROBOT_STATE_MODELS_H
 
+
+/*
+typedef struct {
+    Vector3 endEffectorPosition;
+    double joint0Angle, joint1Angle, joint2Angle, joint3Angle;
+    double gripperRollAngle, gripperDist;
+    bool gripperClosed;
+
+} robotArm;
+
+typedef struct {
+    enum mapItemType type;
+    enum mapItemState state;
+    
+    robotArm arm;               // If it has an arm: -> joint0.angle, joint0.angularVel, joint0.pos, joint0.vel
+    bool robotCaptured;         // If it is a runner robot, of course
+
+    double mass, e;             // other items of robot ....
+
+    Vector3 position;
+    Vector3 velocity;
+    Vector3 acceleration;
+
+    // Maybe instead of GLfloat yawAngle, use:
+    Vector3 angle;              // where angle.y is yawAngle
+    Vector3 angularVel;
+    Vector3 angularAccel;
+
+    double poseHist[100][6];    // 100 length pose history [xyz,roll,pitch,yaw]
+
+    // Maybe add forces on the robot?
+    Vector3 force;
+
+} robot;
+*/
+
 /*
  *
  *  Large robot states (chaser)

@@ -451,10 +451,11 @@ void updateTimeCrunch()
   if (keyK)
     gripperDistinc = 0.01 * SPEED;
 
-  // // Grab runner robot
-  // if (!gripperClosed && fabsf(runnerPosX-endEffectorPosition.x)<0.1 && fabsf(runnerPosY-endEffectorPosition.y)<0.1 && fabsf(runnerPosZ-endEffectorPosition.z)<0.1) {
-  //     gripperDistinc = -0.01;
-  // }
+  // View Zoom Adjust
+  if (keyO)
+    fpCamZoom *= 0.99;
+  if (keyL)
+    fpCamZoom *= 1.1;
 
   if (key1) {
     viewMode = 1;
@@ -465,9 +466,17 @@ void updateTimeCrunch()
   // Move chaser
   chaserYawAngle += chaserSpeed*0.5*gripperRollinc;
   double angleYradians = chaserYawAngle * PI / 180;
-
+  double prevChaserPosZ = chaserPosZ;
+  double prevChaserPosX = chaserPosX;
   chaserPosZ -= chaserSpeed*0.1*joint3inc*cos(angleYradians);
   chaserPosX -= chaserSpeed*0.1*joint3inc*sin(angleYradians);
+
+  plotMapObstacles();
+  if (inCollision) {
+    chaserPosZ = prevChaserPosZ;
+    chaserPosX = prevChaserPosX;
+  }
+
 
   // TODO: FIX THE LIGHTING
   light1_X = chaserPosX;

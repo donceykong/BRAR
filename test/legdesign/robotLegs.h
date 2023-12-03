@@ -16,7 +16,7 @@ double leftKneeSign = 1.0;
 double leftAnkleBendAngle = 0.0;  // Knee angle
 double leftAnkleSign = 1.0;
 
-double runSpeed = 5.0;
+double runSpeed = 0.0;
 
 bool showFrames = true;  // Show joint frames
 

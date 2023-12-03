@@ -11,7 +11,7 @@ void robotTorso(double percentFull, double thickness, double faceC[3], bool topL
 
     glTranslatef(0.0, 0.05, 0.0);
     glColor3f(faceC[0], faceC[1], faceC[2]); // face color  
-    getCube(0.5*percentFull, 0.1, thickness);
+    getCuboid(0.5*percentFull, 0.1, thickness);
     glTranslatef(0.0, 0.05, 0.0);     // top of cube
 
     glTranslatef(0.0, 0.05, 0.0);     // shift halfway of parallelogram

@@ -38,7 +38,7 @@ void robotThigh(double percentFull, double thickness, double faceC[3], bool topL
 
     glTranslatef(0.0, -0.05, 0.0);                                  // Move cube top down
     glColor3f(faceC[0], faceC[1], faceC[2]);                        // face color
-    getCube(0.4*percentFull, 0.1, thickness);                       // Draw cube
+    getCuboid(0.4*percentFull, 0.1, thickness);                       // Draw cube
 
     glTranslatef(0.0, -0.1, 0.0);                                   // Translate to bring parallelogram top down
     glColor3f(faceC[0], faceC[1], faceC[2]);                        // face color
@@ -46,7 +46,7 @@ void robotThigh(double percentFull, double thickness, double faceC[3], bool topL
 
     glTranslatef(0.0, -0.25, 0.0);                                  // Move cube top down
     glColor3f(faceC[0], faceC[1], faceC[2]);                        // face color
-    getCube(0.2*percentFull, 0.4, thickness);                       // Draw cube
+    getCuboid(0.2*percentFull, 0.4, thickness);                       // Draw cube
     glTranslatef(0.0, -0.2, 0.0);                                   // To get to end of cube
 
     if (!topLayer) {
@@ -78,14 +78,14 @@ void robotShin(double percentFull, double thickness, double faceC[3], bool topLa
     glTranslatef(0.0, -0.1, 0.0);               // Translate to bring cube top down
     if (!topLayer) {
         glColor3f(faceC[0], faceC[1], faceC[2]);    // Green face color
-        getCube(0.2*percentFull, 0.15, thickness/2);   // Draw Cube
+        getCuboid(0.2*percentFull, 0.15, thickness/2);   // Draw Cube
     }
     glTranslatef(0.0, -0.15/2, 0.0);               // To get to end of cube
     glTranslatef(0.0, 0.0, thickness/4);              // To shift back from 3/4 of thickness
     
     glTranslatef(0.0, -0.15, 0.0);               // Translate to bring cube top down
     glColor3f(faceC[0], faceC[1], faceC[2]);    // Green face color
-    getCube(0.2*percentFull, 0.3, thickness);   // Draw Cube
+    getCuboid(0.2*percentFull, 0.3, thickness);   // Draw Cube
     glTranslatef(0.0, -0.15, 0.0);               // To get to end of cube
     
     glTranslatef(0.0, -0.05, 0.0);              // Translate to bring parallelogram top down
@@ -95,7 +95,7 @@ void robotShin(double percentFull, double thickness, double faceC[3], bool topLa
     
     glTranslatef(0.0, -0.2, 0.0);               // Translate to bring cube top down
     glColor3f(faceC[0], faceC[1], faceC[2]);    // Green face color
-    getCube(0.1*percentFull, 0.4, thickness);                     // Draw Cube
+    getCuboid(0.1*percentFull, 0.4, thickness);                     // Draw Cube
     glTranslatef(0.0, -0.2, 0.0);               // To get to end of cube
 
     //0.1 + 0.075 + 0.3 + 0.1 + 0.4  = 0.975 -> length so far

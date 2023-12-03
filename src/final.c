@@ -21,6 +21,7 @@
 #include FT_FREETYPE_H
 
 // In-house includes
+#include "matrixMath.h"     // NO DEPENDENCIES
 #include "GameModes.h"      // TOP IMPORT
 
 #include "textureUtils.h"
@@ -31,7 +32,6 @@
 #include "CSCIx229.h"
 
 #include "designShapes.h"
-#include "matrixMath.h"
 
 #include "robotStateModels.h"
 #include "robotController.h"
@@ -50,7 +50,7 @@
 #include "keyHandler.h"         // Add this import last  
 
 // Draw frames on robot joints
-bool showFrames = true;
+bool showFrames = false;
 
 // Draw robot pose history on map
 bool showPoseHist = false;
@@ -109,11 +109,17 @@ void displayTimeCrunch() {
     computeForwardKinematics();
     glDisable(GL_DEPTH_TEST);
 
+    plotMapBorder();
+    plotMapItems();
+    plotMapObstacles();
+    
     glDisable(GL_LIGHTING);
+    glEnable(GL_DEPTH_TEST);
     displayPoseHistory();
     setObjAbsorberPos(chaserPosX, chaserPosY, chaserPosZ);
-    updateMapTimeCrunch();
+    updateMapCenter (chaserPosX, chaserPosZ);
     drawNearestLine(nearestMapItem->position.x, nearestMapItem->position.y, nearestMapItem->position.z);
+    glDisable(GL_DEPTH_TEST);
 
     currentTime = time(NULL);
     elapsedTime = difftime(currentTime, prevTime);
@@ -154,7 +160,7 @@ void displayRunner() {
     drawText3D();
     displayPoseHistory();
     setObjAbsorberPos(runnerPosX, runnerPosY, runnerPosZ);
-    updateMapCenter();
+    updateMapCenter(runnerPosX, runnerPosZ);
 
     glutPostRedisplay();
     glFlush();
@@ -299,7 +305,8 @@ int main(int argc, char** argv) {
     BMPtexture5 = loadTexture("./assets/robot_body.bmp");
 
     setRunnerPoseList();
-    addObjectsToMapList();
+    addItemsToMapList();
+    addObstaclesToMapList();
 
     glutMainLoop();
 

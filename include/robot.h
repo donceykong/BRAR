@@ -72,7 +72,7 @@ void drawMiniRobot() {
     glPushMatrix();
     glTranslatef(1.0, 0.0, 0.0);  // Move cube to center between thighs
     glColor3f(1.0, 1.0, 1.0);    // face color
-    getCube(1.50, 0.4, 0.4);   // Draw cube
+    getCuboid(1.50, 0.4, 0.4);   // Draw cube
     glPopMatrix();
 
     /*

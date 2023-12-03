@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include "mapObjects.h"
+#include "collisionDetection.h"
 
 double mapCenterX = 0.0;
 double mapCenterZ = 0.0;
@@ -14,8 +15,13 @@ double objAbsorberX;
 double objAbsorberY;
 double objAbsorberZ;
 
-// Create an array to hold 10 map objects
+bool inCollision = false;
+
+// Array to hold 10 map items
 MapItem mapItemList[10];
+
+// Array to hold 5 map obstacles
+MapObstacle mapObstList[5];
 
 MapItem randMapItem;
 MapItem *nearestMapItem = &randMapItem;
@@ -66,7 +72,74 @@ void plotMapBorder () {
     glPopMatrix();
 }
 
-void addObjectsToMapList() {
+void addObstaclesToMapList() {
+    srand(time(NULL));  // set rand generator seed
+    for (int i = 0; i < 5; i++) {
+        //get rand x, y, z within map bounds
+        double lowerObstPosX = mapCenterX - mapRadius; // lower X bound
+        double lowerObstPosZ = mapCenterZ - mapRadius; // lower Z bound
+        
+        double randObstPosX = (double)rand() / (RAND_MAX / mapRadius) + lowerObstPosX;
+        double randObstPosZ = (double)rand() / (RAND_MAX / mapRadius) + lowerObstPosZ;
+
+        //get rand yaw
+        double lowerObstYaw = 0.0;   // lower bound
+        double upperObstYaw = 360.0; // upper bound
+        
+        double randObstYaw = (double)rand() / (RAND_MAX / (upperObstYaw - lowerObstYaw)) + lowerObstYaw;
+        
+        //get rand enum type
+        int numEnums = 1; // Number of enumerators in objType, not including EMPTY
+        enum mapObstacleType randObstType = (enum mapObstacleType)(rand() % numEnums);
+
+        // Set ran values to obj struct
+        MapObstacle mapObstacle;
+        mapObstacle.type = randObstType;
+        mapObstacle.position.x = randObstPosX;
+        mapObstacle.position.y = 5.0;
+        mapObstacle.position.z = randObstPosZ;
+        mapObstacle.yawAngle = randObstYaw;
+        mapObstacle.width = 10.0;
+        mapObstacle.height = 10.0;
+        mapObstacle.depth = 0.5;
+        setObstacleBounds(&mapObstacle);
+
+        mapObstList[i] = mapObstacle;
+    }
+}
+
+void plotMapObstacles() {
+    glEnable(GL_DEPTH_TEST);
+    inCollision = false;
+    for (int i = 0; i < 5; i++) {
+        inCollision += detect_collision(mapObstList[i], chaserPosX, chaserPosY, chaserPosZ);
+
+        enum mapObstacleType currentMapObstType = mapObstList[i].type;
+        double currentMapObstPosX = mapObstList[i].position.x;
+        double currentMapObstPosY = mapObstList[i].position.y;
+        double currentMapObstPosZ = mapObstList[i].position.z;
+        //mapObstList[i].yawAngle += 1.0;
+        double currentObstYawAngle = mapObstList[i].yawAngle;
+
+        // Translate then rotate obj
+        glPushMatrix();
+        glTranslatef(currentMapObstPosX, currentMapObstPosY, currentMapObstPosZ);
+        //glRotatef((GLfloat)currentObstYawAngle, 0.0, 1.0, 0.0);
+        // Draw shape based on rand enum type
+        switch (currentMapObstType) {
+            case WALL:
+                glColor3f(1.0, 1.0, 1.0);
+                BMPtexture = BMPtexture5;
+                getCuboid(mapObstList[i].width, mapObstList[i].height, mapObstList[i].depth);
+                break;
+            default:
+        }
+        glPopMatrix();
+    }
+    glDisable(GL_DEPTH_TEST);
+}
+
+void addItemsToMapList() {
     srand(time(NULL));  // set rand generator seed
     for (int i = 0; i < 10; i++) {
         //get rand x, y, z within map bounds
@@ -125,7 +198,7 @@ void addObjectsToMapList() {
         mapItem.robotSpeedAdjust = robotSpeedAdjust;
         mapItem.baseHeight = (double)rand() / (RAND_MAX / 1.0);     // rand Y min between 0 and 1
         mapItem.maxHeight = (double)rand() / (RAND_MAX / 3.0);      // rand Y max between 0 and 10
-        mapItem.verticalSpeed = 1.0; //(double)rand() / (RAND_MAX / 4.0);   // rand Y velocity between 0 and 4
+        mapItem.velocity.y = 1.0; //(double)rand() / (RAND_MAX / 4.0);   // rand Y velocity between 0 and 4
         mapItem.timeValue = timeValue;
         mapItem.state = AVAILABLE;
         mapItem.size = 2.0;
@@ -142,7 +215,7 @@ void setNearest(int listIter) {
     }
 }
 
-void plotMapObjects() {
+void plotMapItems() {
     map_time += 0.005;
     //printf("Plotting Map Objects: \n");
     for (int i = 0; i < 10; i++) {
@@ -176,7 +249,7 @@ void plotMapObjects() {
         }
 
         // Update vertical position based on a sine wave
-        mapItemList[i].position.y = mapItemList[i].baseHeight + mapItemList[i].maxHeight + mapItemList[i].maxHeight * sin(mapItemList[i].verticalSpeed * map_time);
+        mapItemList[i].position.y = mapItemList[i].baseHeight + mapItemList[i].maxHeight + mapItemList[i].maxHeight * sin(mapItemList[i].velocity.y * map_time);
 
         enum mapItemType currentMapItemType = mapItemList[i].type;
         double currentMapItemPosX = mapItemList[i].position.x;
@@ -228,7 +301,7 @@ void plotMapObjects() {
                     glColor3f(1.0, 0.0, 0.0);
                 }
                 //BMPtexture = BMPtexture5;
-                getCube(mapItemList[i].size, mapItemList[i].size, mapItemList[i].size);
+                getCuboid(mapItemList[i].size, mapItemList[i].size, mapItemList[i].size);
                 break;
             case EMPTY:
                 //printf("    - Map obj %d is EMPTY.\n", i);
@@ -240,29 +313,18 @@ void plotMapObjects() {
     }
 }
 
-void updateMapCenter () {
-    double dist = getEulerDistanceXZ(mapCenterX, mapCenterZ, runnerPosX, runnerPosZ);
+void updateMapCenter (double robotPosX, double robotPosZ) {
+    double dist = getEulerDistanceXZ(mapCenterX, mapCenterZ, robotPosX, robotPosZ);
     if (dist > mapRadius) {
         // printf("Map center updated\n");
-        mapCenterX = runnerPosX;
-        mapCenterZ = runnerPosZ;
-        addObjectsToMapList();
+        mapCenterX = robotPosX;
+        mapCenterZ = robotPosZ;
+        addItemsToMapList();
+        addObstaclesToMapList();
     }
-    plotMapBorder();
-    plotMapObjects();
-    // printf("mapCenterX: %f, mapCenterZ: %f\n\n", mapCenterX, mapCenterZ);
-}
-
-void updateMapTimeCrunch () {
-    double dist = getEulerDistanceXZ(mapCenterX, mapCenterZ, chaserPosX, chaserPosZ);
-    if (dist > mapRadius) {
-        // printf("Map center updated\n");
-        mapCenterX = chaserPosX;
-        mapCenterZ = chaserPosZ;
-        addObjectsToMapList();
-    }
-    plotMapBorder();
-    plotMapObjects();
+    // plotMapBorder();
+    // plotMapItems();
+    // plotMapObstacles(); 
     // printf("mapCenterX: %f, mapCenterZ: %f\n\n", mapCenterX, mapCenterZ);
 }
 

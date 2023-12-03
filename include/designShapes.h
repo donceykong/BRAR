@@ -1,7 +1,7 @@
 #ifndef DESIGN_SHAPES_H
 #define DESIGN_SHAPES_H
 
-void getCubeEdges(GLfloat width, GLfloat height, GLfloat depth) {
+void getCuboidEdges(GLfloat width, GLfloat height, GLfloat depth) {
     // Front face
     glVertex3f(-width/2, -height/2,  depth/2);
     glVertex3f( width/2, -height/2,  depth/2);
@@ -39,68 +39,62 @@ void getCubeEdges(GLfloat width, GLfloat height, GLfloat depth) {
     glVertex3f( width/2, -height/2,  depth/2);
 }
 
-void getCube(GLfloat width, GLfloat height, GLfloat depth) {
+void getCuboid(GLfloat width, GLfloat height, GLfloat depth) {
     // Front face
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, BMPtexture);
     glBegin(GL_QUADS);
-    glNormal3f(0.0f, 0.0f, 1.0f);
-    glTexCoord2f(0.0f, 0.0f); glVertex3f(-width/2, -height/2,  depth/2);
-    glTexCoord2f(0.0f, 1.0f); glVertex3f( width/2, -height/2,  depth/2);
-    glTexCoord2f(1.0f, 1.0f); glVertex3f( width/2,  height/2,  depth/2);
-    glTexCoord2f(1.0f, 0.0f); glVertex3f(-width/2,  height/2,  depth/2);
+    glNormal3f(0.0f, 0.0f, 1.0f); glTexCoord2f(0.0f, 0.0f); glVertex3f(-width/2, -height/2,  depth/2);
+    glNormal3f(0.0f, 0.0f, 1.0f); glTexCoord2f(0.0f, 1.0f); glVertex3f( width/2, -height/2,  depth/2);
+    glNormal3f(0.0f, 0.0f, 1.0f); glTexCoord2f(1.0f, 1.0f); glVertex3f( width/2,  height/2,  depth/2);
+    glNormal3f(0.0f, 0.0f, 1.0f); glTexCoord2f(1.0f, 0.0f); glVertex3f(-width/2,  height/2,  depth/2);
     glEnd();
 
     // Back face;
     glBegin(GL_QUADS);
-    glNormal3f(0, 0,-1);
-    glTexCoord2f(0.0f, 0.0f); glVertex3f(-width/2, -height/2, -depth/2);
-    glTexCoord2f(0.0f, 1.0f); glVertex3f(-width/2,  height/2, -depth/2);
-    glTexCoord2f(1.0f, 1.0f); glVertex3f( width/2,  height/2, -depth/2);
-    glTexCoord2f(1.0f, 0.0f); glVertex3f( width/2, -height/2, -depth/2);
+    glNormal3f(0, 0,-1); glTexCoord2f(0.0f, 0.0f); glVertex3f(-width/2, -height/2, -depth/2);
+    glNormal3f(0, 0,-1); glTexCoord2f(0.0f, 1.0f); glVertex3f(-width/2,  height/2, -depth/2);
+    glNormal3f(0, 0,-1); glTexCoord2f(1.0f, 1.0f); glVertex3f( width/2,  height/2, -depth/2);
+    glNormal3f(0, 0,-1); glTexCoord2f(1.0f, 0.0f); glVertex3f( width/2, -height/2, -depth/2);
     glEnd();
 
     // Left face
     glBegin(GL_QUADS);
-    glNormal3f(-1.0f, 0.0f, 0.0f);
-    glTexCoord2f(0.0f, 0.0f); glVertex3f(-width/2, -height/2,  depth/2);
-    glTexCoord2f(0.0f, 1.0f); glVertex3f(-width/2,  height/2,  depth/2);
-    glTexCoord2f(1.0f, 1.0f); glVertex3f(-width/2,  height/2, -depth/2);
-    glTexCoord2f(1.0f, 0.0f); glVertex3f(-width/2, -height/2, -depth/2);
+    glNormal3f(-1.0f, 0.0f, 0.0f); glTexCoord2f(0.0f, 0.0f); glVertex3f(-width/2, -height/2,  depth/2);
+    glNormal3f(-1.0f, 0.0f, 0.0f); glTexCoord2f(0.0f, 1.0f); glVertex3f(-width/2,  height/2,  depth/2);
+    glNormal3f(-1.0f, 0.0f, 0.0f); glTexCoord2f(1.0f, 1.0f); glVertex3f(-width/2,  height/2, -depth/2);
+    glNormal3f(-1.0f, 0.0f, 0.0f); glTexCoord2f(1.0f, 0.0f); glVertex3f(-width/2, -height/2, -depth/2);
     glEnd();
 
     // Right face
     glBegin(GL_QUADS);
-    glNormal3f(1.0f, 0.0f, 0.0f);
-    glTexCoord2f(0.0f, 0.0f); glVertex3f( width/2, -height/2, -depth/2);
-    glTexCoord2f(0.0f, 1.0f); glVertex3f( width/2,  height/2, -depth/2);
-    glTexCoord2f(1.0f, 1.0f); glVertex3f( width/2,  height/2,  depth/2);
-    glTexCoord2f(1.0f, 0.0f); glVertex3f( width/2, -height/2,  depth/2);
+    glNormal3f(1.0f, 0.0f, 0.0f); glTexCoord2f(0.0f, 0.0f); glVertex3f( width/2, -height/2, -depth/2);
+    glNormal3f(1.0f, 0.0f, 0.0f); glTexCoord2f(0.0f, 1.0f); glVertex3f( width/2,  height/2, -depth/2);
+    glNormal3f(1.0f, 0.0f, 0.0f); glTexCoord2f(1.0f, 1.0f); glVertex3f( width/2,  height/2,  depth/2);
+    glNormal3f(1.0f, 0.0f, 0.0f); glTexCoord2f(1.0f, 0.0f); glVertex3f( width/2, -height/2,  depth/2);
     glEnd();
 
     // Top face
     glBegin(GL_QUADS);
-    glNormal3f(0.0f, 1.0f, 0.0f);
-    glTexCoord2f(0.0f, 0.0f); glVertex3f(-width/2,  height/2,  depth/2);
-    glTexCoord2f(0.0f, 1.0f); glVertex3f( width/2,  height/2,  depth/2);
-    glTexCoord2f(1.0f, 1.0f); glVertex3f( width/2,  height/2, -depth/2);
-    glTexCoord2f(1.0f, 0.0f); glVertex3f(-width/2,  height/2, -depth/2);
+    glNormal3f(0.0f, 1.0f, 0.0f); glTexCoord2f(0.0f, 0.0f); glVertex3f(-width/2,  height/2,  depth/2);
+    glNormal3f(0.0f, 1.0f, 0.0f); glTexCoord2f(0.0f, 1.0f); glVertex3f( width/2,  height/2,  depth/2);
+    glNormal3f(0.0f, 1.0f, 0.0f); glTexCoord2f(1.0f, 1.0f); glVertex3f( width/2,  height/2, -depth/2);
+    glNormal3f(0.0f, 1.0f, 0.0f); glTexCoord2f(1.0f, 0.0f); glVertex3f(-width/2,  height/2, -depth/2);
     glEnd();
 
     // Bottom face
     glBegin(GL_QUADS);
-    glNormal3f(0.0f, -1.0f, 0.0f);
-    glTexCoord2f(0.0f, 0.0f); glVertex3f(-width/2, -height/2,  depth/2);
-    glTexCoord2f(0.0f, 1.0f); glVertex3f(-width/2, -height/2, -depth/2);
-    glTexCoord2f(1.0f, 1.0f); glVertex3f( width/2, -height/2, -depth/2);
-    glTexCoord2f(1.0f, 0.0f); glVertex3f( width/2, -height/2,  depth/2);
+    glNormal3f(0.0f, -1.0f, 0.0f); glTexCoord2f(0.0f, 0.0f); glVertex3f(-width/2, -height/2,  depth/2);
+    glNormal3f(0.0f, -1.0f, 0.0f); glTexCoord2f(0.0f, 1.0f); glVertex3f(-width/2, -height/2, -depth/2);
+    glNormal3f(0.0f, -1.0f, 0.0f); glTexCoord2f(1.0f, 1.0f); glVertex3f( width/2, -height/2, -depth/2);
+    glNormal3f(0.0f, -1.0f, 0.0f); glTexCoord2f(1.0f, 0.0f); glVertex3f( width/2, -height/2,  depth/2);
     glEnd();
     glDisable(GL_TEXTURE_2D);
 
     glColor3f(0.8, 0.8, 1.0);   // Purpleish color
     glLineWidth(4.0f);          // Set line width to 2.0 pixels
     glBegin(GL_LINES);
-      getCubeEdges(width, height, depth);
+      getCuboidEdges(width, height, depth);
     glEnd();
 }
 

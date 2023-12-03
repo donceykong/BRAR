@@ -13,7 +13,7 @@ void robotBase(GLfloat width, GLfloat height, GLfloat depth, double faceC[3]) {
 
     glColor3f(faceC[0], faceC[1], faceC[2]);        // face color
     BMPtexture = BMPtexture5;
-    getCube(width, height, depth);
+    getCuboid(width, height, depth);
     BMPtexture = BMPtexture1;
 
     float axisLen = 0.5;
@@ -33,13 +33,13 @@ void robotLink(GLfloat width, GLfloat height, GLfloat depth, double faceC[3]) {
     glPushMatrix();
 
     glColor3f(faceC[0], faceC[1], faceC[2]);        // face color
-    getCube(width, 0.75*height, 0.75*depth);
+    getCuboid(width, 0.75*height, 0.75*depth);
     // glTranslatef(width/2, 0.0, 0.0);
 
     // glTranslatef(width*0.5, 0.0, 0.0);
     glColor3f(faceC[0], faceC[1], faceC[2]);        // face color
     BMPtexture = BMPtexture2;
-    getCube(width*0.5, height, depth);
+    getCuboid(width*0.5, height, depth);
     BMPtexture = BMPtexture1;
 
     // Draw first semi-cylinder
@@ -58,20 +58,20 @@ void robotEndEffector(GLfloat width, GLfloat height, GLfloat depth, double faceC
 
     // Draw gripper base
     glColor3f(faceC[0], faceC[1], faceC[2]);        // face color
-    getCube(height, depth,  width*0.75);
+    getCuboid(height, depth,  width*0.75);
 
     // Draw left gripper
     glTranslatef(0.3, 0.0, -gripperDist);
     glRotatef(90.0, 0.0, 0.0, 1.0);
     glColor3f(faceC[0], faceC[1], faceC[2]);        // face color
-    getCube(height, width*0.4, depth);
+    getCuboid(height, width*0.4, depth);
 
     // Draw right gripper
     glTranslatef(0.0, 0.0, gripperDist*2);
     glRotatef(0.0, 0.0, 0.0, 1.0);
     
     glColor3f(faceC[0], faceC[1], faceC[2]);        // face color
-    getCube(height, width*0.4, depth);
+    getCuboid(height, width*0.4, depth);
 
     glPopMatrix();
 }
