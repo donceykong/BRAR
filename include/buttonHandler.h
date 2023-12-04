@@ -88,11 +88,17 @@ void drawButtons() {
     glColor3f(0.0, 1.0, 0.0); // Set color for the button (e.g., blue)
     drawButton(button2XMin, button2YMin, button2XDiff, button2YDiff);
 
+    // Draw the third button
+    glColor3f(0.0, 0.0, 1.0); // Set color for the button (e.g., blue)
+    drawButton(button3XMin, button3YMin, button3XDiff, button2YDiff);
+
     // Render some text on the screen
     glColor3f(0.0, 1.0, 0.0); // Set text color (green)
-    renderText("GAME MODE 1: TIME CRUNCH", button1XMin + 20, button1YCenter - 10, 1.0);
+    renderText("GAME MODE 3: VIEW ROBOT", button1XMin + 20, button1YCenter - 10, 1.0);
     glColor3f(0.0, 0.0, 1.0);
-    renderText("GAME MODE 0: RUNNER", button2XMin + 70, button2YCenter - 10, 1.0);
+    renderText("GAME MODE 1: TIME CRUNCH", button2XMin + 20, button2YCenter - 10, 1.0);
+    glColor3f(1.0, 0.0, 0.0);
+    renderText("GAME MODE 0: RUNNER", button3XMin + 20, button3YCenter - 10, 1.0);
 }
 
 void drawButtonScreen() {

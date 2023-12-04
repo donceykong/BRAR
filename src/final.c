@@ -55,6 +55,8 @@ bool showFrames = false;
 // Draw robot pose history on map
 bool showPoseHist = false;
 
+GLfloat mat_ambient[] = {0.2, 0.2, 0.2, 1.0};  
+
 // Global Framerate variables
 const double FPS = 270.0;
 const double frameDelay = 1000.0 / FPS;
@@ -91,30 +93,55 @@ void displayPoseHistory() {
     }
 }
 
-void displayTimeCrunch() {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    updateTimeCrunch(); // Needs to use nearest map object pose as controller basis for arm
-    displayView();
-    setupLighting();
+void displayViewRobot() {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+    chaserSpeed = 0.0;
 
     glEnable(GL_DEPTH_TEST);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_ambient);
     glEnable(GL_COLOR_MATERIAL);
-    //GLfloat mat_ambient[] = {0.2, 0.2, 0.2, 1.0};  // Adjust this value as needed
-    //glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_ambient);
+    
+    updateViewRobot();
+    displayView();
+    setupLighting();
+
+    glPushMatrix();
+    glTranslatef(0.0, 2.0, 0.0);        // Translate to bring parallelogram top down
+    glColor3f(1,1,1);    // Green face color
+    drawRobot();                    // Draw chaser (collector)
+    glPopMatrix();
+
+    glDisable(GL_DEPTH_TEST);
+
+    glutPostRedisplay();
+    glFlush();
+    glutSwapBuffers();
+}
+
+void displayTimeCrunch() {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    glEnable(GL_DEPTH_TEST);
+    updateTimeCrunch(); // Needs to use nearest map object pose as controller basis for arm
+    displayView();
+    setupLighting();
+
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_ambient);
+
+    glEnable(GL_COLOR_MATERIAL);
     drawGroundPlane();
     drawRobot();                    // Draw chaser (collector)
     computeForwardKinematics();
-    glDisable(GL_DEPTH_TEST);
 
     plotMapBorder();
     plotMapItems();
     plotMapObstacles();
-    
-    glDisable(GL_LIGHTING);
-    glEnable(GL_DEPTH_TEST);
     displayPoseHistory();
     setObjAbsorberPos(chaserPosX, chaserPosY, chaserPosZ);
     updateMapCenter (chaserPosX, chaserPosZ);
@@ -149,18 +176,19 @@ void displayRunner() {
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
     glEnable(GL_COLOR_MATERIAL);
-    //GLfloat mat_ambient[] = {0.2, 0.2, 0.2, 1.0};  // Adjust this value as needed
-    //glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_ambient);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_ambient);
     drawGroundPlane();
     drawRobot();                    // Draw chaser (collector)
     drawMiniRobot();                 // Draw runner
     computeForwardKinematics();
     glDisable(GL_DEPTH_TEST);
 
-    drawText3D();
+    glEnable(GL_DEPTH_TEST);
+    //drawText3D();
     displayPoseHistory();
     setObjAbsorberPos(runnerPosX, runnerPosY, runnerPosZ);
     updateMapCenter(runnerPosX, runnerPosZ);
+    glDisable(GL_DEPTH_TEST);
 
     glutPostRedisplay();
     glFlush();
@@ -175,6 +203,9 @@ void display() {
         case TIME_CRUNCH:
             displayTimeCrunch();
             chaserYawAdd = 90.0;
+            break;
+        case VIEW_ROBOT:
+            displayViewRobot();
             break;
         default:
             break;
@@ -221,7 +252,7 @@ void mouseButtonCallback(int button, int state, int x, int y) {
         
         // Check if the click is within the bounds of Button 1
         if (x > button1XMin && x < button1XMax && y > button1YMin && y < button1YMax) {
-            setGameMode(1);
+            setGameMode(2);
             showMain = false;
             mouseCallbackEnabled = 0;
             beginTime = time(NULL);
@@ -230,6 +261,14 @@ void mouseButtonCallback(int button, int state, int x, int y) {
 
         // Check if the click is within the bounds of Button 2
         if (x > button2XMin && x < button2XMax && y > button2YMin && y < button2YMax) {
+            setGameMode(1);
+            showMain = false;
+            mouseCallbackEnabled = 0;
+            beginTime = time(NULL);
+            prevTime = beginTime;
+        }
+        // Check if the click is within the bounds of Button 2
+        if (x > button3XMin && x < button3XMax && y > button3YMin && y < button3YMax) {
             setGameMode(0);
             showMain = false;
             mouseCallbackEnabled = 0;

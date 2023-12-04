@@ -15,7 +15,8 @@ double objAbsorberX;
 double objAbsorberY;
 double objAbsorberZ;
 
-bool inCollision = false;
+bool chaserInCollision = false;
+bool runnerInCollision = false;
 
 // Array to hold 10 map items
 MapItem mapItemList[10];
@@ -110,9 +111,13 @@ void addObstaclesToMapList() {
 
 void plotMapObstacles() {
     glEnable(GL_DEPTH_TEST);
-    inCollision = false;
+    chaserInCollision = false;
+    runnerInCollision = false;
     for (int i = 0; i < 5; i++) {
-        inCollision += detect_collision(mapObstList[i], chaserPosX, chaserPosY, chaserPosZ);
+        bool chaserInCollisionCurr = detect_collision(mapObstList[i], chaserPosX, chaserPosY, chaserPosZ);
+        bool runnerInCollisionCurr = detect_collision(mapObstList[i], runnerPosX, runnerPosY, runnerPosZ);
+        chaserInCollision += chaserInCollisionCurr; //detect_collision(mapObstList[i], chaserPosX, chaserPosY, chaserPosZ);
+        runnerInCollision += runnerInCollisionCurr; //detect_collision(mapObstList[i], runnerPosX, runnerPosY, runnerPosZ);
 
         enum mapObstacleType currentMapObstType = mapObstList[i].type;
         double currentMapObstPosX = mapObstList[i].position.x;
@@ -128,7 +133,12 @@ void plotMapObstacles() {
         // Draw shape based on rand enum type
         switch (currentMapObstType) {
             case WALL:
-                glColor3f(1.0, 1.0, 1.0);
+                if (chaserInCollisionCurr || runnerInCollisionCurr) {
+                    glColor3f(1.0, 0.0, 0.0);
+                }
+                else {
+                    glColor3f(1.0, 1.0, 1.0);
+                }
                 BMPtexture = BMPtexture5;
                 getCuboid(mapObstList[i].width, mapObstList[i].height, mapObstList[i].depth);
                 break;
@@ -216,6 +226,8 @@ void setNearest(int listIter) {
 }
 
 void plotMapItems() {
+    glEnable(GL_DEPTH_TEST);  // Enable depth testing
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     map_time += 0.005;
     //printf("Plotting Map Objects: \n");
     for (int i = 0; i < 10; i++) {
@@ -322,9 +334,9 @@ void updateMapCenter (double robotPosX, double robotPosZ) {
         addItemsToMapList();
         addObstaclesToMapList();
     }
-    // plotMapBorder();
-    // plotMapItems();
-    // plotMapObstacles(); 
+    plotMapBorder();
+    plotMapItems();
+    plotMapObstacles(); 
     // printf("mapCenterX: %f, mapCenterZ: %f\n\n", mapCenterX, mapCenterZ);
 }
 

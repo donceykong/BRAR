@@ -53,7 +53,8 @@ void drawLorenzAttractor() {
     glColor3f(1.0, 1.0, 1.0); // Set attractor color
     glPointSize(6.0f);          // Set line width to 2.0 pixels
     glBegin(GL_POINTS);
-
+    glNormal3f(0, 0, 1); 
+    
     // Numerical integration and drawing loop
     for (int i = 0; i < 10000; ++i) {
         double color = i/20000.0 + 0.5;
@@ -80,10 +81,6 @@ void drawLorenzAttractor() {
 double portalRot = 0.0;
 void drawPortals() {
     glColor3f(1.0, 1.0, 1.0);
-
-    glBegin(GL_TEXTURE_2D);
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, portalTexture);
     
     double zTrans;
     double xTrans;

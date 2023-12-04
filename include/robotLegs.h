@@ -67,7 +67,6 @@ void robotThigh(double percentFull, double thickness, double faceC[3], bool topL
 // Joint to Joint length is 1.00
 void robotShin(double percentFull, double thickness, double faceC[3], bool topLayer) {
     glPushMatrix();
-
     glTranslatef(0.0, 0.0, -thickness/4);             // To shift to 3/4 of thickness
     if (!topLayer) {
         glColor3f(faceC[0], faceC[1], faceC[2]);                        // Green face color

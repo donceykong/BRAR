@@ -35,7 +35,7 @@ void drawRobot() {
 void drawMiniRobot() {
     glPushMatrix();
     glTranslatef(runnerPosX, runnerPosY, runnerPosZ);
-    glRotatef((GLfloat)runnerYawAngle - 90, 0.0, 1.0, 0.0);
+    glRotatef((GLfloat)runnerYawAngle - 90.0, 0.0, 1.0, 0.0);
 
     /*
      * Back legs 

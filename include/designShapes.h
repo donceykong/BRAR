@@ -40,62 +40,72 @@ void getCuboidEdges(GLfloat width, GLfloat height, GLfloat depth) {
 }
 
 void getCuboid(GLfloat width, GLfloat height, GLfloat depth) {
-    // Front face
+    glPushMatrix();
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, BMPtexture);
+    
+    // Front face
     glBegin(GL_QUADS);
-    glNormal3f(0.0f, 0.0f, 1.0f); glTexCoord2f(0.0f, 0.0f); glVertex3f(-width/2, -height/2,  depth/2);
-    glNormal3f(0.0f, 0.0f, 1.0f); glTexCoord2f(0.0f, 1.0f); glVertex3f( width/2, -height/2,  depth/2);
-    glNormal3f(0.0f, 0.0f, 1.0f); glTexCoord2f(1.0f, 1.0f); glVertex3f( width/2,  height/2,  depth/2);
-    glNormal3f(0.0f, 0.0f, 1.0f); glTexCoord2f(1.0f, 0.0f); glVertex3f(-width/2,  height/2,  depth/2);
+    glNormal3f(0, 0, 1); 
+    glTexCoord2f(0.0f, 0.0f); glVertex3f(-width/2, -height/2,  depth/2);
+    glTexCoord2f(0.0f, 1.0f); glVertex3f( width/2, -height/2,  depth/2);
+    glTexCoord2f(1.0f, 1.0f); glVertex3f( width/2,  height/2,  depth/2);
+    glTexCoord2f(1.0f, 0.0f); glVertex3f(-width/2,  height/2,  depth/2);
     glEnd();
 
     // Back face;
     glBegin(GL_QUADS);
-    glNormal3f(0, 0,-1); glTexCoord2f(0.0f, 0.0f); glVertex3f(-width/2, -height/2, -depth/2);
-    glNormal3f(0, 0,-1); glTexCoord2f(0.0f, 1.0f); glVertex3f(-width/2,  height/2, -depth/2);
-    glNormal3f(0, 0,-1); glTexCoord2f(1.0f, 1.0f); glVertex3f( width/2,  height/2, -depth/2);
-    glNormal3f(0, 0,-1); glTexCoord2f(1.0f, 0.0f); glVertex3f( width/2, -height/2, -depth/2);
+    glNormal3f(0, 0,-1); 
+    glTexCoord2f(0.0f, 0.0f); glVertex3f(-width/2, -height/2, -depth/2);
+    glTexCoord2f(0.0f, 1.0f); glVertex3f(-width/2,  height/2, -depth/2);
+    glTexCoord2f(1.0f, 1.0f); glVertex3f( width/2,  height/2, -depth/2);
+    glTexCoord2f(1.0f, 0.0f); glVertex3f( width/2, -height/2, -depth/2);
     glEnd();
 
     // Left face
     glBegin(GL_QUADS);
-    glNormal3f(-1.0f, 0.0f, 0.0f); glTexCoord2f(0.0f, 0.0f); glVertex3f(-width/2, -height/2,  depth/2);
-    glNormal3f(-1.0f, 0.0f, 0.0f); glTexCoord2f(0.0f, 1.0f); glVertex3f(-width/2,  height/2,  depth/2);
-    glNormal3f(-1.0f, 0.0f, 0.0f); glTexCoord2f(1.0f, 1.0f); glVertex3f(-width/2,  height/2, -depth/2);
-    glNormal3f(-1.0f, 0.0f, 0.0f); glTexCoord2f(1.0f, 0.0f); glVertex3f(-width/2, -height/2, -depth/2);
+    glNormal3f(-1, 0, 0); 
+    glTexCoord2f(0.0f, 0.0f); glVertex3f(-width/2, -height/2,  depth/2);
+    glTexCoord2f(0.0f, 1.0f); glVertex3f(-width/2,  height/2,  depth/2);
+    glTexCoord2f(1.0f, 1.0f); glVertex3f(-width/2,  height/2, -depth/2);
+    glTexCoord2f(1.0f, 0.0f); glVertex3f(-width/2, -height/2, -depth/2);
     glEnd();
 
     // Right face
     glBegin(GL_QUADS);
-    glNormal3f(1.0f, 0.0f, 0.0f); glTexCoord2f(0.0f, 0.0f); glVertex3f( width/2, -height/2, -depth/2);
-    glNormal3f(1.0f, 0.0f, 0.0f); glTexCoord2f(0.0f, 1.0f); glVertex3f( width/2,  height/2, -depth/2);
-    glNormal3f(1.0f, 0.0f, 0.0f); glTexCoord2f(1.0f, 1.0f); glVertex3f( width/2,  height/2,  depth/2);
-    glNormal3f(1.0f, 0.0f, 0.0f); glTexCoord2f(1.0f, 0.0f); glVertex3f( width/2, -height/2,  depth/2);
+    glNormal3f(1, 0, 0); 
+    glTexCoord2f(0.0f, 0.0f); glVertex3f( width/2, -height/2, -depth/2);
+    glTexCoord2f(0.0f, 1.0f); glVertex3f( width/2,  height/2, -depth/2);
+    glTexCoord2f(1.0f, 1.0f); glVertex3f( width/2,  height/2,  depth/2);
+    glTexCoord2f(1.0f, 0.0f); glVertex3f( width/2, -height/2,  depth/2);
     glEnd();
 
     // Top face
     glBegin(GL_QUADS);
-    glNormal3f(0.0f, 1.0f, 0.0f); glTexCoord2f(0.0f, 0.0f); glVertex3f(-width/2,  height/2,  depth/2);
-    glNormal3f(0.0f, 1.0f, 0.0f); glTexCoord2f(0.0f, 1.0f); glVertex3f( width/2,  height/2,  depth/2);
-    glNormal3f(0.0f, 1.0f, 0.0f); glTexCoord2f(1.0f, 1.0f); glVertex3f( width/2,  height/2, -depth/2);
-    glNormal3f(0.0f, 1.0f, 0.0f); glTexCoord2f(1.0f, 0.0f); glVertex3f(-width/2,  height/2, -depth/2);
+    glNormal3f(0, 1, 0); 
+    glTexCoord2f(0.0f, 0.0f); glVertex3f(-width/2,  height/2,  depth/2);
+    glTexCoord2f(0.0f, 1.0f); glVertex3f( width/2,  height/2,  depth/2);
+    glTexCoord2f(1.0f, 1.0f); glVertex3f( width/2,  height/2, -depth/2);
+    glTexCoord2f(1.0f, 0.0f); glVertex3f(-width/2,  height/2, -depth/2);
     glEnd();
 
     // Bottom face
     glBegin(GL_QUADS);
-    glNormal3f(0.0f, -1.0f, 0.0f); glTexCoord2f(0.0f, 0.0f); glVertex3f(-width/2, -height/2,  depth/2);
-    glNormal3f(0.0f, -1.0f, 0.0f); glTexCoord2f(0.0f, 1.0f); glVertex3f(-width/2, -height/2, -depth/2);
-    glNormal3f(0.0f, -1.0f, 0.0f); glTexCoord2f(1.0f, 1.0f); glVertex3f( width/2, -height/2, -depth/2);
-    glNormal3f(0.0f, -1.0f, 0.0f); glTexCoord2f(1.0f, 0.0f); glVertex3f( width/2, -height/2,  depth/2);
+    glNormal3f(0, -1, 0);
+    glTexCoord2f(0.0f, 0.0f); glVertex3f(-width/2, -height/2,  depth/2);
+    glTexCoord2f(0.0f, 1.0f); glVertex3f(-width/2, -height/2, -depth/2);
+    glTexCoord2f(1.0f, 1.0f); glVertex3f( width/2, -height/2, -depth/2);
+    glTexCoord2f(1.0f, 0.0f); glVertex3f( width/2, -height/2,  depth/2);
     glEnd();
+    
+    glPopMatrix();
     glDisable(GL_TEXTURE_2D);
 
-    glColor3f(0.8, 0.8, 1.0);   // Purpleish color
-    glLineWidth(4.0f);          // Set line width to 2.0 pixels
-    glBegin(GL_LINES);
-      getCuboidEdges(width, height, depth);
-    glEnd();
+    // glColor3f(0.8, 0.8, 1.0);   // Purpleish color
+    // glLineWidth(4.0f);          // Set line width to 2.0 pixels
+    // glBegin(GL_LINES);
+    //   getCuboidEdges(width, height, depth);
+    // glEnd();
 }
 
 void getRightTriPrismEdges(GLfloat width, GLfloat height, GLfloat depth) {
@@ -129,11 +139,13 @@ void getRightTriPrismEdges(GLfloat width, GLfloat height, GLfloat depth) {
 }
 
 void getRightTriPrism(GLfloat width, GLfloat height, GLfloat depth) {
-    // Front face
+    glPushMatrix();
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, BMPtexture);
+
+    // Front face
     glBegin(GL_TRIANGLES);
-    glNormal3f(0.0f, 0.0f, 1.0f);
+    glNormal3f(0.0f, 0, 1);
     glTexCoord2f(0.0f, 0.0f); glVertex3f(-width/2, -height/2,  depth/2);
     glTexCoord2f(0.0f, 1.0f); glVertex3f( width/2, -height/2,  depth/2);
     glTexCoord2f(1.0f, 0.0f); glVertex3f(-width/2,  height/2,  depth/2);
@@ -175,12 +187,13 @@ void getRightTriPrism(GLfloat width, GLfloat height, GLfloat depth) {
     glEnd();
     
     glDisable(GL_TEXTURE_2D);
+    glPopMatrix();
     
-    glColor3f(0.8, 0.8, 1.0);   // Purpleish color
-    glLineWidth(4.0f);          // Set line width to 2.0 pixels
-    glBegin(GL_LINES);
-      getRightTriPrismEdges(width, height, depth);
-    glEnd();
+    // glColor3f(0.8, 0.8, 1.0);   // Purpleish color
+    // glLineWidth(4.0f);          // Set line width to 2.0 pixels
+    // glBegin(GL_LINES);
+    //   getRightTriPrismEdges(width, height, depth);
+    // glEnd();
 }
 
 void drawSemiCylinderEdges(GLfloat radius, GLfloat height, int segments, double percentFull) {
@@ -291,7 +304,7 @@ void drawSemiCylinder(GLfloat radius, GLfloat height, int segments, double perce
     glEnd();
     glDisable(GL_TEXTURE_2D);
     
-    drawSemiCylinderEdges(radius, height, segments, percentFull);
+    // drawSemiCylinderEdges(radius, height, segments, percentFull);
 }
 
 void getParallelogramEdges(GLfloat width, GLfloat height, GLfloat depth) {
@@ -390,9 +403,9 @@ void getParallelogram(GLfloat width, GLfloat height, GLfloat depth) {
     glEnd();
     glDisable(GL_TEXTURE_2D);
 
-    glColor3f(1.0, 1.0, 1.0);   // White color
-    glLineWidth(4.0f);          // Set line width to 2.0 pixels
-    getParallelogramEdges(width, height, depth);
+    // glColor3f(1.0, 1.0, 1.0);   // White color
+    // glLineWidth(4.0f);          // Set line width to 2.0 pixels
+    // getParallelogramEdges(width, height, depth);
 }
 
 void Sphere(double r, int lats, int longs) {

@@ -3,14 +3,14 @@
 enum GameMode {
     RUNNER,         // 0
     TIME_CRUNCH,    // 1
-    VIEW_ROBOTS,    // 2
+    VIEW_ROBOT,    // 2
     NONE
 };
 
 const char* GameModeNames[] = {
     "RUNNER",
     "TIME CRUNCH",
-    "VIEW ROBOTS",
+    "VIEW ROBOT",
     "NONE"
 };
 

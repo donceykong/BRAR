@@ -37,19 +37,19 @@ void perspective(GLfloat fovy, GLfloat aspect, GLfloat zNear, GLfloat zFar) {
 //     glLoadIdentity();
 // }
 
-void setPerspectiveProjection() {
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    perspective((GLfloat)45, 1.0f, (GLfloat)1, (GLfloat)10);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
+// void setPerspectiveProjection() {
+//     glMatrixMode(GL_PROJECTION);
+//     glLoadIdentity();
+//     perspective((GLfloat)45, 1.0f, (GLfloat)1, (GLfloat)10);
+//     glMatrixMode(GL_MODELVIEW);
+//     glLoadIdentity();
 
-    glRotatef(0, 1, 0, 0);
-    glRotatef(0, 0, 1, 0);
-    glRotatef(0, 0, 0, 1);
+//     glRotatef(0, 1, 0, 0);
+//     glRotatef(0, 0, 1, 0);
+//     glRotatef(0, 0, 0, 1);
 
-    glTranslatef(-perspectiveCamX, -perspectiveCamY, -perspectiveCamZ);
-}
+//     glTranslatef(-perspectiveCamX, -perspectiveCamY, -perspectiveCamZ);
+// }
 
 void setFirstPersonView() {
     glMatrixMode(GL_PROJECTION);
