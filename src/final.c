@@ -195,14 +195,47 @@ void displayRunner() {
     glutSwapBuffers();
 }
 
+double colorADJ = 0.0;
+displayEndScreen() {
+    srand(time(NULL));  // set rand generator seed
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    // Set up the view
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluOrtho2D(0.0, windowXDiff, 0.0, windowYDiff);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    // drawBackground();
+    // Render some text on the screen
+    glColor3f(1.0, 0.0, 0.0); // Set text color (green)
+    renderText("GAME OVER", windowXDiff/20, windowYDiff/2, 4.0);
+    
+    glColor3f(0.1 + colorADJ, 0.8+colorADJ, colorADJ); // Set text color (green)
+    sprintf(SIstr2, "Total Score: %.5f", totalScore);
+    renderText(SIstr2,  windowXDiff/20, windowYDiff/2 - 200, 2.0);
+    colorADJ = (double)rand() / (RAND_MAX);
+    // printf("colorADJ: %f\n", colorADJ);
+    
+    glutPostRedisplay();
+    glFlush();
+    glutSwapBuffers();
+}
+
 void display() {
     switch (GAME_MODE) {
         case RUNNER:
             displayRunner();
             break;
         case TIME_CRUNCH:
-            displayTimeCrunch();
-            chaserYawAdd = 90.0;
+            if (remainingTime > 0.0) {
+                displayTimeCrunch();
+                chaserYawAdd = 90.0;
+            }
+            else {
+                displayEndScreen();
+            }
             break;
         case VIEW_ROBOT:
             displayViewRobot();

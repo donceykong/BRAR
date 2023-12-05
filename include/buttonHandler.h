@@ -54,7 +54,7 @@ void drawBackground() {
     glLoadIdentity();
 
     // Draw the first button
-    glColor3f(1.0, 1.0, 1.0); // Set color for the button (e.g., red)
+    glColor3f(1.0, 1.0, 1.0);
     glEnable(GL_TEXTURE_2D);
     GLuint splashTex = loadTexture("./assets/robot_body.bmp");
     glBindTexture(GL_TEXTURE_2D, splashTex);

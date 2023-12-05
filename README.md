@@ -16,8 +16,6 @@ E. Runner is no longer a simple ball. A small robot dog has been designed for ru
 
 A. Coundown clock and timer for game modes (chaser will become faster over time, item values will be worth less over time, too).
 
-B. As robot grabs items, then an animation will happen.
-
 B. Scoreboard (using txt file).
 
 C. While a redesign of the robot's legs has been completed, the arm will need more work. Also, the gripper will likely be larger, so that it will better appear to "clamp" items. 
@@ -30,7 +28,7 @@ F. Add objects user (and computer) needs to navigate around. This will be a set 
 
 G. RRT* algorithm for chaser (computer) to move around obstacles to get runner robot autonomously. This will serve as another integration of robotics into the course. RRT* is a very famous path-finding algorithm in robotics and implementing it correctly in the project would be great.
 
-H. Many bug/functionality resolutions. For example, the objects go beyond I intended as I generate them. Another example is that the runner robot can simple leave the chaser's grip - that's a new one. 
+H. Many bug/functionality resolutions. For example, the objects go beyond intended as I generate them. Another example is that the runner robot can simple leave the chaser's grip - that's a new one. 
 
 ### Game Modes:
 

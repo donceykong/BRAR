@@ -179,21 +179,22 @@ void addItemsToMapList() {
             case PARALELLOGRAM:
                 runnerSpeedAdjust = 1.0;
                 robotSpeedAdjust  = 0.0;
-                timeValue = 5.0;
+                timeValue = 1.0;
                 break;
             case SPHERE:
                 runnerSpeedAdjust = 1.0;
                 robotSpeedAdjust  = 0.0;
-                timeValue = 5.0;
+                timeValue = 1.0;
                 break;
             case CUBE:
                 runnerSpeedAdjust = -1.0;
                 robotSpeedAdjust  = 0.0;
+                timeValue = -1.0;
                 break;
             default:
                 runnerSpeedAdjust = 0.0;
                 robotSpeedAdjust  = 0.0;
-                timeValue = 5.0;
+                timeValue = 1.0;
                 //printf("    - Invalid map obj type.\n");
         }
 
@@ -238,12 +239,12 @@ void plotMapItems() {
             mapItemList[i].position.z = -999999999.0;
             continue;
         }
-        else if (abs(objAbsorberX - mapItemList[i].position.x) < 4.0 && abs(objAbsorberY - mapItemList[i].position.y) < 1.0 && abs(objAbsorberZ - mapItemList[i].position.z) < 4.0) {
+        else if (mapItemList[i].state != COLLECTED && abs(objAbsorberX - mapItemList[i].position.x) < 4.0 && abs(objAbsorberY - mapItemList[i].position.y) < 1.0 && abs(objAbsorberZ - mapItemList[i].position.z) < 4.0) {
             mapItemList[i].state = COLLECTED;
             runnerSpeed += mapItemList[i].runnerSpeedAdjust;
             chaserSpeed += mapItemList[i].robotSpeedAdjust;
 
-            if (remainingTime > 0) {
+            if (remainingTime >= 0) {
                 if (totalElapsedTime >= 10.0) {
                     rewardDiminish = rewardDiminish*0.99;
                     beginTime = time(NULL);
@@ -258,6 +259,10 @@ void plotMapItems() {
             if (chaserSpeed < 0.0) {
                 chaserSpeed = 0.0;
             }
+        }
+
+        if (remainingTime <= 0.0) {
+            remainingTime = 0.0;
         }
 
         // Update vertical position based on a sine wave
