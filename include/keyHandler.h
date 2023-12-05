@@ -286,10 +286,18 @@ void update()
     viewMode = 2;
   }
 
-  double prevChaserPosZ = chaserPosZ;
-  double prevChaserPosX = chaserPosX;
-  double prevRunnerPosZ = runnerPosZ;
-  double prevRunnerPosX = runnerPosX;
+  // Runner Control
+  if (!runnerInCollision) {
+    prevRunnerPosZ = runnerPosZ;
+    prevRunnerPosX = runnerPosX;
+  }
+
+  // Chaser Control
+  if (!chaserInCollision) {
+    prevChaserPosZ = chaserPosZ;
+    prevChaserPosX = chaserPosX;
+  }
+
   if (robotCaptured) {
     chaserYawAngle += 0.5*gripperRollinc;
     double chaserYawRad = chaserYawAngle * PI / 180;
@@ -298,6 +306,9 @@ void update()
 
     if (joint1Angle <= 90.0) {
       joint1Angle += 1.0;
+    }
+    else {
+      robotTaken = true;
     }
   }
   else {
@@ -313,11 +324,11 @@ void update()
     chaserSpeed = abs(2.0*(endEffectorPosition.x-runnerPosX));
   }
 
-  plotMapObstacles();
   if (runnerInCollision) {
     runnerPosZ = prevRunnerPosZ;
     runnerPosX = prevRunnerPosX;
   }
+  // Chaser Control
   if (chaserInCollision) {
     chaserPosZ = prevChaserPosZ;
     chaserPosX = prevChaserPosX;
@@ -448,18 +459,17 @@ void updateTimeCrunch()
   // Move chaser
   chaserYawAngle += 0.5*gripperRollinc;
   double angleYradians = chaserYawAngle * PI / 180;
-  double prevChaserPosZ = chaserPosZ;
-  double prevChaserPosX = chaserPosX;
-  chaserPosZ -= 0.1*joint3inc*cos(angleYradians);
-  chaserPosX -= 0.1*joint3inc*sin(angleYradians);
-  chaserSpeed = abs(4.0*joint3inc);
-
-  plotMapObstacles();
   if (chaserInCollision) {
     chaserPosZ = prevChaserPosZ;
     chaserPosX = prevChaserPosX;
   }
-
+  else {
+    prevChaserPosZ = chaserPosZ;
+    prevChaserPosX = chaserPosX;
+    chaserPosZ -= 0.1*joint3inc*cos(angleYradians);
+    chaserPosX -= 0.1*joint3inc*sin(angleYradians);
+    chaserSpeed = abs(4.0*joint3inc);
+  }
 
   // TODO: FIX THE LIGHTING
   double orbitRadius = 4.0;

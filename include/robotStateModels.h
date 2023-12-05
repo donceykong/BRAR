@@ -39,6 +39,14 @@ typedef struct {
 
 /*
  *
+ * ROBOT RUNNER STATES
+ *
+*/
+bool robotCaptured = false;
+bool robotTaken = false;
+
+/*
+ *
  *  Large robot states (chaser)
  * 
 */
@@ -50,12 +58,13 @@ double chaserSpeed = 7.00;
 double chaserYawAngle = 0.0;//180.0;
 double chaserYawAdd = 0.0;
 static double chaserPosX = 0.00, chaserPosY = 2.00, chaserPosZ = 0.00;
+static double prevChaserPosX = 0.00, prevChaserPosY = 2.00, prevChaserPosZ = 0.00;
+
 static double joint0Angle = 0.0, joint1Angle = 0.0, joint2Angle = 0.0, joint3Angle = 0.0;
 
 static double gripperRollAngle = 0.0;
 static double gripperDist = 0.3;
 static bool gripperClosed = false;
-bool robotCaptured = false;
 
 /*
  *
@@ -70,6 +79,7 @@ double runnerVelHeading =   0.00;
 double runnerPosX       =   1.00;   // Initial X position is 0.00 meters
 double runnerPosY       =   2.00;   // Initial Y position is 100.00 meters
 double runnerPosZ       =   0.00;   // Initial Z position is 0.00 meters
+static double prevRunnerPosX = 0.00, prevRunnerPosY = 2.00, prevRunnerPosZ = 0.00;
 double mass             =   0.50;   // mass is 1.50 kg
 double forceY           =   0.00;   // Init force in Y direction is 0.00 Newtons
 double e                =   0.50;   // Coeff of restitution  
@@ -77,11 +87,11 @@ double e                =   0.50;   // Coeff of restitution
 double runnerYawAngle = 180.0;
 
 // list of runner positions
-const int numPoses = 1000;
+const int numPoses = 100;
 const int poseDim  = 3;
 
-// Create an array to hold 1000 vectors, each with 3 components
-double runnerPoseList[1000][4];
+// Create an array to hold 100 vectors, each with 3 components
+double runnerPoseList[100][4];
 
 void setRunnerPoseList() {
     for (int i = 0; i < poseDim; i++) {

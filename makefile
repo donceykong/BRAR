@@ -41,10 +41,6 @@ $(OBJ)/%.o: $(SRC)/%.c $(DEPS)
 	@mkdir -p $(OBJ)
 	$(CC) $(CFLG) -I$(INC) -c $< -o $@
 
-$(OBJ)/%.o: $(SRC)/%.cpp $(DEPS)
-	@mkdir -p $(OBJ)
-	$(CPP) $(CFLG) -I$(INC) -c $< -o $@
-
 # Create archive
 $(OBJ)/CSCIx229.a: $(OBJ)/print.o
 	ar -rcs $@ $^

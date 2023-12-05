@@ -21,11 +21,11 @@
 #include FT_FREETYPE_H
 
 // In-house includes
+#include "windowHandler.h"  //
 #include "matrixMath.h"     // NO DEPENDENCIES
-#include "GameModes.h"      // TOP IMPORT
-
+#include "GameModes.h"      // 
 #include "textureUtils.h"
-#include "windowHandler.h"
+
 #include "ftTextHandler.h"
 #include "buttonHandler.h"
 #include "screenInfo.h"
@@ -53,14 +53,14 @@
 bool showFrames = false;
 
 // Draw robot pose history on map
-bool showPoseHist = false;
+bool showPoseHist = true;
 
 GLfloat mat_ambient[] = {0.2, 0.2, 0.2, 1.0};  
 
 // Global Framerate variables
-const double FPS = 270.0;
-const double frameDelay = 1000.0 / FPS;
-double lastFrameTime = 0.00;
+int previousTime = 0;
+const int desiredFPS = 60;
+const int timePerFrame = 1000 / desiredFPS; // milliseconds
 
 // Globals for main screen options
 bool showMain = true;
@@ -69,27 +69,28 @@ bool showMain = true;
 int mouseCallbackEnabled = 1; // Global variable to control the callback
 
 int iter = 0;
-int numberPoses = 0;
+int numberPoses = 100;
+int poseNumber = 0;
 void displayPoseHistory() {
-    /*
-     * Add poses to map
-    */
     if (showPoseHist) {
-        iter++;
         //printf("numberPoses: %d, iterDIV10: %d\n", numberPoses, iter/10);
-        if (iter / 10 == 1 & numberPoses < 1000) {
-            updateRunnerPoseList(numberPoses);
+        if (iter / 10 == 1 & poseNumber < 100) {
+            updateRunnerPoseList(poseNumber);
             iter = 0;
-            numberPoses++;
+            poseNumber++;
+        }
+        else if (iter / 10 == 1 & poseNumber == 100) {
+            poseNumber = 0;
+            iter = 0;
         }
         for (int i = 0; i < numberPoses; i++) {
             glPushMatrix();
             glTranslatef(runnerPoseList[i][0], runnerPoseList[i][1], runnerPoseList[i][2]);
             glRotatef((GLfloat)runnerPoseList[i][3], 0.0, 1.0, 0.0);
-            drawFrame(2.0);
-            //Sphere(0.5, 4, 4);              
+            drawPoseFrame(2.0);             
             glPopMatrix();
         }
+        iter++;
     }
 }
 
@@ -117,7 +118,6 @@ void displayViewRobot() {
 
     glDisable(GL_DEPTH_TEST);
 
-    glutPostRedisplay();
     glFlush();
     glutSwapBuffers();
 }
@@ -133,8 +133,8 @@ void displayTimeCrunch() {
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
     glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_ambient);
-
     glEnable(GL_COLOR_MATERIAL);
+
     drawGroundPlane();
     drawRobot();                    // Draw chaser (collector)
     computeForwardKinematics();
@@ -142,7 +142,7 @@ void displayTimeCrunch() {
     plotMapBorder();
     plotMapItems();
     plotMapObstacles();
-    displayPoseHistory();
+    // displayPoseHistory();
     setObjAbsorberPos(chaserPosX, chaserPosY, chaserPosZ);
     updateMapCenter (chaserPosX, chaserPosZ);
     drawNearestLine(nearestMapItem->position.x, nearestMapItem->position.y, nearestMapItem->position.z);
@@ -159,7 +159,7 @@ void displayTimeCrunch() {
     sprintf(SIstr2, "Total Score: %.5f", totalScore);
     drawSI(SIstr1, SIstr2);
 
-    glutPostRedisplay();
+    // glutPostRedisplay();
     glFlush();
     glutSwapBuffers();
 }
@@ -175,22 +175,21 @@ void displayRunner() {
     glEnable(GL_DEPTH_TEST);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-    glEnable(GL_COLOR_MATERIAL);
     glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_ambient);
+    glEnable(GL_COLOR_MATERIAL);
+    
     drawGroundPlane();
     drawRobot();                    // Draw chaser (collector)
     drawMiniRobot();                 // Draw runner
     computeForwardKinematics();
-    glDisable(GL_DEPTH_TEST);
 
-    glEnable(GL_DEPTH_TEST);
     //drawText3D();
     displayPoseHistory();
     setObjAbsorberPos(runnerPosX, runnerPosY, runnerPosZ);
     updateMapCenter(runnerPosX, runnerPosZ);
     glDisable(GL_DEPTH_TEST);
 
-    glutPostRedisplay();
+    //glutPostRedisplay();
     glFlush();
     glutSwapBuffers();
 }
@@ -199,6 +198,7 @@ double colorADJ = 0.0;
 displayEndScreen() {
     srand(time(NULL));  // set rand generator seed
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glDisable(GL_LIGHTING);
 
     // Set up the view
     glMatrixMode(GL_PROJECTION);
@@ -218,7 +218,7 @@ displayEndScreen() {
     colorADJ = (double)rand() / (RAND_MAX);
     // printf("colorADJ: %f\n", colorADJ);
     
-    glutPostRedisplay();
+    //glutPostRedisplay();
     glFlush();
     glutSwapBuffers();
 }
@@ -226,7 +226,12 @@ displayEndScreen() {
 void display() {
     switch (GAME_MODE) {
         case RUNNER:
-            displayRunner();
+            if (!robotTaken) {
+                displayRunner();
+            }
+            else {
+                displayEndScreen();
+            }
             break;
         case TIME_CRUNCH:
             if (remainingTime > 0.0) {
@@ -238,41 +243,12 @@ void display() {
             }
             break;
         case VIEW_ROBOT:
-            displayViewRobot();
+                displayViewRobot();
             break;
         default:
             break;
     }   
-
-    /*
-    * Should I add an escape button? It looks like the following still show even during gameplay
-    * Maybe I can add the overhead view in the corner too?
-    * Or add robot states?????
-    * 
-    */
-    // drawButtonScreen(); 
 }
-
-void FPSLimitedDisplay () {
-    double currentTime = glutGet(GLUT_ELAPSED_TIME);
-    double timeSinceLastFrame = currentTime - lastFrameTime;
-    
-    //printf("timeSinceLastFrame: %f, frameDelay: %f\n", timeSinceLastFrame, frameDelay);
-
-    if (timeSinceLastFrame >= frameDelay) {
-        display();
-    } else {
-        double sleepTime = frameDelay - timeSinceLastFrame;
-        //printf("sleepTime: %f\n", sleepTime);
-        if (sleepTime > 0.00) {
-            usleep((unsigned int)(sleepTime * 1000.00 + 0.5)); // usleep takes sleep time in microseconds
-        }
-        display();
-    }
-
-    lastFrameTime = currentTime;
-}
-
 
 // GLUT Mouse Button Callback
 void mouseButtonCallback(int button, int state, int x, int y) {
@@ -308,8 +284,25 @@ void mouseButtonCallback(int button, int state, int x, int y) {
             beginTime = time(NULL);
             prevTime = beginTime;
         }
-        glutDisplayFunc(showMain ? drawButtonScreen : FPSLimitedDisplay);
-        glutPostRedisplay();
+        glutDisplayFunc(showMain ? drawButtonScreen : display);
+    }
+}
+
+void timer(int value) {
+    glutPostRedisplay();
+}
+
+void idle() {
+    int currentTime = glutGet(GLUT_ELAPSED_TIME);
+    int elapsedTime = currentTime - previousTime;
+
+    if (elapsedTime < timePerFrame) {
+        // Sleep for remaining time
+        int sleepTime = timePerFrame - elapsedTime;
+        glutTimerFunc(sleepTime, timer, 0);
+    } else {
+        previousTime = currentTime;
+        glutPostRedisplay(); // Request to redraw the scene
     }
 }
 
@@ -337,11 +330,8 @@ int main(int argc, char** argv) {
 
     setupTextRendering(face); // Call this after FT_New_Face and before the main loop
 
-    // Game play
-    // glutDisplayFunc(FPSLimitedDisplay);
-
     // Main Screen
-    glutDisplayFunc(showMain ? drawButtonScreen : FPSLimitedDisplay);
+    glutDisplayFunc(showMain ? drawButtonScreen : display);
 
     // Arrow key callbacks
     glutSpecialFunc(special);
@@ -352,13 +342,7 @@ int main(int argc, char** argv) {
     glutKeyboardUpFunc(handleKeysUp);
 
     // Mouse callbacks
-    //glutMouseFunc(mouseClick);
-    //glutMotionFunc(mouseMove);
     glutMouseFunc(mouseButtonCallback);
-
-    //init();
-
-    lastFrameTime = glutGet(GLUT_ELAPSED_TIME);
     
     // load splash texture
     splashTexture = loadTexture("./assets/splashscreen.bmp");
@@ -379,6 +363,9 @@ int main(int argc, char** argv) {
     setRunnerPoseList();
     addItemsToMapList();
     addObstaclesToMapList();
+    
+    previousTime = glutGet(GLUT_ELAPSED_TIME);
+    glutIdleFunc(idle);
 
     glutMainLoop();
 

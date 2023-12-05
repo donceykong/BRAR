@@ -1,54 +1,20 @@
 _________________________________________________________________________________
-                        SUNDAY
-
-- Make lighting standard. Fix algorithm to position lighting at objects.
-
-- Add obstructions that the user cannot go through. Suchs as walls/boxes.
-
-- Redesign robot arm.
-
-- Design small robot dog for player.
-
-- Use new design of robot.
-
-- Fix orbiting camera to strictly follow behind runner. Maybe add keys to zoom in/out?
-
-- Remove keys to control robot arm (After validating inverse kinematics algorithm).
-
-- New header file for splash screen.
-
-- Make splash screen cooler (or remove?)
-_________________________________________________________________________________
-                        MONDAY
-
-- Create simple drone robots for lighting.
-
-_________________________________________________________________________________
                         TUESDAY
 
-_________________________________________________________________________________
-                        STRETCH
+- remove splash screen stuff
 
----
+- fix FPS timing 
 
-## TODO:
+- Add box objects
 
-- [ ] Fix design of arm to meet design of Braccio arm.
+- Add ability for user to add walls behind them
 
-- [ ] Make objects in game more interesting. (use obj?)
+- Redesign robot arm and gripper
 
-- [ ] Add ground scene with texture.
+- Make objects & items in game more interesting. (use obj?)
 
-- [ ] Add objects user needs to navigate around.
+- Remove keys to control robot arm...
 
-- [ ] Add a game clock that begins when the game does and ends when the user is caught.
+- Add ground scene with texture.
 
-- [ ] RRT* for chaser to move around obstacles to get runner robot?
-
-- [x] Add lights to track robot.
-- [ ] Design drone to hold lights.
-- [ ] Fix orbiting pattern of drone lights.
-
-- [ ] Add gravity to robot and use the texture plane to be where robot lands. This can be seen as a weak form of ground-based collision detection. 
-
-- Use distance from hip to bottom of foot as how much to displace robot in y-direction to better simulate trot/gait.
+- RRT* for chaser to move around obstacles to get runner robot?
