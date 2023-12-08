@@ -134,15 +134,20 @@ void displayTimeCrunch() {
     glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
     glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_ambient);
     glEnable(GL_COLOR_MATERIAL);
+    // float white[] = {1,1,1,1};
+    // float Emission[]  = {0.0,0.0,0.01*0,1.0};
+    // glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS, 0.3);
+    // glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
+    // glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,Emission);
 
     drawGroundPlane();
+    displayPoseHistory();
     drawRobot();                    // Draw chaser (collector)
     computeForwardKinematics();
 
     plotMapBorder();
     plotMapItems();
     plotMapObstacles();
-    // displayPoseHistory();
     setObjAbsorberPos(chaserPosX, chaserPosY, chaserPosZ);
     updateMapCenter (chaserPosX, chaserPosZ);
     drawNearestLine(nearestMapItem->position.x, nearestMapItem->position.y, nearestMapItem->position.z);
@@ -168,7 +173,7 @@ void displayRunner() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     checkRobotCaptured();
-    update();
+    updateRunner();
     displayView();
     setupLighting();
 
@@ -185,9 +190,19 @@ void displayRunner() {
 
     //drawText3D();
     displayPoseHistory();
+
+    plotMapBorder();
+    plotMapItems();
+    plotMapObstacles();
     setObjAbsorberPos(runnerPosX, runnerPosY, runnerPosZ);
     updateMapCenter(runnerPosX, runnerPosZ);
     glDisable(GL_DEPTH_TEST);
+
+    currentTime = time(NULL);
+    totalElapsedTime = difftime(currentTime, beginTime);
+    sprintf(SIstr1, "Time: %.5f", totalElapsedTime);
+    sprintf(SIstr2, "Total Score: %.5f", totalScoreRunner);
+    drawSI(SIstr1, SIstr2);
 
     //glutPostRedisplay();
     glFlush();
@@ -223,6 +238,34 @@ displayEndScreen() {
     glutSwapBuffers();
 }
 
+displayEndScreenRunner() {
+    srand(time(NULL));  // set rand generator seed
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glDisable(GL_LIGHTING);
+
+    // Set up the view
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluOrtho2D(0.0, windowXDiff, 0.0, windowYDiff);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    // drawBackground();
+    // Render some text on the screen
+    glColor3f(1.0, 0.0, 0.0); // Set text color (green)
+    renderText("GAME OVER", windowXDiff/20, windowYDiff/2, 4.0);
+    
+    glColor3f(0.1 + colorADJ, 0.8+colorADJ, colorADJ); // Set text color (green)
+    sprintf(SIstr2, "Total Score: %.5f", totalScore);
+    renderText(SIstr2,  windowXDiff/20, windowYDiff/2 - 200, 2.0);
+    colorADJ = (double)rand() / (RAND_MAX);
+    // printf("colorADJ: %f\n", colorADJ);
+    
+    //glutPostRedisplay();
+    glFlush();
+    glutSwapBuffers();
+}
+
 void display() {
     switch (GAME_MODE) {
         case RUNNER:
@@ -230,7 +273,7 @@ void display() {
                 displayRunner();
             }
             else {
-                displayEndScreen();
+                displayEndScreenRunner();
             }
             break;
         case TIME_CRUNCH:
@@ -359,6 +402,7 @@ int main(int argc, char** argv) {
     BMPtexture3 = loadTexture("./assets/motor_shaft.bmp");
     BMPtexture4 = loadTexture("./assets/sheet_metal3.bmp");
     BMPtexture5 = loadTexture("./assets/robot_body.bmp");
+    BMPtexture6 = loadTexture("./assets/flagstone.bmp");
 
     setRunnerPoseList();
     addItemsToMapList();

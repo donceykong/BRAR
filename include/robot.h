@@ -18,14 +18,14 @@ void drawRobot() {
     // robot left leg
     glPushMatrix();
     glTranslatef(0.0, 0.0, 0.5);
-    drawLeg(true, chaserSpeed);
+    drawLeg(true, chaserViewableSpeed);
     glPopMatrix();
 
     // robot right leg
     glPushMatrix();
     glTranslatef(0.0, 0.0, -0.5);
     //glRotatef(180.0f, 0.0, 1.0, 0.0);  // Rotate thigh 180
-    drawLeg(false, chaserSpeed);
+    drawLeg(false, chaserViewableSpeed);
     glPopMatrix();
 
     drawRobotArm();
@@ -44,26 +44,18 @@ void drawMiniRobot() {
     glPushMatrix();
     drawBody();
     glPopMatrix();
-
-    double viewableRunnerSpeed;
-    if (runnerVelHeading == 0.0) {
-        viewableRunnerSpeed = 0.0;
-    }
-    else {
-        viewableRunnerSpeed = runnerSpeed;
-    }
     
     // robot left leg
     glPushMatrix();
     glTranslatef(0.0, 0.0, 0.5);
-    drawLeg(true, viewableRunnerSpeed);
+    drawLeg(true, runnerViewableSpeed);
     glPopMatrix();
 
     // robot right leg
     glPushMatrix();
     glTranslatef(0.0, 0.0, -0.5);
     //glRotatef(180.0f, 0.0, 1.0, 0.0);  // Rotate thigh 180
-    drawLeg(false, viewableRunnerSpeed);
+    drawLeg(false, runnerViewableSpeed);
     glPopMatrix();
 
     /*
@@ -87,14 +79,14 @@ void drawMiniRobot() {
     // robot left leg
     glPushMatrix();
     glTranslatef(0.0, 0.0, 0.5);
-    drawLeg(true, viewableRunnerSpeed);
+    drawLeg(true, runnerViewableSpeed);
     glPopMatrix();
 
     // robot right leg
     glPushMatrix();
     glTranslatef(0.0, 0.0, -0.5);
     //glRotatef(180.0f, 0.0, 1.0, 0.0);  // Rotate thigh 180
-    drawLeg(false, viewableRunnerSpeed);
+    drawLeg(false, runnerViewableSpeed);
     glPopMatrix();
 
     // robot arm

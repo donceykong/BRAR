@@ -14,9 +14,9 @@ GLfloat light2_X = 0.80, light2_Y = 2.00, light2_Z = 0.00;
 GLfloat light2Rotation = 0.0f;
 const GLfloat light2RotationSpeed = 1.5f;
 
-double ambient = 0.2, diffuse = 1.0, specular = 1.0;  
+double ambient = 0.1, diffuse = 0.8, specular = 0.0;  
 GLfloat spotExponent = 1.0; // for a moderately focused light
-GLfloat spotCutoff = 45.0; // for a 45-degree cone of light
+GLfloat spotCutoff = 45.0;  // for a 45-degree cone of light
 
 const GLfloat rectangleWidth = 0.5, rectangleHeight = 0.5;
 const GLfloat prismHeight = 1.0, prismBase = 0.5;
@@ -123,11 +123,11 @@ void showLights() {
     glLightfv(GL_LIGHT1, GL_AMBIENT,  ambientColor);
     glLightfv(GL_LIGHT1, GL_DIFFUSE,  diffuseColor);
     glLightfv(GL_LIGHT1, GL_SPECULAR, specularColor);
-    glLightf(GL_LIGHT1, GL_SPOT_EXPONENT, spotExponent);
-    glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, spotCutoff);
+    //glLightf(GL_LIGHT1, GL_SPOT_EXPONENT, spotExponent);
+    //glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, spotCutoff);
     glLightfv(GL_LIGHT1, GL_POSITION, light1Position);   // Translate the light
-    GLfloat light1Direction[] = {sin(light1Rotation * M_PI / 180.0), 0.0, cos(light1Rotation * M_PI / 180.0), 1.0};
-    glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, light1Direction);
+    // GLfloat light1Direction[] = {sin(light1Rotation * M_PI / 180.0), 0.0, cos(light1Rotation * M_PI / 180.0), 1.0};
+    // glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, light1Direction);
 
     // glEnable(GL_LIGHT2);
 

@@ -1,17 +1,24 @@
 _________________________________________________________________________________
                         TUESDAY
 
-- remove splash screen stuff
+- Check lighting for each shape
 
-- fix FPS timing 
+- Fix key handling - USE ex15 as example
 
-- Add box objects
+- Choose new textures, get rid of vent
+
+- Make robot arm more interesting:
+    - Add teeth to gripper
+
+- Make items more interesting
+
+- Fix wall obstacle texture
+
+- Add box obstacle (or something else!)
+
+_________________________________________________________________________________
 
 - Add ability for user to add walls behind them
-
-- Redesign robot arm and gripper
-
-- Make objects & items in game more interesting. (use obj?)
 
 - Remove keys to control robot arm...
 

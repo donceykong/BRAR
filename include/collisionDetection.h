@@ -10,9 +10,9 @@ bool detect_collision(MapObstacle obstacle, double robotX, double robotY, double
         // return (a.min.x < b.max.x && a.max.x > b.min.x) &&
         //         (a.min.y < b.max.y && a.max.y > b.min.y) &&
         //         (a.min.z < b.max.z && a.max.z > b.min.z);
-        return (obstacle.minPos.x < (robotX + 2.0) && obstacle.maxPos.x > (robotX - 2.0)) &&
-                (obstacle.minPos.y < (robotY + 2.0) && obstacle.maxPos.y > (robotY - 2.0)) &&
-                (obstacle.minPos.z < (robotZ + 2.0) && obstacle.maxPos.z > (robotZ - 2.0));
+        return  (obstacle.minPos.x < (robotX + 1.0) && obstacle.maxPos.x > (robotX - 1.0)) &&
+                (obstacle.minPos.y < (robotY + 1.0) && obstacle.maxPos.y > (robotY - 1.0)) &&
+                (obstacle.minPos.z < (robotZ + 1.0) && obstacle.maxPos.z > (robotZ - 1.0));
     }
     else {
         printf("OBSTACLE DOES NOT HAVE TYPE - NO COLLISION DETECTED.\n");

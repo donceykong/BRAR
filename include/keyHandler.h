@@ -6,10 +6,10 @@ bool keyLeft = false;
 bool keyUp = false;
 bool keyDown = false;
 
-bool keyW = false;
-bool keyS = false;
-bool keyA = false;
-bool keyD = false;
+bool keyW = false;  // UNUSED
+bool keyS = false;  // UNUSED
+bool keyA = false;  // UNUSED
+bool keyD = false;  // UNUSED
 bool keyY = false;
 bool keyH = false;
 
@@ -229,28 +229,16 @@ void handleKeysUp(unsigned char key, int x, int y) {
     }
 }
 
-void update()
+void updateRunner()
 {
   double robotXPosInc = 0.00;
   double robotZPosInc = 0.00;
-  double joint0inc = 0.00;
-  double joint1inc = 0.00;
+  // double joint0inc = 0.00;
+  // double joint1inc = 0.00;
   double joint2inc = 0.00;
   double joint3inc = 0.00;
   double gripperRollinc = 0.00;
   double gripperDistinc = 0.00;
-
-  // Base Adjust 
-  if (keyA)
-    joint0inc = -5.00 * SPEED;
-  if (keyD)
-    joint0inc = 5.00 * SPEED;
-
-  // Joint 1 Adjust
-  if (keyW)
-    joint1inc = 2.00 * SPEED;
-  if (keyS)
-    joint1inc = -2.00 * SPEED;
 
   // Joint 2 Adjust
   if (keyY)
@@ -267,9 +255,9 @@ void update()
     gripperRollinc = -5.00 * SPEED;
   if (keyLeft)
     gripperRollinc = 5.00 * SPEED;
-
-  runnerVelHeading = joint3inc;
   
+  runnerSpeed = runnerSpeedAdjust*joint3inc;
+
   // Gripper Adjust
   if (keyJ)
     gripperDistinc = -0.01 * SPEED;
@@ -312,16 +300,16 @@ void update()
     }
   }
   else {
-    runnerYawAngle += runnerSpeed*0.5*gripperRollinc;
+    runnerYawAngle += gripperRollinc;
     double angleYradians = runnerYawAngle * PI / 180;
 
-    runnerPosZ += runnerSpeed*0.1*joint3inc*cos(angleYradians);
-    runnerPosX += runnerSpeed*0.1*joint3inc*sin(angleYradians);
+    runnerPosZ += runnerSpeed*cos(angleYradians);
+    runnerPosX += runnerSpeed*sin(angleYradians);
 
     // Move chaser
-    chaserPosX -= 0.02*(endEffectorPosition.x-runnerPosX);
-    chaserPosZ -= 0.02*(endEffectorPosition.z-runnerPosZ);
-    chaserSpeed = abs(2.0*(endEffectorPosition.x-runnerPosX));
+    chaserPosX -= chaserSpeedAdjust*0.02*(endEffectorPosition.x-runnerPosX)*chaserSpeedAdjust;
+    chaserPosZ -= chaserSpeedAdjust*0.02*(endEffectorPosition.z-runnerPosZ)*chaserSpeedAdjust;
+    chaserSpeed = chaserSpeedAdjust*sqrt((endEffectorPosition.x-runnerPosX)*(endEffectorPosition.x-runnerPosX) + (endEffectorPosition.z-runnerPosZ)*(endEffectorPosition.z-runnerPosZ))*chaserSpeedAdjust;
   }
 
   if (runnerInCollision) {
@@ -334,34 +322,47 @@ void update()
     chaserPosX = prevChaserPosX;
   }
 
-  // TODO: FIX THE LIGHTING
+  // THE LIGHTING
   double orbitRadius = 4.0;
-  light1Rotation = lightrot + runnerYawAngle + 45.0 + 180;
+  light1Rotation = lightrot + runnerYawAngle + 45.0;
   light1_X = -orbitRadius * sin(light1Rotation * PI / 180) + runnerPosX;
   light1_Y = runnerPosY;
   light1_Z = -orbitRadius * cos(light1Rotation * PI / 180) + runnerPosZ;
 
-  light2Rotation = lightrot + runnerYawAngle - 45.0 + 180;
+  light2Rotation = lightrot + runnerYawAngle - 45.0;
   light2_X = -orbitRadius * sin(light2Rotation * PI / 180) + runnerPosX;
   light2_Y = runnerPosY;
   light2_Z = -orbitRadius * cos(light2Rotation * PI / 180) + runnerPosZ;
-  //lightrot += 0.1;
+  lightrot += 0.5;
+
+  // Camera Position & Orientation
+  // View Zoom Adjust
+  if (keyO)
+    fpCamZoom *= 0.99;
+  if (keyL)
+    fpCamZoom *= 1.1;
+
 
   if (viewMode == 1) {
-    // Compute the camera position using spherical coordinates.
-
-    angleY += 0.5*gripperRollinc;
-    firstPersonCamZ = runnerPosZ;// - 20.0/2.0;
-    firstPersonCamX = runnerPosX;
+    orbitCamAngleY = runnerYawAngle + 180;
+    orbitCamZ = runnerPosZ;
+    orbitCamX = runnerPosX;
   }
   
+  double poseDiff = 0.5*sqrt((runnerPosX-chaserPosX)*(runnerPosX-chaserPosX) + (runnerPosZ-chaserPosZ)*(runnerPosZ-chaserPosZ));
+  overheadCamX = -runnerPosX + (runnerPosX-chaserPosX)/2.0;
+  overheadCamY = -1 - poseDiff;
+  overheadCamZ = -runnerPosZ + (runnerPosZ-chaserPosZ)/2.0;
+
   // Adjust joint angles
   double yaw = getYawOffset(chaserYawAngle, chaserPosX, chaserPosZ, runnerPosX, runnerPosY, runnerPosZ) * 180 / PI;
-  //printf("roll: %f, joint0Angle: %f\n", roll, joint0Angle);
-  chaserYawAngle += joint0inc - 0.1*yaw; 
-  //joint0Angle += joint0inc - chaserSpeed*0.1*yaw;
-  joint1Angle += joint1inc + (runnerPosY - endEffectorPosition.y);// 0.1*pitch;
-  joint2Angle += joint2inc;
+  chaserYawAngle  -= chaserSpeedAdjust*0.1*yaw; 
+  joint1Angle     += (runnerPosY - endEffectorPosition.y);
+  computeForwardKinematics(); // call to get new endeffector pos
+  joint2Angle     += (runnerPosY - endEffectorPosition.y); // joint2inc;
+
+  runnerViewableSpeed = abs(runnerSpeed) + abs(gripperRollinc);
+  chaserViewableSpeed = abs(chaserSpeed) + abs(0.1*yaw);
 
   if (joint1Angle >= 250.00) {
     joint1Angle = 250.00;
@@ -403,24 +404,12 @@ void updateTimeCrunch()
 {
   double robotXPosInc = 0.00;
   double robotZPosInc = 0.00;
-  double joint0inc = 0.00;
-  double joint1inc = 0.00;
+  // double joint0inc = 0.00;
+  // double joint1inc = 0.00;
   double joint2inc = 0.00;
   double joint3inc = 0.00;
   double gripperRollinc = 0.00;
   double gripperDistinc = 0.00;
-
-  // Base Adjust 
-  if (keyA)
-    joint0inc = -5.00 * SPEED;
-  if (keyD)
-    joint0inc = 5.00 * SPEED;
-
-  // Joint 1 Adjust
-  if (keyW)
-    joint1inc = 2.00 * SPEED;
-  if (keyS)
-    joint1inc = -2.00 * SPEED;
 
   // Joint 2 Adjust
   if (keyY)
@@ -428,15 +417,15 @@ void updateTimeCrunch()
   if (keyH)
     joint2inc = -5.00 * SPEED;
 
-  // Gripper Adjust
+  // ROBOT POS ADJUST
   if (keyUp)
     joint3inc = 5.00 * SPEED;
   if (keyDown)
     joint3inc = -5.00 * SPEED;
   if (keyRight)
-    gripperRollinc = -5.00 * SPEED;
+    gripperRollinc = -10.00 * SPEED;
   if (keyLeft)
-    gripperRollinc = 5.00 * SPEED;
+    gripperRollinc = 10.00 * SPEED;
   
   // Gripper Adjust
   if (keyJ)
@@ -457,7 +446,8 @@ void updateTimeCrunch()
   }
 
   // Move chaser
-  chaserYawAngle += 0.5*gripperRollinc;
+  chaserSpeed = 4.0*joint3inc*chaserSpeedAdjust;
+  chaserYawAngle += gripperRollinc;
   double angleYradians = chaserYawAngle * PI / 180;
   if (chaserInCollision) {
     chaserPosZ = prevChaserPosZ;
@@ -466,10 +456,11 @@ void updateTimeCrunch()
   else {
     prevChaserPosZ = chaserPosZ;
     prevChaserPosX = chaserPosX;
-    chaserPosZ -= 0.1*joint3inc*cos(angleYradians);
-    chaserPosX -= 0.1*joint3inc*sin(angleYradians);
-    chaserSpeed = abs(4.0*joint3inc);
+    chaserPosZ -= chaserSpeed*0.1*cos(angleYradians);
+    chaserPosX -= chaserSpeed*0.1*sin(angleYradians);
   }
+
+  chaserViewableSpeed = abs(chaserSpeed) + abs(gripperRollinc);
 
   // TODO: FIX THE LIGHTING
   double orbitRadius = 4.0;
@@ -484,24 +475,23 @@ void updateTimeCrunch()
   light2_Z = -orbitRadius * cos(light2Rotation * PI / 180) + chaserPosZ;
   lightrot += 0.5;
 
+  // CAMERA POS
   if (viewMode == 1) {
     // Compute the camera position using spherical coordinates.
-    angleY += 0.5*gripperRollinc;
-    firstPersonCamY = 0.0;// - 20.0/2.0;
-    firstPersonCamZ = chaserPosZ;// - 20.0/2.0;
-    firstPersonCamX = chaserPosX;
+    orbitCamAngleY += 0.5*gripperRollinc;
+    orbitCamY = 0.0;
+    orbitCamZ = chaserPosZ;
+    orbitCamX = chaserPosX;
   }
-  
-  // Adjust joint angles
-  //double yaw = getYawOffset(joint0Angle, chaserPosX, chaserPosZ, nearestObj->posX, nearestObj->posY, nearestObj->posZ) * 180 / PI;
-  //joint0Angle += runnerSpeed*0.5*gripperRollinc* PI / 180;;
-  
-  joint1Angle += 5.0*(nearestMapItem->position.y - endEffectorPosition.y);
-  double diffX = nearestMapItem->position.x - endEffectorPosition.x;
-  double diffY = nearestMapItem->position.y - endEffectorPosition.y;
-  double diffZ = nearestMapItem->position.z - endEffectorPosition.z;
 
-  joint2Angle += joint2inc;
+  overheadCamX = -chaserPosX;
+  overheadCamY = -1;
+  overheadCamZ = -chaserPosZ;
+  
+  // ROBOT POSE
+  joint1Angle += 5.0*(nearestMapItem->position.y - endEffectorPosition.y);
+  computeForwardKinematics(); // call to get new endeffector pos
+  joint2Angle += 5.0*(nearestMapItem->position.y - endEffectorPosition.y); // joint2inc;
 
   if (joint1Angle >= 90.00) {
     joint1Angle = 90.00;
@@ -509,10 +499,10 @@ void updateTimeCrunch()
     joint1Angle = -70.00;
   }
 
-  if (joint2Angle >= 90.00) {
-    joint2Angle = 90.00;
-  } else if (joint2Angle <= -90.00) {
-    joint2Angle = -90.00;
+  if (joint2Angle >= 45.00) {
+    joint2Angle = 45.00;
+  } else if (joint2Angle <= -45.00) {
+    joint2Angle = -45.00;
   }
 
   //joint3Angle += joint3inc;
@@ -543,24 +533,12 @@ void updateViewRobot()
 {
   double robotXPosInc = 0.00;
   double robotZPosInc = 0.00;
-  double joint0inc = 0.00;
-  double joint1inc = 0.00;
+  // double joint0inc = 0.00;
+  // double joint1inc = 0.00;
   double joint2inc = 0.00;
   double joint3inc = 0.00;
   double gripperRollinc = 0.00;
   double gripperDistinc = 0.00;
-
-  // Base Adjust 
-  if (keyA)
-    joint0inc = -5.00 * SPEED;
-  if (keyD)
-    joint0inc = 5.00 * SPEED;
-
-  // Joint 1 Adjust
-  if (keyW)
-    joint1inc = 2.00 * SPEED;
-  if (keyS)
-    joint1inc = -2.00 * SPEED;
 
   // Joint 2 Adjust
   if (keyY)
@@ -610,21 +588,20 @@ void updateViewRobot()
   double orbitRadius = 4.0;
   light1Rotation = lightrot + chaserYawAngle + 45.0 + 180;
   light1_X = -orbitRadius * sin(light1Rotation * PI / 180) + chaserPosX;
-  light1_Y = chaserPosY;
+  light1_Y = chaserPosY + 1;
   light1_Z = -orbitRadius * cos(light1Rotation * PI / 180) + chaserPosZ;
 
   light2Rotation = lightrot + chaserYawAngle - 45.0 + 180;
   light2_X = -orbitRadius * sin(light2Rotation * PI / 180) + chaserPosX;
-  light2_Y = chaserPosY;
+  light2_Y = chaserPosY + 1;
   light2_Z = -orbitRadius * cos(light2Rotation * PI / 180) + chaserPosZ;
-  lightrot += 0.5;
+  lightrot += 0.8;
 
   if (viewMode == 1) {
-    // Compute the camera position using spherical coordinates.
-    angleY += 0.5*gripperRollinc;
-    firstPersonCamZ = chaserPosZ;
-    firstPersonCamY = 1.0;
-    firstPersonCamX = chaserPosX;
+    orbitCamAngleY += 0.5*gripperRollinc;
+    orbitCamZ = chaserPosZ;
+    orbitCamY = 1.0;
+    orbitCamX = chaserPosX;
   }
 
   if (joint1Angle >= 250.00) {

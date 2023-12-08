@@ -35,7 +35,8 @@ GLuint BMPtexture1 = 0;
 GLuint BMPtexture2 = 0;
 GLuint BMPtexture3 = 0;
 GLuint BMPtexture4 = 0;
-GLuint BMPtexture5 = 0;     
+GLuint BMPtexture5 = 0;   
+GLuint BMPtexture6 = 0;  
 GLuint BMPtexture  = 0;     // Main texture (set to 1:4 as desired)
 
 GLuint loadTexture(const char* filepath) {

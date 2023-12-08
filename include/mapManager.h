@@ -34,6 +34,8 @@ double elapsedTime = 0.0;
 double totalElapsedTime = 0.0;
 double totalScore = 0.0;
 
+double totalScoreRunner = 0.0;
+
 double rewardDiminish = 1.0;   // No diminishing initially
 
 void setObjAbsorberPos(double x, double y, double z) {
@@ -60,16 +62,8 @@ void drawSemiCylinderEdgesMap(GLfloat radius, int segments, double percentFull) 
 
 void plotMapBorder () {
     glPushMatrix();
-    glEnable(GL_DEPTH_TEST);  // Enable depth testing
-    // Set up polygon mode
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-    glEnable(GL_COLOR_MATERIAL);
-
     glTranslatef(mapCenterX, 1.0, mapCenterZ);
     drawSemiCylinderEdgesMap(mapRadius, 10000, 100.0);
-
-    glDisable(GL_DEPTH_TEST);
     glPopMatrix();
 }
 
@@ -102,7 +96,7 @@ void addObstaclesToMapList() {
         mapObstacle.yawAngle = randObstYaw;
         mapObstacle.width = 10.0;
         mapObstacle.height = 10.0;
-        mapObstacle.depth = 0.5;
+        mapObstacle.depth = 10.0;
         setObstacleBounds(&mapObstacle);
 
         mapObstList[i] = mapObstacle;
@@ -139,7 +133,7 @@ void plotMapObstacles() {
                 else {
                     glColor3f(1.0, 1.0, 1.0);
                 }
-                BMPtexture = BMPtexture5;
+                BMPtexture = BMPtexture6;
                 getCuboid(mapObstList[i].width, mapObstList[i].height, mapObstList[i].depth);
                 break;
             default:
@@ -228,7 +222,7 @@ void setNearest(int listIter) {
 
 void plotMapItems() {
     glEnable(GL_DEPTH_TEST);  // Enable depth testing
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    // glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     map_time += 0.005;
     //printf("Plotting Map Objects: \n");
     for (int i = 0; i < 10; i++) {
@@ -241,23 +235,24 @@ void plotMapItems() {
         }
         else if (mapItemList[i].state != COLLECTED && abs(objAbsorberX - mapItemList[i].position.x) < 4.0 && abs(objAbsorberY - mapItemList[i].position.y) < 1.0 && abs(objAbsorberZ - mapItemList[i].position.z) < 4.0) {
             mapItemList[i].state = COLLECTED;
-            runnerSpeed += mapItemList[i].runnerSpeedAdjust;
-            chaserSpeed += mapItemList[i].robotSpeedAdjust;
 
-            if (remainingTime >= 0) {
-                if (totalElapsedTime >= 10.0) {
-                    rewardDiminish = rewardDiminish*0.99;
-                    beginTime = time(NULL);
-                }
+            if (remainingTime >= 0 && GAME_MODE == TIME_CRUNCH) {
+                rewardDiminish = rewardDiminish*0.99;
                 remainingTime += mapItemList[i].timeValue*rewardDiminish;
                 totalScore += mapItemList[i].timeValue*rewardDiminish;
             }
-
-            if (runnerSpeed < 0.0) {
-                runnerSpeed = 0.0;
+            else if (!robotCaptured && GAME_MODE == RUNNER) {
+                //runnerSpeedAdjust += mapItemList[i].runnerSpeedAdjust;
+                runnerSpeedAdjust = runnerSpeedAdjust*0.99;             // RUNNER GETS SLOWER
+                chaserSpeedAdjust = chaserSpeedAdjust*1.10;             // RUNNER GETS FASTER AT A LARGER RATE THAN RUNNER GETS SLOW
+                totalScoreRunner += mapItemList[i].runnerSpeedAdjust;   // TOTAL RUNNER SCORE
             }
-            if (chaserSpeed < 0.0) {
-                chaserSpeed = 0.0;
+
+            if (runnerSpeedAdjust < 0.0) {
+                runnerSpeedAdjust = 0.0;
+            }
+            if (chaserSpeedAdjust < 0.0) {
+                chaserSpeedAdjust = 0.0;
             }
         }
 
@@ -339,9 +334,9 @@ void updateMapCenter (double robotPosX, double robotPosZ) {
         addItemsToMapList();
         addObstaclesToMapList();
     }
-    plotMapBorder();
-    plotMapItems();
-    plotMapObstacles(); 
+    // plotMapBorder();
+    // plotMapItems();
+    // plotMapObstacles(); 
     // printf("mapCenterX: %f, mapCenterZ: %f\n\n", mapCenterX, mapCenterZ);
 }
 

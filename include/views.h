@@ -3,18 +3,23 @@
 
 // Global Variables
 int viewMode = 1;  // 1 = First Person, 2 = Orbit
-GLfloat perspectiveCamX = 0, perspectiveCamY = 0, perspectiveCamZ = 4;
-GLfloat firstPersonCamZPrev = 0;
-GLfloat firstPersonCamX = 0.0, firstPersonCamY = 5.0, firstPersonCamZ = 0.0;
+
+// GLfloat perspectiveCamX = 0, perspectiveCamY = 0, perspectiveCamZ = 4;
+
+GLfloat OrbitCamZPrev = 0;
+GLfloat orbitCamX = 0.0, orbitCamY = 5.0, orbitCamZ = 0.0;
+GLfloat orbitCamAngleY = 0.0f;
+
 GLfloat fpCamZoomX = 0.0, fpCamZoomY = 5.0, fpCamZoomZ = 10.0;
 GLfloat fpCamZoom = 1.0;
 
-GLfloat angleX = 0.0f;
-GLfloat angleY = 0.0f;
-GLfloat distance = 0.0f;
+GLfloat overheadCamX = 0.0, overheadCamY = 5.0, overheadCamZ = 0.0;
 
-int mouseX, mouseY;
-int isDragging = 0;
+// GLfloat angleX = 0.0f;
+// GLfloat distance = 0.0f;
+
+// int mouseX, mouseY;
+// int isDragging = 0;
 
 void perspective(GLfloat fovy, GLfloat aspect, GLfloat zNear, GLfloat zFar) {
     GLfloat f = 1.0f / tan(fovy / 2.0f);
@@ -51,7 +56,7 @@ void perspective(GLfloat fovy, GLfloat aspect, GLfloat zNear, GLfloat zFar) {
 //     glTranslatef(-perspectiveCamX, -perspectiveCamY, -perspectiveCamZ);
 // }
 
-void setFirstPersonView() {
+void setOrbitView() {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     perspective(45.0f, 1.0f, 1.0f, 10.0f);
@@ -60,32 +65,29 @@ void setFirstPersonView() {
     glLoadIdentity();
 
     glTranslatef(0.0, -fpCamZoomY*fpCamZoom, -fpCamZoomZ*fpCamZoom);
-    glRotatef(-angleY, 0, 1, 0);
-    glTranslatef(-firstPersonCamX, -firstPersonCamY, -firstPersonCamZ);
+    glRotatef(-orbitCamAngleY, 0, 1, 0);
+    glTranslatef(-orbitCamX, -orbitCamY, -orbitCamZ);
 }
 
-void setOrbit() {
+void setOverheadView() {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     perspective(45.0f, 1.0f, 1.0f, 10.0f);
 
     glMatrixMode(GL_MODELVIEW);
-    perspective(45.0f, 1.0f, 1.0f, 10.0f);
-
     glLoadIdentity();
 
+    glTranslatef(0.0, -fpCamZoomY*fpCamZoom, -fpCamZoomZ*fpCamZoom);
     glRotatef(90, 1, 0, 0);
     glRotatef(-runnerYawAngle+180, 0, 1, 0);
-    //glRotatef(90, 1, 0, 0);
-    double poseDiff = 0.5*sqrt((runnerPosX-chaserPosX)*(runnerPosX-chaserPosX) + (runnerPosZ-chaserPosZ)*(runnerPosZ-chaserPosZ));
-    glTranslatef(-runnerPosX + (runnerPosX-chaserPosX)/2.0, -10 - poseDiff, -runnerPosZ + (runnerPosZ-chaserPosZ)/2.0); //glTranslatef(-posX, -posY -10, -posZ);
+    glTranslatef(overheadCamX, overheadCamY, overheadCamZ);
 }
 
 void displayView() {
     if (viewMode == 1) {
-        setFirstPersonView();
+        setOrbitView();
     } else if (viewMode == 2) {
-        setOrbit();
+        setOverheadView();
     }
 }
 

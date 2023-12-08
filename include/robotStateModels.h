@@ -53,7 +53,9 @@ bool robotTaken = false;
 
 Vector3 endEffectorPosition;
 
-double chaserSpeed = 7.00;
+double chaserSpeed = 0.00;
+double chaserViewableSpeed =   0.00;
+double chaserSpeedAdjust = 1.00;
 
 double chaserYawAngle = 0.0;//180.0;
 double chaserYawAdd = 0.0;
@@ -71,11 +73,12 @@ static bool gripperClosed = false;
  *  Mini robot states (runner)
  * 
 */
-double runnerSpeed = 4.00;   // Speed of runner robot
+double runnerSpeed = 0.00;   // Speed of runner robot
 
 double accelSumY        =   0.00;   // Sum total Accel in Y direction
 double runnerVelY       =   0.00;   // Initial velocity 0.00 m/s
-double runnerVelHeading =   0.00;
+double runnerViewableSpeed =   0.00;
+double runnerSpeedAdjust = 1.00;
 double runnerPosX       =   1.00;   // Initial X position is 0.00 meters
 double runnerPosY       =   2.00;   // Initial Y position is 100.00 meters
 double runnerPosZ       =   0.00;   // Initial Z position is 0.00 meters
