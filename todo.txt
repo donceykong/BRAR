@@ -1,5 +1,5 @@
 _________________________________________________________________________________
-                        TODO
+                        SATURDAY
 
 - Use Robot struct for runner
 
@@ -18,10 +18,16 @@ ________________________________________________________________________________
 
 - Check lighting for each shape
 
+- Add buttons to get back to main menu/replay at game over
+
+- Add buttons to scroll through items, obstacles, or robots in the view GAME_MODE
+
 - Fix FPS handling to whatever example 24 does
 
 - Make robot arm more interesting:
     - Add teeth to gripper
+    - Make links more interesting shape than cubic links (attempt Braccio)
+    - Add plates (similar to legs)
 
 - Get rid of vent texture on runner and make body cooler
 
@@ -33,6 +39,15 @@ ________________________________________________________________________________
 
 - RRT*/A* for chaser to move around obstacles to get runner robot?
 
+_________________________________________________________________________________
+                        SUNDAY
+
+- Add wireframe bounding box to Robot struct for visulization
+    - Will require algorithm to calculate the max/min of robots at all timesteps
+    - Can be used for OBB collision detection
+
+- Implement OBB detection for obstacles (use for overlapping and for robot cubic boundary)
+
 - Redo code: reduce global variables and make c files implentations for headers
     - Reduce headers
 
@@ -40,7 +55,5 @@ ________________________________________________________________________________
 
 _________________________________________________________________________________
                         STRETCH
-
-- Implement OBB detection for obstacles (use for overlapping and for robot cubic boundary)
 
 - Add ground scene with texture.
