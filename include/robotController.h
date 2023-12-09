@@ -53,7 +53,7 @@ double getPitchOffset(double joint1Angle, double robotXPos, double robotZPos, do
     transformationMatrix = multiplyMatrix(rMatrix, transformationMatrix);
 
     // Set Obj pos as a Matrix
-    Matrix4x4 objPosMatrix = translationMatrix(objPosX - endEffectorPosition.x, objPosY - endEffectorPosition.y, objPosZ - endEffectorPosition.z);
+    Matrix4x4 objPosMatrix = translationMatrix(objPosX - chaserRobot.endEffectorPosition.x, objPosY - chaserRobot.endEffectorPosition.y, objPosZ - chaserRobot.endEffectorPosition.z);
     transformationMatrix = multiplyMatrix(transformationMatrix, objPosMatrix);
 
     Vector3 relativeObjPos = extractPosition(transformationMatrix);

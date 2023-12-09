@@ -4,12 +4,10 @@
 /************************************************/
 
 #include "mapObjects.h"
+#include "matrixMath.h"
 
-bool detect_collision(MapObstacle obstacle, double robotX, double robotY, double robotZ) {
-    if (obstacle.type == WALL) {
-        // return (a.min.x < b.max.x && a.max.x > b.min.x) &&
-        //         (a.min.y < b.max.y && a.max.y > b.min.y) &&
-        //         (a.min.z < b.max.z && a.max.z > b.min.z);
+bool detect_collisionAABB(MapObstacle obstacle, double robotX, double robotY, double robotZ) {
+    if (obstacle.type == WALL || obstacle.type == BOX) {
         return  (obstacle.minPos.x < (robotX + 1.0) && obstacle.maxPos.x > (robotX - 1.0)) &&
                 (obstacle.minPos.y < (robotY + 1.0) && obstacle.maxPos.y > (robotY - 1.0)) &&
                 (obstacle.minPos.z < (robotZ + 1.0) && obstacle.maxPos.z > (robotZ - 1.0));
@@ -19,6 +17,29 @@ bool detect_collision(MapObstacle obstacle, double robotX, double robotY, double
         return false;
     }
 }
+
+bool detect_collision_AABB_TRANS(MapObstacle obstacle, double robotX, double robotY, double robotZ) {
+    if (obstacle.type == WALL || obstacle.type == BOX) {
+        // Convert robot's position to the rotated frame of the obstacle
+        double cosYaw = cos(obstacle.yawAngle * PI / 180);
+        double sinYaw = sin(obstacle.yawAngle * PI / 180);
+
+        double transformedRobotX = cosYaw * (robotX - obstacle.position.x) - sinYaw * (robotZ - obstacle.position.z) + obstacle.position.x;
+        double transformedRobotZ = sinYaw * (robotX - obstacle.position.x) + cosYaw * (robotZ - obstacle.position.z) + obstacle.position.z;
+
+        // AABB collision check with transformed coordinates
+        return  (obstacle.minPos.x < transformedRobotX && obstacle.maxPos.x > transformedRobotX) &&
+                (obstacle.minPos.y < robotY && obstacle.maxPos.y > robotY) &&
+                (obstacle.minPos.z < transformedRobotZ && obstacle.maxPos.z > transformedRobotZ);
+    }
+    else {
+        printf("OBSTACLE DOES NOT HAVE TYPE - NO COLLISION DETECTED.\n");
+        return false;
+    }
+}
+
+// bool detect_collisionOBB(MapObstacle obstacle, double robotX, double robotY, double robotZ) {
+// }
 
 /*
 SPHERICAL COLLISION

@@ -26,12 +26,12 @@ void getCuboid(GLfloat width, GLfloat height, GLfloat depth) {
     glTexCoord2f(0.0f, 0.0f); glVertex3f(-width/2,  height/2,  depth/2);
     glEnd();
 
-    // Draw normals for front face
-    GLfloat normalLength = 0.25; // Adjust this value as needed
-    drawNormal(-width/2, -height/2,  depth/2, 0, 0, 1, normalLength);
-    drawNormal( width/2, -height/2,  depth/2, 0, 0, 1, normalLength);
-    drawNormal( width/2,  height/2,  depth/2, 0, 0, 1, normalLength);
-    drawNormal(-width/2,  height/2,  depth/2, 0, 0, 1, normalLength);
+    // // Draw normals for front face
+    // GLfloat normalLength = 0.25; // Adjust this value as needed
+    // drawNormal(-width/2, -height/2,  depth/2, 0, 0, 1, normalLength);
+    // drawNormal( width/2, -height/2,  depth/2, 0, 0, 1, normalLength);
+    // drawNormal( width/2,  height/2,  depth/2, 0, 0, 1, normalLength);
+    // drawNormal(-width/2,  height/2,  depth/2, 0, 0, 1, normalLength);
 
     // Back face;
     glBegin(GL_QUADS);
@@ -41,10 +41,10 @@ void getCuboid(GLfloat width, GLfloat height, GLfloat depth) {
     glTexCoord2f(1.0f, 1.0f); glVertex3f( width/2,  height/2, -depth/2);
     glTexCoord2f(1.0f, 0.0f); glVertex3f( width/2, -height/2, -depth/2);
     glEnd();
-    drawNormal(-width/2, -height/2,  -depth/2, 0, 0, -1, normalLength);
-    drawNormal(-width/2,  height/2,  -depth/2, 0, 0, -1, normalLength);
-    drawNormal( width/2,  height/2,  -depth/2, 0, 0, -1, normalLength);
-    drawNormal( width/2, -height/2,  -depth/2, 0, 0, -1, normalLength);
+    // drawNormal(-width/2, -height/2,  -depth/2, 0, 0, -1, normalLength);
+    // drawNormal(-width/2,  height/2,  -depth/2, 0, 0, -1, normalLength);
+    // drawNormal( width/2,  height/2,  -depth/2, 0, 0, -1, normalLength);
+    // drawNormal( width/2, -height/2,  -depth/2, 0, 0, -1, normalLength);
 
     // Left face
     glBegin(GL_QUADS);

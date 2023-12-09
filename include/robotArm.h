@@ -61,13 +61,13 @@ void robotEndEffector(GLfloat width, GLfloat height, GLfloat depth, double faceC
     getCuboid(height, depth,  width*0.75);
 
     // Draw left gripper
-    glTranslatef(0.3, 0.0, -gripperDist);
+    glTranslatef(0.3, 0.0, -chaserRobot.gripperDist);
     glRotatef(90.0, 0.0, 0.0, 1.0);
     glColor3f(faceC[0], faceC[1], faceC[2]);        // face color
     getCuboid(height, width*0.4, depth);
 
     // Draw right gripper
-    glTranslatef(0.0, 0.0, gripperDist*2);
+    glTranslatef(0.0, 0.0, chaserRobot.gripperDist*2);
     glRotatef(0.0, 0.0, 0.0, 1.0);
     
     glColor3f(faceC[0], faceC[1], faceC[2]);        // face color
@@ -91,7 +91,7 @@ void drawRobotArm() {
 
   // Joint1 & Link1
   glTranslatef(0.0, 0.1, 0.0); // At origin
-  glRotatef((GLfloat)joint1Angle, 0.0, 0.0, 1.0);
+  glRotatef((GLfloat)chaserRobot.joint1Angle, 0.0, 0.0, 1.0);
 
   drawFrame(axisLen);
   glTranslatef(0.5, 0.0, 0.0);
@@ -99,7 +99,7 @@ void drawRobotArm() {
   
   // Joint2 & Link2
   glTranslatef(0.5, 0.0, 0.0);
-  glRotatef((GLfloat)joint2Angle, 0.0, 0.0, 1.0);
+  glRotatef((GLfloat)chaserRobot.joint2Angle, 0.0, 0.0, 1.0);
 
   drawFrame(axisLen);
   glTranslatef(0.5, 0.0, 0.0);
@@ -107,7 +107,7 @@ void drawRobotArm() {
 
   // Joint3 & Link3
   glTranslatef(0.5, 0.0, 0.0);
-  glRotatef((GLfloat)joint3Angle, 0.0, 0.0, 1.0);
+  glRotatef((GLfloat)chaserRobot.joint3Angle, 0.0, 0.0, 1.0);
 
   drawFrame(axisLen);
   glTranslatef(0.25, 0.0, 0.0);
@@ -115,7 +115,7 @@ void drawRobotArm() {
 
   // Joint4 & End Effector
   glTranslatef(0.25, 0.0, 0.0);
-  glRotatef((GLfloat)gripperRollAngle, 1.0, 0.0, 0.0);
+  glRotatef((GLfloat)chaserRobot.gripperRollAngle, 1.0, 0.0, 0.0);
 
   drawFrame(axisLen);
   glTranslatef(0.1, 0.0, 0.0);

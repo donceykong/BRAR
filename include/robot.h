@@ -7,8 +7,8 @@
 
 void drawRobot() {
     glPushMatrix();
-    glTranslatef(chaserPosX, chaserPosY, chaserPosZ);
-    glRotatef((GLfloat)chaserYawAngle + chaserYawAdd, 0.0, 1.0, 0.0);
+    glTranslatef(chaserRobot.position.x, chaserRobot.position.y, chaserRobot.position.z);
+    glRotatef((GLfloat)chaserRobot.yawAngle + chaserRobot.yawAdd, 0.0, 1.0, 0.0);
 
     // robot body
     glPushMatrix();
@@ -18,14 +18,14 @@ void drawRobot() {
     // robot left leg
     glPushMatrix();
     glTranslatef(0.0, 0.0, 0.5);
-    drawLeg(true, chaserViewableSpeed);
+    drawLeg(true, chaserRobot.viewableSpeed);
     glPopMatrix();
 
     // robot right leg
     glPushMatrix();
     glTranslatef(0.0, 0.0, -0.5);
     //glRotatef(180.0f, 0.0, 1.0, 0.0);  // Rotate thigh 180
-    drawLeg(false, chaserViewableSpeed);
+    drawLeg(false, chaserRobot.viewableSpeed);
     glPopMatrix();
 
     drawRobotArm();

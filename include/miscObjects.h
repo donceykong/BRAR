@@ -65,10 +65,10 @@ void drawAxes(float length) {
 
 void drawNearestLine(double nearestMapItemX, double nearestMapItemY, double nearestMapItemZ) {
     glBegin(GL_LINES);
-    glVertex3d(chaserPosX, chaserPosY, chaserPosZ);
+    glVertex3d(chaserRobot.position.x, chaserRobot.position.y, chaserRobot.position.z);
     glVertex3d(nearestMapItemX, nearestMapItemY, nearestMapItemZ);
 
-    glVertex3d(endEffectorPosition.x, endEffectorPosition.y, endEffectorPosition.z);
+    glVertex3d(chaserRobot.endEffectorPosition.x, chaserRobot.endEffectorPosition.y, chaserRobot.endEffectorPosition.z);
     glVertex3d(nearestMapItemX, nearestMapItemY, nearestMapItemZ);
     glEnd();
     
@@ -91,7 +91,7 @@ void drawText3D() {
     }
     else {
         glRasterPos3d(runnerPosX + 1.0, runnerPosY + 0.5, runnerPosZ - 2.0);
-        Print("runner speed: %f, chaser speed %f", runnerSpeed, chaserSpeed);
+        Print("runner speed: %f, chaser speed %f", runnerSpeed, chaserRobot.speed);
     }
 }
 

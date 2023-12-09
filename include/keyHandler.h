@@ -1,6 +1,9 @@
 #ifndef KEY_HANDLER_H
 #define KEY_HANDLER_H
 
+bool keySpace = false;  // space bar key - jump robot controlled by user
+bool keySpacePrev = false;
+
 bool keyRight = false;
 bool keyLeft = false;
 bool keyUp = false;
@@ -79,6 +82,9 @@ void specialUp(int key, int x, int y)
 
 void handleKeys(unsigned char key, int x, int y) {
     switch (key) {
+      case 32: // ASCII value for space bar
+          keySpace = true;
+          break;
         case 'w':
             keyW = true;
             break;
@@ -158,6 +164,9 @@ void handleKeys(unsigned char key, int x, int y) {
 
 void handleKeysUp(unsigned char key, int x, int y) {
     switch (key) {
+        case 32: // ASCII value for space bar
+          keySpace = false;
+          break;
         case 'w':
             keyW = false;
             break;
@@ -264,7 +273,7 @@ void updateRunner()
   if (keyK)
     gripperDistinc = 0.01 * SPEED;
   // Grab runner robot
-  if (!gripperClosed && fabsf(runnerPosX-endEffectorPosition.x)<0.1 && fabsf(runnerPosY-endEffectorPosition.y)<0.1 && fabsf(runnerPosZ-endEffectorPosition.z)<0.1) {
+  if (!chaserRobot.gripperClosed && fabsf(runnerPosX-chaserRobot.endEffectorPosition.x)<0.1 && fabsf(runnerPosY-chaserRobot.endEffectorPosition.y)<0.1 && fabsf(runnerPosZ-chaserRobot.endEffectorPosition.z)<0.1) {
       gripperDistinc = -0.01;
   }
 
@@ -279,21 +288,29 @@ void updateRunner()
     prevRunnerPosZ = runnerPosZ;
     prevRunnerPosX = runnerPosX;
   }
+  
+  if (keySpace && !keySpacePrev) {
+    externalForceY = 20000;
+  }
+  else {
+    externalForceY = 0;
+  }
+  keySpacePrev = keySpace;
 
   // Chaser Control
   if (!chaserInCollision) {
-    prevChaserPosZ = chaserPosZ;
-    prevChaserPosX = chaserPosX;
+    chaserRobot.prevPos.z = chaserRobot.position.z;
+    chaserRobot.prevPos.x = chaserRobot.position.x;
   }
 
   if (robotCaptured) {
-    chaserYawAngle += 0.5*gripperRollinc;
-    double chaserYawRad = chaserYawAngle * PI / 180;
-    chaserPosZ -= 0.1*joint3inc*cos(chaserYawRad);
-    chaserPosX -= 0.1*joint3inc*sin(chaserYawRad);
+    chaserRobot.yawAngle += 0.5*gripperRollinc;
+    double chaserYawRad = chaserRobot.yawAngle * PI / 180;
+    chaserRobot.position.z -= 0.1*joint3inc*cos(chaserYawRad);
+    chaserRobot.position.x -= 0.1*joint3inc*sin(chaserYawRad);
 
-    if (joint1Angle <= 90.0) {
-      joint1Angle += 1.0;
+    if (chaserRobot.joint1Angle <= 90.0) {
+      chaserRobot.joint1Angle += 1.0;
     }
     else {
       robotTaken = true;
@@ -307,9 +324,9 @@ void updateRunner()
     runnerPosX += runnerSpeed*sin(angleYradians);
 
     // Move chaser
-    chaserPosX -= chaserSpeedAdjust*0.02*(endEffectorPosition.x-runnerPosX)*chaserSpeedAdjust;
-    chaserPosZ -= chaserSpeedAdjust*0.02*(endEffectorPosition.z-runnerPosZ)*chaserSpeedAdjust;
-    chaserSpeed = chaserSpeedAdjust*sqrt((endEffectorPosition.x-runnerPosX)*(endEffectorPosition.x-runnerPosX) + (endEffectorPosition.z-runnerPosZ)*(endEffectorPosition.z-runnerPosZ))*chaserSpeedAdjust;
+    chaserRobot.position.x -= chaserRobot.speedAdjust*0.02*(chaserRobot.endEffectorPosition.x-runnerPosX)*chaserRobot.speedAdjust;
+    chaserRobot.position.z -= chaserRobot.speedAdjust*0.02*(chaserRobot.endEffectorPosition.z-runnerPosZ)*chaserRobot.speedAdjust;
+    chaserRobot.speed = chaserRobot.speedAdjust*sqrt((chaserRobot.endEffectorPosition.x-runnerPosX)*(chaserRobot.endEffectorPosition.x-runnerPosX) + (chaserRobot.endEffectorPosition.z-runnerPosZ)*(chaserRobot.endEffectorPosition.z-runnerPosZ))*chaserRobot.speedAdjust;
   }
 
   if (runnerInCollision) {
@@ -318,8 +335,8 @@ void updateRunner()
   }
   // Chaser Control
   if (chaserInCollision) {
-    chaserPosZ = prevChaserPosZ;
-    chaserPosX = prevChaserPosX;
+    chaserRobot.position.z = chaserRobot.prevPos.z;
+    chaserRobot.position.x = chaserRobot.prevPos.x;
   }
 
   // THE LIGHTING
@@ -349,54 +366,54 @@ void updateRunner()
     orbitCamX = runnerPosX;
   }
   
-  double poseDiff = 0.5*sqrt((runnerPosX-chaserPosX)*(runnerPosX-chaserPosX) + (runnerPosZ-chaserPosZ)*(runnerPosZ-chaserPosZ));
-  overheadCamX = -runnerPosX + (runnerPosX-chaserPosX)/2.0;
+  double poseDiff = 0.5*sqrt((runnerPosX-chaserRobot.position.x)*(runnerPosX-chaserRobot.position.x) + (runnerPosZ-chaserRobot.position.z)*(runnerPosZ-chaserRobot.position.z));
+  overheadCamX = -runnerPosX + (runnerPosX-chaserRobot.position.x)/2.0;
   overheadCamY = -1 - poseDiff;
-  overheadCamZ = -runnerPosZ + (runnerPosZ-chaserPosZ)/2.0;
+  overheadCamZ = -runnerPosZ + (runnerPosZ-chaserRobot.position.z)/2.0;
 
   // Adjust joint angles
-  double yaw = getYawOffset(chaserYawAngle, chaserPosX, chaserPosZ, runnerPosX, runnerPosY, runnerPosZ) * 180 / PI;
-  chaserYawAngle  -= chaserSpeedAdjust*0.1*yaw; 
-  joint1Angle     += (runnerPosY - endEffectorPosition.y);
+  double yaw = getYawOffset(chaserRobot.yawAngle, chaserRobot.position.x, chaserRobot.position.z, runnerPosX, runnerPosY, runnerPosZ) * 180 / PI;
+  chaserRobot.yawAngle  -= chaserRobot.speedAdjust*0.1*yaw; 
+  chaserRobot.joint1Angle     += (runnerPosY -chaserRobot.endEffectorPosition.y);
   computeForwardKinematics(); // call to get new endeffector pos
-  joint2Angle     += (runnerPosY - endEffectorPosition.y); // joint2inc;
+  chaserRobot.joint2Angle     += (runnerPosY -chaserRobot.endEffectorPosition.y); // joint2inc;
 
   runnerViewableSpeed = abs(runnerSpeed) + abs(gripperRollinc);
-  chaserViewableSpeed = abs(chaserSpeed) + abs(0.1*yaw);
+  chaserRobot.viewableSpeed = abs(chaserRobot.speed) + abs(0.1*yaw);
 
-  if (joint1Angle >= 250.00) {
-    joint1Angle = 250.00;
-  } else if (joint1Angle <= -70.00) {
-    joint1Angle = -70.00;
+  if (chaserRobot.joint1Angle >= 250.00) {
+    chaserRobot.joint1Angle = 250.00;
+  } else if (chaserRobot.joint1Angle <= -70.00) {
+    chaserRobot.joint1Angle = -70.00;
   }
 
-  if (joint2Angle >= 90.00) {
-    joint2Angle = 90.00;
-  } else if (joint2Angle <= -90.00) {
-    joint2Angle = -90.00;
+  if (chaserRobot.joint2Angle >= 90.00) {
+    chaserRobot.joint2Angle = 90.00;
+  } else if (chaserRobot.joint2Angle <= -90.00) {
+    chaserRobot.joint2Angle = -90.00;
   }
 
-  joint3Angle += joint3inc;
-  gripperDist += gripperDistinc;
-  gripperRollAngle += gripperRollinc;
+  chaserRobot.joint3Angle += joint3inc;
+  chaserRobot.gripperDist += gripperDistinc;
+  chaserRobot.gripperRollAngle += gripperRollinc;
 
-  if (joint3Angle > 90.00) {
-    joint3Angle -= joint3inc;
-  } else if (joint3Angle < -90.00) {
-    joint3Angle -= joint3inc;
+  if (chaserRobot.joint3Angle > 90.00) {
+    chaserRobot.joint3Angle -= joint3inc;
+  } else if (chaserRobot.joint3Angle < -90.00) {
+    chaserRobot.joint3Angle -= joint3inc;
   }
 
-  if (gripperDist >= 0.30) {
-    gripperDist -= gripperDistinc;
-  } else if (gripperDist <= 0.10) {
-    gripperDist -= gripperDistinc;
+  if (chaserRobot.gripperDist >= 0.30) {
+    chaserRobot.gripperDist -= gripperDistinc;
+  } else if (chaserRobot.gripperDist <= 0.10) {
+    chaserRobot.gripperDist -= gripperDistinc;
   }
     
-  if (gripperDist <= 0.20){
-    gripperClosed = true;
+  if (chaserRobot.gripperDist <= 0.20){
+    chaserRobot.gripperClosed = true;
   }
   else {
-    gripperClosed = false;
+    chaserRobot.gripperClosed = false;
   }
 } 
 
@@ -445,34 +462,42 @@ void updateTimeCrunch()
     viewMode = 2;
   }
 
-  // Move chaser
-  chaserSpeed = 4.0*joint3inc*chaserSpeedAdjust;
-  chaserYawAngle += gripperRollinc;
-  double angleYradians = chaserYawAngle * PI / 180;
-  if (chaserInCollision) {
-    chaserPosZ = prevChaserPosZ;
-    chaserPosX = prevChaserPosX;
+  if (keySpace && !keySpacePrev) {
+    externalForceY = 20000;
   }
   else {
-    prevChaserPosZ = chaserPosZ;
-    prevChaserPosX = chaserPosX;
-    chaserPosZ -= chaserSpeed*0.1*cos(angleYradians);
-    chaserPosX -= chaserSpeed*0.1*sin(angleYradians);
+    externalForceY = 0;
+  }
+  keySpacePrev = keySpace;
+
+  // Move chaser
+  chaserRobot.speed = 4.0*joint3inc*chaserRobot.speedAdjust;
+  chaserRobot.yawAngle += gripperRollinc;
+  double angleYradians = chaserRobot.yawAngle * PI / 180;
+  if (chaserInCollision) {
+    chaserRobot.position.z = chaserRobot.prevPos.z;
+    chaserRobot.position.x = chaserRobot.prevPos.x;
+  }
+  else {
+    chaserRobot.prevPos.z = chaserRobot.position.z;
+    chaserRobot.prevPos.x = chaserRobot.position.x;
+    chaserRobot.position.z -= chaserRobot.speed*0.1*cos(angleYradians);
+    chaserRobot.position.x -= chaserRobot.speed*0.1*sin(angleYradians);
   }
 
-  chaserViewableSpeed = abs(chaserSpeed) + abs(gripperRollinc);
+  chaserRobot.viewableSpeed = abs(chaserRobot.speed) + abs(gripperRollinc);
 
   // TODO: FIX THE LIGHTING
   double orbitRadius = 4.0;
-  light1Rotation = lightrot + chaserYawAngle + 45.0 + 180;
-  light1_X = -orbitRadius * sin(light1Rotation * PI / 180) + chaserPosX;
-  light1_Y = chaserPosY;
-  light1_Z = -orbitRadius * cos(light1Rotation * PI / 180) + chaserPosZ;
+  light1Rotation = lightrot + chaserRobot.yawAngle + 45.0 + 180;
+  light1_X = -orbitRadius * sin(light1Rotation * PI / 180) + chaserRobot.position.x;
+  light1_Y = chaserRobot.position.y;
+  light1_Z = -orbitRadius * cos(light1Rotation * PI / 180) + chaserRobot.position.z;
 
-  light2Rotation = lightrot + chaserYawAngle + -45 + 180;
-  light2_X = -orbitRadius * sin(light2Rotation * PI / 180) + chaserPosX;
-  light2_Y = chaserPosY;
-  light2_Z = -orbitRadius * cos(light2Rotation * PI / 180) + chaserPosZ;
+  light2Rotation = lightrot + chaserRobot.yawAngle + -45 + 180;
+  light2_X = -orbitRadius * sin(light2Rotation * PI / 180) + chaserRobot.position.x;
+  light2_Y = chaserRobot.position.y;
+  light2_Z = -orbitRadius * cos(light2Rotation * PI / 180) + chaserRobot.position.z;
   lightrot += 0.5;
 
   // CAMERA POS
@@ -480,52 +505,52 @@ void updateTimeCrunch()
     // Compute the camera position using spherical coordinates.
     orbitCamAngleY += 0.5*gripperRollinc;
     orbitCamY = 0.0;
-    orbitCamZ = chaserPosZ;
-    orbitCamX = chaserPosX;
+    orbitCamZ = chaserRobot.position.z;
+    orbitCamX = chaserRobot.position.x;
   }
 
-  overheadCamX = -chaserPosX;
+  overheadCamX = -chaserRobot.position.x;
   overheadCamY = -1;
-  overheadCamZ = -chaserPosZ;
+  overheadCamZ = -chaserRobot.position.z;
   
   // ROBOT POSE
-  joint1Angle += 5.0*(nearestMapItem->position.y - endEffectorPosition.y);
+  chaserRobot.joint1Angle += 5.0*(nearestMapItem->position.y -chaserRobot.endEffectorPosition.y);
   computeForwardKinematics(); // call to get new endeffector pos
-  joint2Angle += 5.0*(nearestMapItem->position.y - endEffectorPosition.y); // joint2inc;
+  chaserRobot.joint2Angle += 5.0*(nearestMapItem->position.y -chaserRobot.endEffectorPosition.y); // joint2inc;
 
-  if (joint1Angle >= 90.00) {
-    joint1Angle = 90.00;
-  } else if (joint1Angle <= -70.00) {
-    joint1Angle = -70.00;
+  if (chaserRobot.joint1Angle >= 90.00) {
+    chaserRobot.joint1Angle = 90.00;
+  } else if (chaserRobot.joint1Angle <= -70.00) {
+    chaserRobot.joint1Angle = -70.00;
   }
 
-  if (joint2Angle >= 45.00) {
-    joint2Angle = 45.00;
-  } else if (joint2Angle <= -45.00) {
-    joint2Angle = -45.00;
+  if (chaserRobot.joint2Angle >= 45.00) {
+    chaserRobot.joint2Angle = 45.00;
+  } else if (chaserRobot.joint2Angle <= -45.00) {
+    chaserRobot.joint2Angle = -45.00;
   }
 
-  //joint3Angle += joint3inc;
-  gripperDist += gripperDistinc;
-  gripperRollAngle += gripperRollinc;
+  //chaserRobot.joint3Angle += joint3inc;
+  chaserRobot.gripperDist += gripperDistinc;
+  chaserRobot.gripperRollAngle += gripperRollinc;
 
-  if (joint3Angle > 90.00) {
-    joint3Angle -= joint3inc;
-  } else if (joint3Angle < -90.00) {
-    joint3Angle -= joint3inc;
+  if (chaserRobot.joint3Angle > 90.00) {
+    chaserRobot.joint3Angle -= joint3inc;
+  } else if (chaserRobot.joint3Angle < -90.00) {
+    chaserRobot.joint3Angle -= joint3inc;
   }
 
-  if (gripperDist >= 0.30) {
-    gripperDist -= gripperDistinc;
-  } else if (gripperDist <= 0.10) {
-    gripperDist -= gripperDistinc;
+  if (chaserRobot.gripperDist >= 0.30) {
+    chaserRobot.gripperDist -= gripperDistinc;
+  } else if (chaserRobot.gripperDist <= 0.10) {
+    chaserRobot.gripperDist -= gripperDistinc;
   }
     
-  if (gripperDist <= 0.20){
-    gripperClosed = true;
+  if (chaserRobot.gripperDist <= 0.20){
+    chaserRobot.gripperClosed = true;
   }
   else {
-    gripperClosed = false;
+    chaserRobot.gripperClosed = false;
   }
 } 
 
@@ -562,7 +587,7 @@ void updateViewRobot()
   if (keyK)
     gripperDistinc = 0.01 * SPEED;
   // Grab runner robot
-  if (!gripperClosed && fabsf(runnerPosX-endEffectorPosition.x)<0.1 && fabsf(runnerPosY-endEffectorPosition.y)<0.1 && fabsf(runnerPosZ-endEffectorPosition.z)<0.1) {
+  if (!chaserRobot.gripperClosed && fabsf(runnerPosX-chaserRobot.endEffectorPosition.x)<0.1 && fabsf(runnerPosY-chaserRobot.endEffectorPosition.y)<0.1 && fabsf(runnerPosZ-chaserRobot.endEffectorPosition.z)<0.1) {
       gripperDistinc = -0.01;
   }
 
@@ -586,57 +611,57 @@ void updateViewRobot()
 
   // TODO: FIX THE LIGHTING
   double orbitRadius = 4.0;
-  light1Rotation = lightrot + chaserYawAngle + 45.0 + 180;
-  light1_X = -orbitRadius * sin(light1Rotation * PI / 180) + chaserPosX;
-  light1_Y = chaserPosY + 1;
-  light1_Z = -orbitRadius * cos(light1Rotation * PI / 180) + chaserPosZ;
+  light1Rotation = lightrot + chaserRobot.yawAngle + 45.0 + 180;
+  light1_X = -orbitRadius * sin(light1Rotation * PI / 180) + chaserRobot.position.x;
+  light1_Y = chaserRobot.position.y + 1;
+  light1_Z = -orbitRadius * cos(light1Rotation * PI / 180) + chaserRobot.position.z;
 
-  light2Rotation = lightrot + chaserYawAngle - 45.0 + 180;
-  light2_X = -orbitRadius * sin(light2Rotation * PI / 180) + chaserPosX;
-  light2_Y = chaserPosY + 1;
-  light2_Z = -orbitRadius * cos(light2Rotation * PI / 180) + chaserPosZ;
+  light2Rotation = lightrot + chaserRobot.yawAngle - 45.0 + 180;
+  light2_X = -orbitRadius * sin(light2Rotation * PI / 180) + chaserRobot.position.x;
+  light2_Y = chaserRobot.position.y + 1;
+  light2_Z = -orbitRadius * cos(light2Rotation * PI / 180) + chaserRobot.position.z;
   lightrot += 0.8;
 
   if (viewMode == 1) {
     orbitCamAngleY += 0.5*gripperRollinc;
-    orbitCamZ = chaserPosZ;
+    orbitCamZ = chaserRobot.position.z;
     orbitCamY = 1.0;
-    orbitCamX = chaserPosX;
+    orbitCamX = chaserRobot.position.x;
   }
 
-  if (joint1Angle >= 250.00) {
-    joint1Angle = 250.00;
-  } else if (joint1Angle <= -70.00) {
-    joint1Angle = -70.00;
+  if (chaserRobot.joint1Angle >= 250.00) {
+    chaserRobot.joint1Angle = 250.00;
+  } else if (chaserRobot.joint1Angle <= -70.00) {
+    chaserRobot.joint1Angle = -70.00;
   }
 
-  if (joint2Angle >= 90.00) {
-    joint2Angle = 90.00;
-  } else if (joint2Angle <= -90.00) {
-    joint2Angle = -90.00;
+  if (chaserRobot.joint2Angle >= 90.00) {
+    chaserRobot.joint2Angle = 90.00;
+  } else if (chaserRobot.joint2Angle <= -90.00) {
+    chaserRobot.joint2Angle = -90.00;
   }
 
-  joint3Angle += joint3inc;
-  gripperDist += gripperDistinc;
-  gripperRollAngle += gripperRollinc;
+  chaserRobot.joint3Angle += joint3inc;
+  chaserRobot.gripperDist += gripperDistinc;
+  chaserRobot.gripperRollAngle += gripperRollinc;
 
-  if (joint3Angle > 90.00) {
-    joint3Angle -= joint3inc;
-  } else if (joint3Angle < -90.00) {
-    joint3Angle -= joint3inc;
+  if (chaserRobot.joint3Angle > 90.00) {
+    chaserRobot.joint3Angle -= joint3inc;
+  } else if (chaserRobot.joint3Angle < -90.00) {
+    chaserRobot.joint3Angle -= joint3inc;
   }
 
-  if (gripperDist >= 0.30) {
-    gripperDist -= gripperDistinc;
-  } else if (gripperDist <= 0.10) {
-    gripperDist -= gripperDistinc;
+  if (chaserRobot.gripperDist >= 0.30) {
+    chaserRobot.gripperDist -= gripperDistinc;
+  } else if (chaserRobot.gripperDist <= 0.10) {
+    chaserRobot.gripperDist -= gripperDistinc;
   }
     
-  if (gripperDist <= 0.20){
-    gripperClosed = true;
+  if (chaserRobot.gripperDist <= 0.20){
+    chaserRobot.gripperClosed = true;
   }
   else {
-    gripperClosed = false;
+    chaserRobot.gripperClosed = false;
   }
 } 
 

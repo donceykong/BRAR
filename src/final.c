@@ -21,15 +21,15 @@
 #include FT_FREETYPE_H
 
 // In-house includes
-#include "windowHandler.h"  //
-#include "matrixMath.h"     // NO DEPENDENCIES
-#include "GameModes.h"      // 
-#include "textureUtils.h"
+// #include "windowHandler.h"  // NO DEPENDS
+#include "matrixMath.h"     // NO DEPENDS
+// #include "GameModes.h"      // NO DEPENDS
+#include "textureUtils.h"   // NO DEPENDS
 
-#include "ftTextHandler.h"
-#include "buttonHandler.h"
+// #include "ftTextHandler.h"
+// #include "buttonHandler.h"   
 #include "screenInfo.h"
-#include "CSCIx229.h"
+// #include "CSCIx229.h"
 
 #include "designShapes.h"
 
@@ -48,6 +48,9 @@
 #include "views.h"
 #include "lighting.h"
 #include "keyHandler.h"         // Add this import last  
+
+// Global GAME_MODE enum
+enum GameMode GAME_MODE;
 
 // Draw frames on robot joints
 bool showFrames = false;
@@ -68,10 +71,10 @@ bool showMain = true;
 // Mouse callback for game options
 int mouseCallbackEnabled = 1; // Global variable to control the callback
 
-int iter = 0;
-int numberPoses = 100;
-int poseNumber = 0;
 void displayPoseHistory() {
+    static int iter = 0;
+    static int numberPoses = 100;
+    static int poseNumber = 0;
     if (showPoseHist) {
         //printf("numberPoses: %d, iterDIV10: %d\n", numberPoses, iter/10);
         if (iter / 10 == 1 & poseNumber < 100) {
@@ -98,7 +101,7 @@ void displayPoseHistory() {
 void displayViewRobot() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-    chaserSpeed = 0.0;
+    chaserRobot.speed = 0.0;
 
     glEnable(GL_DEPTH_TEST);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -146,10 +149,10 @@ void displayTimeCrunch() {
     computeForwardKinematics();
 
     plotMapBorder();
-    plotMapItems();
     plotMapObstacles();
-    setObjAbsorberPos(chaserPosX, chaserPosY, chaserPosZ);
-    updateMapCenter (chaserPosX, chaserPosZ);
+    plotMapItems();
+    setObjAbsorberPos(chaserRobot.position.x, chaserRobot.position.y, chaserRobot.position.z);
+    updateMapCenter (chaserRobot.position.x, chaserRobot.position.z);
     drawNearestLine(nearestMapItem->position.x, nearestMapItem->position.y, nearestMapItem->position.z);
     glDisable(GL_DEPTH_TEST);
 
@@ -172,8 +175,9 @@ void displayTimeCrunch() {
 void displayRunner() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    checkRobotCaptured();
+    checkRobotCaptured();//
     updateRunner();
+    checkRobotCaptured();
     displayView();
     setupLighting();
 
@@ -185,21 +189,27 @@ void displayRunner() {
     
     drawGroundPlane();
     drawRobot();                    // Draw chaser (collector)
-    drawMiniRobot();                 // Draw runner
+    drawMiniRobot();                // Draw runner
     computeForwardKinematics();
 
     //drawText3D();
     displayPoseHistory();
 
     plotMapBorder();
-    plotMapItems();
     plotMapObstacles();
+    plotMapItems();
     setObjAbsorberPos(runnerPosX, runnerPosY, runnerPosZ);
     updateMapCenter(runnerPosX, runnerPosZ);
     glDisable(GL_DEPTH_TEST);
 
     currentTime = time(NULL);
+    elapsedTime = difftime(currentTime, prevTime);
     totalElapsedTime = difftime(currentTime, beginTime);
+    if (remainingTime > 0.0) {
+        remainingTime -= elapsedTime;
+    }
+    prevTime = currentTime; 
+
     sprintf(SIstr1, "Time: %.5f", totalElapsedTime);
     sprintf(SIstr2, "Total Score: %.5f", totalScoreRunner);
     drawSI(SIstr1, SIstr2);
@@ -256,10 +266,9 @@ displayEndScreenRunner() {
     renderText("GAME OVER", windowXDiff/20, windowYDiff/2, 4.0);
     
     glColor3f(0.1 + colorADJ, 0.8+colorADJ, colorADJ); // Set text color (green)
-    sprintf(SIstr2, "Total Score: %.5f", totalScore);
+    sprintf(SIstr2, "Total Score: %.5f", totalScoreRunner);
     renderText(SIstr2,  windowXDiff/20, windowYDiff/2 - 200, 2.0);
     colorADJ = (double)rand() / (RAND_MAX);
-    // printf("colorADJ: %f\n", colorADJ);
     
     //glutPostRedisplay();
     glFlush();
@@ -279,7 +288,7 @@ void display() {
         case TIME_CRUNCH:
             if (remainingTime > 0.0) {
                 displayTimeCrunch();
-                chaserYawAdd = 90.0;
+                chaserRobot.yawAdd = 90.0;
             }
             else {
                 displayEndScreen();
@@ -309,6 +318,8 @@ void mouseButtonCallback(int button, int state, int x, int y) {
             mouseCallbackEnabled = 0;
             beginTime = time(NULL);
             prevTime = beginTime;
+
+            initChaserRobot();
         }
 
         // Check if the click is within the bounds of Button 2
@@ -318,6 +329,8 @@ void mouseButtonCallback(int button, int state, int x, int y) {
             mouseCallbackEnabled = 0;
             beginTime = time(NULL);
             prevTime = beginTime;
+
+            initChaserRobot();
         }
         // Check if the click is within the bounds of Button 2
         if (x > button3XMin && x < button3XMax && y > button3YMin && y < button3YMax) {
@@ -326,6 +339,9 @@ void mouseButtonCallback(int button, int state, int x, int y) {
             mouseCallbackEnabled = 0;
             beginTime = time(NULL);
             prevTime = beginTime;
+
+            initChaserRobot();
+            // initRunnerRobot();
         }
         glutDisplayFunc(showMain ? drawButtonScreen : display);
     }
@@ -403,6 +419,7 @@ int main(int argc, char** argv) {
     BMPtexture4 = loadTexture("./assets/sheet_metal3.bmp");
     BMPtexture5 = loadTexture("./assets/robot_body.bmp");
     BMPtexture6 = loadTexture("./assets/flagstone.bmp");
+    BMPtexture7 = loadTexture("./assets/wooden_crate.bmp");
 
     setRunnerPoseList();
     addItemsToMapList();

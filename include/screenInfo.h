@@ -1,3 +1,9 @@
+#ifndef SCREEN_INFO_H
+#define SCREEN_INFO_H
+
+
+#include "buttonHandler.h"
+
 // First Button
 const float SIbutton1XDiff = 700;
 const float SIbutton1XMin = windowXDiff/2 - SIbutton1XDiff/2;
@@ -20,8 +26,8 @@ const float SIbutton2YMin = SIbutton1YMax + SIbuttonSepY;
 const float SIbutton2YMax = SIbutton2YMin + SIbutton2YDiff;
 const float SIbutton2YCenter = SIbutton2YDiff/2.0 + SIbutton2YMin;
 
-char SIstr1[50] = "Hello, world!";
-char SIstr2[50] = "Hello again, world!";
+char SIstr1[50] = "";
+char SIstr2[50] = "";
 
 void drawSIBackground() {
     // Set up the view
@@ -85,3 +91,5 @@ void drawSI(const char *str1, const char *str2) {
 //     //drawBackground();
 //     drawSI();
 // }
+
+#endif // SCREEN_INFO_H
