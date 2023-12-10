@@ -1,58 +1,114 @@
-_________________________________________________________________________________
-                        SUNDAY
+||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+______________________________________________________________________________________________________________________________________________
+                                                        SUNDAY
 
-- update obj collision detection in key updating so simplifications can be made and gittering during collision goes away.
+    #1  - 0.5 hrs:
+            - update obj collision detection in key updating so simplifications can be made and gittering during collision goes away.
 
-- Add user score sheet to show top three scores at end screen.
+    #2  - 1 hr:
+            - Fix key handler code:
+                - Make a map of available keys and funcionalities
+                - Alphabetize keys and order by numbered keys
+                - New key mods:
+                    - Enable/Disable following camera (Allow for user to left click and drag to move camera?)
+                    - Turn RRT* on/off
+        
+    #3  - 1 hr:
+            - Fix key Update Code:
+                - Implement key handle uses
+                - Remove keys to control robot arm, besides in View robot
+                - Make functions more modular
 
-- Fix key handling - USE ex15 as example
-    - Remove keys to control robot arm...
-    - New key mods:
-        - Enable/Disable following camera (Allow for user to left click and drag to move camera?)
+    #4  - 1 hr:
+            -Add clickable buttons (or use arrow keys) to scroll through items, obstacles, or robots in the view GAME_MODE
+                - DISPLAY ITEM NAME, ROBOT NAME, or OBSTACLE NAME
 
-- Check lighting for each shape
+    #5  - 1 hr:
+            - Check lighting for each shape and fix as needed
 
-- Add buttons to get back to main menu/replay at game over
+    #6  - 3 hrs:
+            - Make robot arm more interesting: (LIKE BRAR - DRAW FIRST)
+                - Add teeth to gripper (make black)
+                - Make links more interesting shape than cubic links (attempt Braccio)
+                - Add plates (similar to legs)
 
-- Add clickable buttons to scroll through items, obstacles, or robots in the view GAME_MODE
+    #7  - 1 hr:
+            - Get rid of vent texture on runner and make body more interesting 
 
-_________________________________________________________________________________
+    #8  - 3 hrs: 
+            -RRT*/A* for chaser to move around obstacles to get runner robot with spheres as waypoints 
+                - As chaser reaches waypoints, delete them (set waypoint state to "REACHED" or "NOT_REACHED," similar to items)
 
-- Add more lights to randomly walk ("float") around scene. Will want to use struct to control and visualize lights.
+    #9  - 0.5 hr:
+            - Fix FPS handling to whatever example 24 does (or email prof is ex24 is what he intended)
 
-- Fix FPS handling to whatever example 24 does
+(12 HOURS TOTAL)
+(REALITY: )
 
-- Make robot arm more interesting:
-    - Add teeth to gripper
-    - Make links more interesting shape than cubic links (attempt Braccio)
-    - Add plates (similar to legs)
 
-- Get rid of vent texture on runner and make body cooler
 
-- Make items more interesting
+||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+______________________________________________________________________________________________________________________________________________
+                                                        MONDAY
 
-- Add bump map to wall obstacles and use wood planks for box
+    #1  - 3 hrs:
+            - Make obstacles more interesting:
+                - Use wood plank textures to make box (or just another obstacle)
+                - Add bump map to wall obstacles
 
-- RRT*/A* for chaser to move around obstacles to get runner robot with spheres as waypoints 
-    - As chaser reaches waypoints, delete them (set waypoint state to "REACHED" or "NOT_REACHED," similar to items)
+    #2  - 2hrs:
+            - Add more lights to randomly walk ("float") around scene. Will want to use struct to control and visualize lights.
 
-_________________________________________________________________________________
-                        MONDAY
+    #3  - 1 hr:
+            - Add button to get back to main menu at game over and during gameplay
+            - Add button to replay at game over
 
-- Add ability for user to add walls behind them
+    #4  - 3 hrs:
+            - Redo code: reduce global variables and make c files implentations for headers
+                - Reduce headers
 
-- Add wireframe bounding box to Robot struct for visulization
-    - Will require algorithm to calculate the max/min of robots at all timesteps
-    - Can be used for OBB collision detection
+(8 HOURS TOTAL)
 
-- Implement OBB detection for obstacles (use for overlapping and for robot cubic boundary)
 
-- Redo code: reduce global variables and make c files implentations for headers
-    - Reduce headers
+||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+______________________________________________________________________________________________________________________________________________
+                                                        TUESDAY
 
-- Update README with keyhandles and background/theory
+    #1  - 3 hrs:
+            - Make items more interesting
+                - Add something digital...
+                - Use transparent ability? (remove that code from designShapes)
 
-_________________________________________________________________________________
-                        STRETCH
+    - 0.5 hrs:
+        - Add ability for user to add walls (or other obstacle) behind them to validate RRT*
+    
+    - 3 hrs:
+        - Fix APPEARANCE of start screen, game play, and end screen
 
-- Add ground scene with texture.
+    - 1 hr:
+        - Update README with keyhandles and background/theory
+
+    **************************** SUBMIT PROJECT ******************************************
+
+    - 2 hrs:
+        - Get presentation mostly complete.
+
+    _________________________________________________________________________________
+                            STRETCH
+
+        - 3 hrs:
+            - Add wireframe bounding box to Robot struct for visulization
+                - Will require algorithm to calculate the max/min of robots at all timesteps
+                - Can be used for OBB collision detection
+
+        - 4 hrs:
+            - Implement OBB detection for obstacles (use for overlapping and for robot cubic boundary)
+
+        - 4 hrs:
+            - Add ground scene with texture.
+
+
+||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+______________________________________________________________________________________________________________________________________________
+                                                        WEDNESDAY
+- Finish presentation
