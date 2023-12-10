@@ -11,8 +11,8 @@ ________________________________________________________________________________
                 - Alphabetize keys and order by numbered keys
                 - New key mods:
                     - Enable/Disable following camera (Allow for user to left click and drag to move camera?)
-                    - Turn RRT* on/off
-                    - Enable/disable spotlight
+                    - Turn RRT* on/off         (r)
+                    - Enable/disable spotlight (s)
         
     #3  - 1 hr:
             - Fix key Update Code:
@@ -34,7 +34,7 @@ ________________________________________________________________________________
                 - Add plates (similar to legs)
 
     #7  - 1 hr:
-            - Get rid of vent texture on runner and make body more interesting 
+            - Get rid of vent texture on runner and make body more interesting (look at spot)
 
     #8  - 3 hrs: 
             -RRT*/A* for chaser to move around obstacles to get runner robot with spheres as waypoints 
