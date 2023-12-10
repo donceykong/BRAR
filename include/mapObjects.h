@@ -83,43 +83,20 @@ void setObstacleBounds(MapObstacle *obstacle) {
         // maxPosZObject = multiplyMatrix(transformationMatrix, translationMatrix(0.0,  obstacle->depth/2, 0.0));
     }
 
-    // if (obstacle->showEasy) {
-    //     glColor3f(0.5, 1, 0.5); 
-    //     // minX
-    //     glPushMatrix();
-    //     glTranslatef(obstacle->position.x, obstacle->position.y, obstacle->position.z);
-    //     glRotatef(obstacle->yawAngle, 0, 1, 0);
-    //     glTranslatef(-obstacle->width/2, 0.0, 0.0);
-    //     Sphere(2.0, 10, 10); 
-    //     glPopMatrix();
+    // glColor3f(1, 0, 0); 
+    // // minX
+    // glPushMatrix();
+    // glTranslatef(extractPosition(minPosXObject).x, extractPosition(minPosXObject).y, extractPosition(minPosXObject).z);
+    // Sphere(1.0, 10, 10); 
+    // glPopMatrix();
 
-    //     // maxX
-    //     glPushMatrix();
-    //     glTranslatef(obstacle->position.x, obstacle->position.y, obstacle->position.z);
-    //     glRotatef(obstacle->yawAngle, 0, 1, 0);
-    //     glTranslatef(obstacle->width/2, 0.0, 0.0);
-    //     Sphere(2.0, 10, 10); 
-    //     glPopMatrix();
-    //     glColor3f(1, 1, 1); 
-    //     obstacle->showEasy = false;
-    // }
-    // else {
-    //     glColor3f(1, 0, 0); 
-
-    //     // minX
-    //     glPushMatrix();
-    //     glTranslatef(extractPosition(minPosXObject).x, extractPosition(minPosXObject).y, extractPosition(minPosXObject).z);
-    //     Sphere(1.0, 10, 10); 
-    //     glPopMatrix();
-
-    //     // maxX
-    //     glPushMatrix();
-    //     glTranslatef(extractPosition(maxPosXObject).x, extractPosition(maxPosXObject).y, extractPosition(maxPosXObject).z);
-    //     Sphere(1.0, 10, 10); 
-    //     glPopMatrix();
-    //     glColor3f(1, 1, 1); 
-    //     obstacle->showEasy = true;
-    // }
+    // // maxX
+    // glPushMatrix();
+    // glTranslatef(extractPosition(maxPosXObject).x, extractPosition(maxPosXObject).y, extractPosition(maxPosXObject).z);
+    // Sphere(1.0, 10, 10); 
+    // glPopMatrix();
+    // glColor3f(1, 1, 1); 
+    // obstacle->showEasy = true;
 }
 
 #endif // MAP_OBJECTS_H
