@@ -12,6 +12,7 @@ ________________________________________________________________________________
                 - New key mods:
                     - Enable/Disable following camera (Allow for user to left click and drag to move camera?)
                     - Turn RRT* on/off
+                    - Enable/disable spotlight
         
     #3  - 1 hr:
             - Fix key Update Code:
