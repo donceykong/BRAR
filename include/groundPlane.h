@@ -13,29 +13,6 @@ GLfloat GroundPlaneVertices[] = {
     100.0f,  0.0f, -100.0f,  1.0f, 0.0f
 };
 
-void drawGroundPlane() {
-    glPushMatrix();
-    glTranslatef(mapCenterX, 0.00, mapCenterZ);
-
-    glColor3f(1.0, 1.0, 1.0);     // Blue color
-    glBegin(GL_TEXTURE_2D);
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, terrainTexture);
-    
-    glBegin(GL_TRIANGLES);
-    glNormal3f(0.0f, 1.0f, 0.0f);
-    for (int i = 0; i < 6 * 5; i += 5) {
-        // Optionally set texture coordinates if you're using them.
-        glTexCoord2f(GroundPlaneVertices[i + 3], GroundPlaneVertices[i + 4]);
-        glVertex3f(GroundPlaneVertices[i], GroundPlaneVertices[i + 1], GroundPlaneVertices[i + 2]);
-    }
-    
-    glEnd();
-
-    drawPortals();
-    glPopMatrix();
-}
-
 void drawLorenzAttractor() {
     srand(time(NULL));  // set rand generator seed
     // Lorenz system parameters
@@ -104,7 +81,6 @@ void drawPortals() {
         }
         glTranslatef(xTrans, 50.0, zTrans);
         if (i == 0 || i == 1) {
-            int hf = 1;
             glRotatef((GLfloat) 180.0, 1.0, 0.0, 0.0);
         }
         else {
@@ -116,16 +92,31 @@ void drawPortals() {
         // portalRot += 1.0;
 
         drawLorenzAttractor();
-        // glBegin(GL_TRIANGLES);
-        // glNormal3f(0.0f, 1.0f, 0.0f);
-        // for (int i = 0; i < 6 * 5; i += 5) {
-        //     // Optionally set texture coordinates if you're using them.
-        //     glTexCoord2f(GroundPlaneVertices[i + 3], GroundPlaneVertices[i + 4]);
-        //     glVertex3f(GroundPlaneVertices[i], GroundPlaneVertices[i + 1], GroundPlaneVertices[i + 2]);
-        // }
-        // glEnd();
         glPopMatrix();
     }
+}
+
+void drawGroundPlane() {
+    glPushMatrix();
+    glTranslatef(mapCenterX, 0.00, mapCenterZ);
+
+    glColor3f(1.0, 1.0, 1.0);     // Blue color
+    glBegin(GL_TEXTURE_2D);
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, terrainTexture);
+    
+    glBegin(GL_TRIANGLES);
+    glNormal3f(0.0f, 1.0f, 0.0f);
+    for (int i = 0; i < 6 * 5; i += 5) {
+        // Optionally set texture coordinates if you're using them.
+        glTexCoord2f(GroundPlaneVertices[i + 3], GroundPlaneVertices[i + 4]);
+        glVertex3f(GroundPlaneVertices[i], GroundPlaneVertices[i + 1], GroundPlaneVertices[i + 2]);
+    }
+    
+    glEnd();
+
+    drawPortals();
+    glPopMatrix();
 }
 
 #endif // GROUND_PLANE_H

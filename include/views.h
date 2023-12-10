@@ -79,7 +79,7 @@ void setOverheadView() {
 
     glTranslatef(0.0, -fpCamZoomY*fpCamZoom, -fpCamZoomZ*fpCamZoom);
     glRotatef(90, 1, 0, 0);
-    glRotatef(-runnerYawAngle+180, 0, 1, 0);
+    glRotatef(-runnerRobot.yawAngle+180, 0, 1, 0);
     glTranslatef(overheadCamX, overheadCamY, overheadCamZ);
 }
 

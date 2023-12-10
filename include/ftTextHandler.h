@@ -65,7 +65,8 @@ void renderText(const char* text, float x, float y, float scale) {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     
     for (const char* c = text; *c; c++) {
-        Character ch = characters[*c];
+        Character ch = characters[(unsigned char)*c];
+        // Character ch = characters[*c];
 
         GLfloat xpos = x + ch.bearingX * scale;
         // Flip the y position

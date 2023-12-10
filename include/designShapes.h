@@ -232,6 +232,22 @@ void drawSemiCylinder(GLfloat radius, GLfloat height, int segments, double perce
 }
 
 void getParallelogram(GLfloat width, GLfloat height, GLfloat depth) {
+    // bool opaque = false;
+    // bool aone = true;
+    // float alpha = 0.2;
+    // glColor4f(1,1,1,alpha);
+
+    // if (!opaque)
+    // {
+    //     glEnable(GL_BLEND);
+    //     glColor4f(1,1,1,alpha);
+    //     if (aone)
+    //         glBlendFunc(GL_SRC_ALPHA,GL_ONE);
+    //     else
+    //         glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+    //     glDepthMask(0);
+    // }
+
     // Front face
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, BMPtexture);

@@ -1,21 +1,23 @@
 #ifndef ROBOT_LEGS_H
 #define ROBOT_LEGS_H
 
-// Right Leg params
-double rightThighBendAngle = -60.0; // Init right thigh angle
-double rightThighSign = 1.0;
-double rightKneeBendAngle = 90.0;  // Init right knee angle
-double rightKneeSign = 1.0;
-double rightAnkleBendAngle = 0.0;   // Init right ankle angle
-double rightAnkleSign = 1.0;
+enum legType {
+    LEFT_LEG,   // 0
+    RIGHT_LEG   // 1
+};
 
-// Left Leg params
-double leftThighBendAngle = 45.0;   // Init thigh angle
-double leftThighSign = 1.0;
-double leftKneeBendAngle = 0.0;     // Knee angle
-double leftKneeSign = 1.0;
-double leftAnkleBendAngle = 0.0;  // Knee angle
-double leftAnkleSign = 1.0;
+typedef struct {
+  enum legType type;
+
+  double thighBendAngle;
+  double thighSign;
+
+  double kneeBendAngle;  // Init right knee angle
+  double kneeSign;
+
+  double ankleBendAngle;   // Init right ankle angle
+  double ankleSign;
+} legStruct;
 
 // Joint to Joint length is 0.66
 void robotThigh(double percentFull, double thickness, double faceC[3], bool topLayer) {
@@ -172,58 +174,35 @@ void robotFoot() {
     glPopMatrix();
 }
 
-void drawLeg(bool rightLeg, double runSpeed) {
-  double *thighBendAngle;
-  double *thighSign;
-  double *kneeBendAngle;
-  double *kneeSign;
-  double *ankleBendAngle;
-  double *ankleSign;              
-  if (rightLeg) {
-    thighBendAngle = &rightThighBendAngle;
-    thighSign = &rightThighSign;
-    kneeBendAngle = &rightKneeBendAngle;
-    kneeSign = &rightKneeSign;
-    ankleBendAngle= &rightAnkleBendAngle;
-    ankleSign = &rightAnkleSign;
-  }
-  else {
-    thighBendAngle = &leftThighBendAngle;
-    thighSign = &leftThighSign;
-    kneeBendAngle = &leftKneeBendAngle;
-    kneeSign = &leftKneeSign;
-    ankleBendAngle= &leftAnkleBendAngle;
-    ankleSign = &leftAnkleSign;
-  }
-
+void drawLeg(bool rightLeg, double runSpeed, legStruct *leg) {
   // Joint0: robotLeftLeg
   double totalThickness = 0.0;
   double prevThickness = 0.0;
-  
+
   /*
    * * * * * * * * * * * ballInHandBool* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
    * Begin Thigh
    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
   */
-  if (!rightLeg) {
+  if (leg->type == LEFT_LEG) {
     glRotatef(180.0f, 0.0, 1.0, 0.0);  // Rotate thigh 180
   }
   
   BMPtexture = BMPtexture1;
 
   // Update thigh bend angle
-  //*thighBendAngle += *thighSign * 0.9;
-  if (*thighBendAngle > 40.0) {
-      *thighSign = -1.0;
-  } else if (*thighBendAngle < -80.0) {
-      *thighSign = 1.0;
+  if (leg->thighBendAngle > 40.0) {
+      leg->thighSign = -1.0;
+  } else if (leg->thighBendAngle < -80.0) {
+      leg->thighSign = 1.0;
   }
-  *thighBendAngle += *thighSign * 0.9*runSpeed;
-  if (rightLeg) {
-    glRotatef(*thighBendAngle, 0.0, 0.0, 1.0);
+  leg->thighBendAngle += leg->thighSign * 0.9*runSpeed;
+  
+  if (leg->type == RIGHT_LEG) {
+    glRotatef(leg->thighBendAngle, 0.0, 0.0, 1.0);
   }
   else {
-    glRotatef(*thighBendAngle*-1.0, 0.0, 0.0, 1.0);
+    glRotatef(leg->thighBendAngle*-1.0, 0.0, 0.0, 1.0);
   }
   
   drawFrame(1.0);
@@ -264,29 +243,29 @@ void drawLeg(bool rightLeg, double runSpeed) {
   totalThickness = 0.0;                             // reset total thickness
 
   //*kneeBendAngle += *kneeSign*1.8; // Knee angle
-  double kneeBendAnglePrev = *kneeBendAngle;
-  if (*thighBendAngle > 0.0) {
-    *kneeBendAngle -= 1.8*runSpeed; // Knee angle
-    *kneeSign = 1.0;
+  double kneeBendAnglePrev = leg->kneeBendAngle;
+  if (leg->thighBendAngle > 0.0) {
+    leg->kneeBendAngle -= 1.8*runSpeed; // Knee angle
+    leg->kneeSign = 1.0;
   }
-  else if (*thighBendAngle < 0.0) {
-    *kneeBendAngle += 1.8*0.5*runSpeed; // Knee angle
-    *kneeSign = -1.0;
+  else if (leg->thighBendAngle < 0.0) {
+    leg->kneeBendAngle += 1.8*0.5*runSpeed; // Knee angle
+    leg->kneeSign = -1.0;
   }
   
   //if (rightLeg) {printf("kneeBendAngle: %f\n", *thighBendAngle);}
   //*kneeBendAngle += *kneeSign*0.45; // Knee angle
-  if (*kneeBendAngle >= 135.0) {
-    *kneeBendAngle = kneeBendAnglePrev;
+  if (leg->kneeBendAngle >= 135.0) {
+    leg->kneeBendAngle = kneeBendAnglePrev;
   }
-  else if (*kneeBendAngle <= 0.0) {
-    *kneeBendAngle = kneeBendAnglePrev;
+  else if (leg->kneeBendAngle <= 0.0) {
+    leg->kneeBendAngle = kneeBendAnglePrev;
   }
   if (rightLeg) {
-    glRotatef(*kneeBendAngle, 0.0, 0.0, 1.0);          // Rotate shin
+    glRotatef(leg->kneeBendAngle, 0.0, 0.0, 1.0);          // Rotate shin
   }
   else {
-    glRotatef(-1**kneeBendAngle, 0.0, 0.0, 1.0);          // Rotate shin
+    glRotatef(-1*leg->kneeBendAngle, 0.0, 0.0, 1.0);          // Rotate shin
   }
   
   drawFrame(1.0);         
@@ -328,14 +307,14 @@ void drawLeg(bool rightLeg, double runSpeed) {
   BMPtexture = BMPtexture1;
 
   //*ankleBendAngle += *ankleSign*1.80;  // ankle angle
-  if (*ankleBendAngle > 0) {
-    *ankleSign = -1.0;
+  if (leg->ankleBendAngle > 0) {
+    leg->ankleSign = -1.0;
   }
-  else if (*ankleBendAngle < -90) {
-    *ankleSign = 1.0;
+  else if (leg->ankleBendAngle < -90) {
+    leg->ankleSign = 1.0;
   }
   //ankleBendAngle = 0;
-  glRotatef(*ankleBendAngle, 0.0, 0.0, 1.0);        // Rotate foot
+  glRotatef(leg->ankleBendAngle, 0.0, 0.0, 1.0);        // Rotate foot
   drawFrame(1.0);  
   robotFoot();                                      // Draw foot
 }

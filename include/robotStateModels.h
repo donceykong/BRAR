@@ -2,18 +2,19 @@
 #define ROBOT_STATE_MODELS_H
 
 #include <stdlib.h>
+#include "miscObjects.h"
 
-// enum robotType {
-//     RUNNER_ROBOT,         // 0
-//     CHASER_ROBOT,         // 1
-//     TIME_CRUNCHER_ROBOT   // 2
-// };
+enum robotType {
+    RUNNER_ROBOT,         // 0
+    CHASER_ROBOT,         // 1
+    TIME_CRUNCHER_ROBOT   // 2
+};
 
 typedef struct {
-    //enum robotType type;
-    double mass, e, speed, viewableSpeed, speedAdjust;  // other items of robot ....
-
-    bool inCollision;
+    enum robotType type;
+    double mass, e, speed;                          //
+    double viewableSpeed, speedAdjust;              // other items of robot ....
+    bool inCollision;                               //
 
     Vector3 position;
     Vector3 velocity;
@@ -23,145 +24,157 @@ typedef struct {
     Vector3 prevVel;
     Vector3 prevAccel;
 
-    //Vector3 externalForce;
-
     double yawAngle;
     double yawAdd;
     // // Maybe instead of GLfloat yawAngle, use:
-    // Vector3 angularPos;         // where angle.y is yawAngle
-    // Vector3 angularVel;         //
-    // Vector3 angularAccel;       //
+    // Vector3 angularPos;                          // where angle.y is yawAngle
+    // Vector3 angularVel;                          //
+    // Vector3 angularAccel;                        //
 
     // Pose history
-    //double poseHist[100][6];    // 100 length pose history [xyz,roll,pitch,yaw]
+    double poseHist[100][4];                        // 100 length pose history [x,y,z,yaw]
 
-    // Maybe add forces on the robot?
-    Vector3 force;              //
-
-
+    // Net forces on the robot
+    Vector3 netForce;                               //
+    Vector3 externalForce;                          //
 
     // If robot has end effector
-    double joint1Angle, joint2Angle, joint3Angle;
-    Vector3 endEffectorPosition;
-    double gripperRollAngle, gripperDist;
-    bool gripperClosed;
-
-    bool captured;      // If it is a runner robot, of course
-    bool robotTaken;    //
+    double joint1Angle, joint2Angle, joint3Angle;   //
+    Vector3 endEffectorPosition;                    //
+    double gripperRollAngle, gripperDist;           //
+    bool gripperClosed;                             //
+    bool captured;                                  // If it is a runner robot, of course
+    bool taken;                                     //
 } RobotStruct;
 
-/*
- *
- *  Large robot states (chaser)
- * 
-*/
+RobotStruct runnerRobot;
 RobotStruct chaserRobot;
 
-void initChaserRobot() {
-    chaserRobot.speedAdjust = 1.00;
-    chaserRobot.position.y = 2.0;
-    chaserRobot.prevPos.y = 2.0;
-    chaserRobot.gripperDist = 0.3;
-    chaserRobot.gripperClosed = false;
-}
-
-/*
- *
- * ROBOT RUNNER STATES
- *
-*/
-bool robotCaptured = false;
-bool robotTaken = false;
-
-// ----------------------------------------
-// Vector3 endEffectorPosition;
-
-// double chaserSpeed = 0.00;
-// double chaserViewableSpeed =   0.00;
-// double chaserSpeedAdjust = 1.00;
-
-// double chaserYawAngle = 0.0;//180.0;
-// double chaserYawAdd = 0.0;
-// double chaserPosX = 0.00, chaserPosY = 2.00, chaserPosZ = 0.00;
-// double prevChaserPosX = 0.00, prevChaserPosY = 2.00, prevChaserPosZ = 0.00;
-
-// double joint1Angle = 0.0, joint2Angle = 0.0, joint3Angle = 0.0;
-
-// double gripperRollAngle = 0.0, gripperDist = 0.3;
-// bool gripperClosed = false;
-
-
-/*
- *
- *  Mini robot states (runner)
- * 
-*/
-double runnerSpeed = 0.00;              // Speed of runner robot
-
-double accelSumY        =   0.00;       // Sum total Accel in Y direction
-double runnerVelY       =   0.00;       // Initial velocity 0.00 m/s
-double runnerViewableSpeed =   0.00;    //
-double runnerSpeedAdjust = 1.00;        //
-
-double runnerPosX       =   1.00;       // Initial RUNNER X position
-double runnerPosY       =   5.00;       // Initial RUNNER Y position
-double runnerPosZ       =   0.00;       // Initial RUNNER Z position
-
-double prevRunnerPosX = 0.00;
-double prevRunnerPosY = 2.00; 
-double prevRunnerPosZ = 0.00;
-
-double mass             =   68.0;       // mass is 68.0 kg (150 lbs)
-double forceY           =   0.00;       // Init force in Y direction is 0.00 Newtons
-double externalForceY   =   0.00;       // External force on the RUNNER (handled in keyhandler...)
-double e                =   0.50;       // Coeff of restitution  
-
-double runnerYawAngle = 180.0;
-
-// list of runner positions
-const int numPoses = 100;
-const int poseDim  = 3;
-
-// Create an array to hold 100 vectors, each with 3 components
-double runnerPoseList[100][4];
-
-void setRunnerPoseList() {
-    for (int i = 0; i < poseDim; i++) {
-        runnerPoseList[i][0] = runnerPosX;      // runnerXPos
-        runnerPoseList[i][1] = runnerPosY;      // runnerYPos
-        runnerPoseList[i][2] = runnerPosZ;      // runnerZPos
-        runnerPoseList[i][3] = runnerYawAngle;  // runnerYawAngle
-    }
-}
-
-void updateRunnerPoseList(int i) {
-    runnerPoseList[i][0] = runnerPosX;      // runnerXPos
-    runnerPoseList[i][1] = runnerPosY;      // runnerYPos
-    runnerPoseList[i][2] = runnerPosZ;      // runnerZPos
-    runnerPoseList[i][3] = runnerYawAngle;  // runnerYawAngle
-}
 
 /*
  * FUNCTIONS
 */
+void updateRunnerPoseList(RobotStruct *robot, int i) {
+    robot->poseHist[i][0] = robot->position.x;    // runnerXPos
+    robot->poseHist[i][1] = robot->position.y;    // runnerYPos
+    robot->poseHist[i][2] = robot->position.z;    // runnerZPos
+    robot->poseHist[i][3] = robot->yawAngle;      // runnerYawAngle
+}
+
+bool showPoseHist;
+
+void displayPoseHistory(RobotStruct *robot) {
+    static int iter = 0;
+    static int numberPoses = 100;
+    static int poseNumber = 0;
+
+    //printf("numberPoses: %d, iterDIV10: %d\n", numberPoses, iter/10);
+    if ((iter / 10 == 1) & (poseNumber < 100)) {
+        updateRunnerPoseList(robot, poseNumber);
+        iter = 0;
+        poseNumber++;
+    }
+    else if ((iter / 10 == 1) & (poseNumber == 100)) {
+        poseNumber = 0;
+        iter = 0;
+    }
+    
+    for (int i = 0; i < numberPoses; i++) {
+        glPushMatrix();
+        glTranslatef(robot->poseHist[i][0], robot->poseHist[i][1], robot->poseHist[i][2]);
+        glRotatef((GLfloat)robot->poseHist[i][3], 0.0, 1.0, 0.0);
+        if (robot->type == RUNNER_ROBOT && showPoseHist) {
+            drawPoseFrame(2.0, 3.0);             
+        }
+        else if (robot->type == CHASER_ROBOT && showPoseHist) {
+            drawPoseFrame(2.0, 10.0);
+        }
+
+        glPopMatrix();
+    }
+    iter++;
+}
+
+double getYawOffset(double joint0Angle, double robotXPos, double robotZPos, double objPosX, double objPosY, double objPosZ) {
+    Matrix4x4 transformationMatrix = identityMatrix;
+    Vector3 axisOfRotation = {0.0f, 1.0f, 0.0f}; // Rotate around the y-axis
+    Matrix4x4 rMatrix = rotationMatrix(-joint0Angle, axisOfRotation.x, axisOfRotation.y, axisOfRotation.z);
+    
+    transformationMatrix = multiplyMatrix(rMatrix, transformationMatrix);
+
+    // Set Obj pos as a Matrix
+    Matrix4x4 objPosMatrix = translationMatrix(objPosX - robotXPos, objPosY, objPosZ - robotZPos);
+    transformationMatrix = multiplyMatrix(transformationMatrix, objPosMatrix);
+
+    Vector3 relativeObjPos = extractPosition(transformationMatrix);
+    //printf("relativeObjPos.x: %f, relativeObjPos.z: %f\n\n", relativeObjPos.x, relativeObjPos.z);
+
+    double yawAngle = atanf(relativeObjPos.z / relativeObjPos.x);
+
+    return yawAngle;
+}
+
+/*
+ *
+ *
+ * 
+*/
+double timestep     =   0.05;   // Simulation timestep
+double gY           =  -9.81;   // Gravitational accel
+double forceY       =   0.00;   //
+
+double getNormalForce(RobotStruct *robot) {
+    if (robot->position.y > 2) {
+        forceY = 0;
+    }
+    else if (robot->position.y <= 2) {
+        forceY = fabs(gY) * robot->mass;
+    }
+    return forceY;
+}
+
+void getYPosition(RobotStruct *robot) {
+    double forceY = getNormalForce(robot);  // Calculate force first
+
+    double accelSumY = gY + (forceY + robot->externalForce.y) / robot->mass;
+
+    robot->velocity.y += accelSumY * timestep;
+    robot->position.y += robot->velocity.y * timestep;
+    
+    // If position is below the ground, reverse its velocity and apply restitution
+    if (robot->position.y <= 2) {
+        robot->position.y = 2;
+        robot->velocity.y = -robot->e * robot->velocity.y;
+    }
+    // If position is below the ground, reverse its velocity and apply restitution
+    if (robot->position.y >= 10) {
+        robot->position.y = 10.0;
+        robot->velocity.y = 0.0;
+    }
+}   
+
 bool isRobotCaptured() {
-    if (chaserRobot.gripperClosed && fabsf(runnerPosX-chaserRobot.endEffectorPosition.x)<0.1 &&  fabsf(runnerPosY-chaserRobot.endEffectorPosition.y)<0.1 && fabsf(runnerPosZ-chaserRobot.endEffectorPosition.z)<0.1) {
+    if (chaserRobot.gripperClosed && fabsf(runnerRobot.position.x-chaserRobot.endEffectorPosition.x)<0.1 &&  
+        fabsf(runnerRobot.position.y-chaserRobot.endEffectorPosition.y)<0.1 && 
+        fabsf(runnerRobot.position.z-chaserRobot.endEffectorPosition.z)<0.1) 
+    {
         return true;
     }
-    else {
+    else 
+    {
         return false;
     }
 }
 
 void checkRobotCaptured() {
-    robotCaptured = isRobotCaptured();
-    if (robotCaptured) {
-        runnerPosX = chaserRobot.endEffectorPosition.x;
-        runnerPosY = chaserRobot.endEffectorPosition.y;
-        runnerPosZ = chaserRobot.endEffectorPosition.z;
+    runnerRobot.captured = isRobotCaptured();
+    if (runnerRobot.captured) {
+        runnerRobot.position.x = chaserRobot.endEffectorPosition.x;
+        runnerRobot.position.y = chaserRobot.endEffectorPosition.y;
+        runnerRobot.position.z = chaserRobot.endEffectorPosition.z;
     }
     else {
-        getYPosition();
+        getYPosition(&runnerRobot);
     }
 }
 

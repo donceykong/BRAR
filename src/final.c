@@ -21,22 +21,19 @@
 #include FT_FREETYPE_H
 
 // In-house includes
-// #include "windowHandler.h"  // NO DEPENDS
-#include "matrixMath.h"     // NO DEPENDS
-// #include "GameModes.h"      // NO DEPENDS
-#include "textureUtils.h"   // NO DEPENDS
+// #include "windowHandler.h"   // NO DEPENDS
+#include "matrixMath.h"         // NO DEPENDS
+// #include "GameModes.h"       // NO DEPENDS
+#include "textureUtils.h"       // NO DEPENDS
 
 // #include "ftTextHandler.h"
 // #include "buttonHandler.h"   
 #include "screenInfo.h"
-// #include "CSCIx229.h"
+#include "CSCIx229.h"
 
 #include "designShapes.h"
 
 #include "robotStateModels.h"
-#include "robotController.h"
-
-#include "simulateDrop.h"
 #include "miscObjects.h"
 #include "robot.h"
 
@@ -47,7 +44,8 @@
 
 #include "views.h"
 #include "lighting.h"
-#include "keyHandler.h"         // Add this import last  
+// #include "keyHandler.h"
+#include "keyUpdate.h"         
 
 // Global GAME_MODE enum
 enum GameMode GAME_MODE;
@@ -56,7 +54,7 @@ enum GameMode GAME_MODE;
 bool showFrames = false;
 
 // Draw robot pose history on map
-bool showPoseHist = true;
+bool showPoseHist = false;
 
 GLfloat mat_ambient[] = {0.2, 0.2, 0.2, 1.0};  
 
@@ -70,33 +68,6 @@ bool showMain = true;
 
 // Mouse callback for game options
 int mouseCallbackEnabled = 1; // Global variable to control the callback
-
-void displayPoseHistory() {
-    static int iter = 0;
-    static int numberPoses = 100;
-    static int poseNumber = 0;
-    if (showPoseHist) {
-        //printf("numberPoses: %d, iterDIV10: %d\n", numberPoses, iter/10);
-        if (iter / 10 == 1 & poseNumber < 100) {
-            updateRunnerPoseList(poseNumber);
-            iter = 0;
-            poseNumber++;
-        }
-        else if (iter / 10 == 1 & poseNumber == 100) {
-            poseNumber = 0;
-            iter = 0;
-        }
-        for (int i = 0; i < numberPoses; i++) {
-            glPushMatrix();
-            glTranslatef(runnerPoseList[i][0], runnerPoseList[i][1], runnerPoseList[i][2]);
-            glRotatef((GLfloat)runnerPoseList[i][3], 0.0, 1.0, 0.0);
-            drawPoseFrame(2.0);             
-            glPopMatrix();
-        }
-        iter++;
-    }
-}
-
 
 void displayViewRobot() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -116,7 +87,7 @@ void displayViewRobot() {
     glPushMatrix();
     glTranslatef(0.0, 2.0, 0.0);        // Translate to bring parallelogram top down
     glColor3f(1,1,1);    // Green face color
-    drawRobot();                    // Draw chaser (collector)
+    drawChaserRobot();                    // Draw chaser (collector)
     glPopMatrix();
 
     glDisable(GL_DEPTH_TEST);
@@ -130,6 +101,7 @@ void displayTimeCrunch() {
 
     glEnable(GL_DEPTH_TEST);
     updateTimeCrunch(); // Needs to use nearest map object pose as controller basis for arm
+    getYPosition(&chaserRobot);
     displayView();
     setupLighting();
 
@@ -144,8 +116,8 @@ void displayTimeCrunch() {
     // glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,Emission);
 
     drawGroundPlane();
-    displayPoseHistory();
-    drawRobot();                    // Draw chaser (collector)
+    displayPoseHistory(&chaserRobot);
+    drawChaserRobot();                    // Draw chaser (collector)
     computeForwardKinematics();
 
     plotMapBorder();
@@ -153,7 +125,7 @@ void displayTimeCrunch() {
     plotMapItems();
     setObjAbsorberPos(chaserRobot.position.x, chaserRobot.position.y, chaserRobot.position.z);
     updateMapCenter (chaserRobot.position.x, chaserRobot.position.z);
-    drawNearestLine(nearestMapItem->position.x, nearestMapItem->position.y, nearestMapItem->position.z);
+    drawNearestLine(nearestMapItem->position.x, nearestMapItem->position.y, nearestMapItem->position.z, chaserRobot.position, chaserRobot.endEffectorPosition);
     glDisable(GL_DEPTH_TEST);
 
     currentTime = time(NULL);
@@ -188,18 +160,18 @@ void displayRunner() {
     glEnable(GL_COLOR_MATERIAL);
     
     drawGroundPlane();
-    drawRobot();                    // Draw chaser (collector)
-    drawMiniRobot();                // Draw runner
+    drawChaserRobot();                    // Draw chaser (collector)
+    drawRunnerRobot();                // Draw runner
     computeForwardKinematics();
 
     //drawText3D();
-    displayPoseHistory();
+    displayPoseHistory(&runnerRobot);
 
     plotMapBorder();
     plotMapObstacles();
     plotMapItems();
-    setObjAbsorberPos(runnerPosX, runnerPosY, runnerPosZ);
-    updateMapCenter(runnerPosX, runnerPosZ);
+    setObjAbsorberPos(runnerRobot.position.x, runnerRobot.position.y, runnerRobot.position.z);
+    updateMapCenter(runnerRobot.position.x, runnerRobot.position.z);
     glDisable(GL_DEPTH_TEST);
 
     currentTime = time(NULL);
@@ -220,7 +192,7 @@ void displayRunner() {
 }
 
 double colorADJ = 0.0;
-displayEndScreen() {
+void displayEndScreen() {
     srand(time(NULL));  // set rand generator seed
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glDisable(GL_LIGHTING);
@@ -248,7 +220,7 @@ displayEndScreen() {
     glutSwapBuffers();
 }
 
-displayEndScreenRunner() {
+void displayEndScreenRunner() {
     srand(time(NULL));  // set rand generator seed
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glDisable(GL_LIGHTING);
@@ -278,7 +250,7 @@ displayEndScreenRunner() {
 void display() {
     switch (GAME_MODE) {
         case RUNNER:
-            if (!robotTaken) {
+            if (!runnerRobot.taken) {
                 displayRunner();
             }
             else {
@@ -341,7 +313,7 @@ void mouseButtonCallback(int button, int state, int x, int y) {
             prevTime = beginTime;
 
             initChaserRobot();
-            // initRunnerRobot();
+            initRunnerRobot();
         }
         glutDisplayFunc(showMain ? drawButtonScreen : display);
     }
@@ -421,7 +393,7 @@ int main(int argc, char** argv) {
     BMPtexture6 = loadTexture("./assets/flagstone.bmp");
     BMPtexture7 = loadTexture("./assets/wooden_crate.bmp");
 
-    setRunnerPoseList();
+    // setRunnerPoseList();
     addItemsToMapList();
     addObstaclesToMapList();
     

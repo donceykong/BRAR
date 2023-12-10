@@ -111,7 +111,7 @@ void showLights() {
     float diffuseColor[]    = {diffuse, diffuse, diffuse, 1.0};
     float specularColor[]   = {specular, specular, specular, 1.0};
     float light1Position[]  = {light1_X, light1_Y, light1_Z, 1.0};
-    float light2Position[]  = {light2_X, light2_Y, light2_Z, 1.0};
+    // float light2Position[]  = {light2_X, light2_Y, light2_Z, 1.0};
 
     glEnable(GL_NORMALIZE);
     glEnable(GL_LIGHTING);

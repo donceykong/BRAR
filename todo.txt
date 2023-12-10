@@ -1,12 +1,6 @@
 _________________________________________________________________________________
                         SATURDAY
 
-- Use Robot struct for runner
-
-- Add jumping ability for chaser by passing struct
-
-- Fix runner visual speed on legs
-
 - Fix key handling - USE ex15 as example
     - Make code much easier to modify (less redundancy)
     - Remove keys to control robot arm...
@@ -23,6 +17,8 @@ ________________________________________________________________________________
 - Add buttons to scroll through items, obstacles, or robots in the view GAME_MODE
 
 - Fix FPS handling to whatever example 24 does
+
+- Add user score sheet to show top three scores at end screen 
 
 - Make robot arm more interesting:
     - Add teeth to gripper

@@ -9,6 +9,21 @@
 // #define Cos(th) cos(3.14159265/180*(th))
 // #define Sin(th) sin(3.14159265/180*(th))
 
+double getEulerDistanceXZ(double pos1X, double pos1Z, double pos2X, double pos2Z) {
+    double xDist = pos1X - pos2X;
+    double zDist = pos1Z - pos2Z;
+    double eulerDist = sqrt(xDist * xDist + zDist * zDist);
+    return eulerDist;
+}
+
+double getEulerDistanceXYZ(double pos1X, double pos1Y, double pos1Z, double pos2X, double pos2Y, double pos2Z) {
+    double xDist = pos1X - pos2X;
+    double yDist = pos1Y - pos2Y;
+    double zDist = pos1Z - pos2Z;
+    double eulerDist = sqrt(xDist * xDist + yDist * yDist + zDist * zDist);
+    return eulerDist;
+}
+
 typedef struct {
     float x, y, z;
 } Vector3;

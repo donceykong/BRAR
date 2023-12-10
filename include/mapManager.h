@@ -16,9 +16,6 @@ double objAbsorberX;
 double objAbsorberY;
 double objAbsorberZ;
 
-bool chaserInCollision = false;
-bool runnerInCollision = false;
-
 // Array to hold 10 map items
 MapItem mapItemList[10];
 
@@ -134,15 +131,24 @@ void addObstaclesToMapList() {
     }
 }
 
-void plotMapObstacles() {
+void checkCollision () {
+    chaserRobot.inCollision = false;
+    runnerRobot.inCollision = false;
+    for (int i = 0; i < 30; i++) {
+        chaserRobot.inCollision += detect_collision_AABB_TRANS(mapObstList[i], chaserRobot.position.x, chaserRobot.position.y, chaserRobot.position.z);
+        runnerRobot.inCollision += detect_collision_AABB_TRANS(mapObstList[i], runnerRobot.position.x, runnerRobot.position.y, runnerRobot.position.z);
+    }
+}
+
+void plotMapObstacles () {
     glEnable(GL_DEPTH_TEST);
-    chaserInCollision = false;
-    runnerInCollision = false;
+    chaserRobot.inCollision = false;
+    runnerRobot.inCollision = false;
     for (int i = 0; i < 30; i++) {
         bool chaserInCollisionCurr = detect_collision_AABB_TRANS(mapObstList[i], chaserRobot.position.x, chaserRobot.position.y, chaserRobot.position.z);
-        bool runnerInCollisionCurr = detect_collision_AABB_TRANS(mapObstList[i], runnerPosX, runnerPosY, runnerPosZ);
-        chaserInCollision += chaserInCollisionCurr; //detect_collision(mapObstList[i], chaserRobot.position.x, chaserRobot.position.y, chaserRobot.position.z);
-        runnerInCollision += runnerInCollisionCurr; //detect_collision(mapObstList[i], runnerPosX, runnerPosY, runnerPosZ);
+        bool runnerInCollisionCurr = detect_collision_AABB_TRANS(mapObstList[i], runnerRobot.position.x, runnerRobot.position.y, runnerRobot.position.z);
+        chaserRobot.inCollision += chaserInCollisionCurr; //detect_collision(mapObstList[i], chaserRobot.position.x, chaserRobot.position.y, chaserRobot.position.z);
+        runnerRobot.inCollision += runnerInCollisionCurr; //detect_collision(mapObstList[i], runnerRobot.position.x, runnerRobot.position.y, runnerRobot.position.z);
 
         enum mapObstacleType currentMapObstType = mapObstList[i].type;
         double currentMapObstPosX = mapObstList[i].position.x;
@@ -289,7 +295,6 @@ void plotMapItems() {
     glEnable(GL_DEPTH_TEST);  // Enable depth testing
     // glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     map_time += 0.005;
-    //printf("Plotting Map Objects: \n");
     for (int i = 0; i < 10; i++) {
         // If Obj pos = runner pos, set runner adjust and robot adjust based on type
         if (mapItemList[i].type == EMPTY) {
@@ -306,15 +311,15 @@ void plotMapItems() {
                 remainingTime += mapItemList[i].timeValue*rewardDiminish;
                 totalScore += mapItemList[i].timeValue*rewardDiminish;
             }
-            else if (!robotCaptured && GAME_MODE == RUNNER) {
-                //runnerSpeedAdjust += mapItemList[i].runnerSpeedAdjust;
-                runnerSpeedAdjust = runnerSpeedAdjust*0.99;             // RUNNER GETS SLOWER
-                chaserRobot.speedAdjust = chaserRobot.speedAdjust*1.10;             // RUNNER GETS FASTER AT A LARGER RATE THAN RUNNER GETS SLOW
+            else if (!runnerRobot.captured && GAME_MODE == RUNNER) {
+                //runnerRobot.speedAdjust += mapItemList[i].runnerSpeedAdjust;
+                runnerRobot.speedAdjust = runnerRobot.speedAdjust*1.00;             // RUNNER GETS SLOWER
+                chaserRobot.speedAdjust = chaserRobot.speedAdjust*1.00;             // RUNNER GETS FASTER AT A LARGER RATE THAN RUNNER GETS SLOW
                 totalScoreRunner += mapItemList[i].runnerSpeedAdjust;   // TOTAL RUNNER SCORE
             }
 
-            if (runnerSpeedAdjust < 0.0) {
-                runnerSpeedAdjust = 0.0;
+            if (runnerRobot.speedAdjust < 0.0) {
+                runnerRobot.speedAdjust = 0.0;
             }
             if (chaserRobot.speedAdjust < 0.0) {
                 chaserRobot.speedAdjust = 0.0;
