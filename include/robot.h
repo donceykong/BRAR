@@ -18,7 +18,7 @@ void initChaserLegs () {
     // Right Leg params
     chaserRightLeg.type             = RIGHT_LEG;
     chaserRightLeg.thighBendAngle   = -60.0; // Init right thigh angle
-    chaserRightLeg.thighSign   = 1.0;
+    chaserRightLeg.thighSign        = 1.0;
     chaserRightLeg.kneeBendAngle    = 90.0;  // Init right knee angle
     chaserRightLeg.kneeSign         = 1.0;
     chaserRightLeg.ankleBendAngle   = 0.0;   // Init right ankle angle
@@ -79,7 +79,7 @@ void initChaserRobot() {
     chaserRobot.position.y      = 2.0;          //
     chaserRobot.prevPos.y       = 2.0;          //
     chaserRobot.mass            = 68.0;         // kg (150 lb)
-    chaserRobot.e               = 0.50;         // coeff of elasticity 
+    chaserRobot.e               = 0.20;         // coeff of elasticity 
     chaserRobot.gripperDist     = 0.3;          //
     chaserRobot.gripperClosed   = false;        //
 }
@@ -92,7 +92,7 @@ void initRunnerRobot() {
     runnerRobot.position.y  = 5.0;          //
     runnerRobot.prevPos.y   = 2.0;          //
     runnerRobot.mass        = 68.0;         // kg (150 lb)
-    runnerRobot.e           = 0.50;         // coeff of elasticity 
+    runnerRobot.e           = 0.20;         // coeff of elasticity 
     runnerRobot.yawAngle    = 180.0;        // deg
     runnerRobot.captured    = false;        //
     runnerRobot.taken       = false;        //
@@ -104,6 +104,11 @@ void drawChaserRobot() {
     glTranslatef(chaserRobot.position.x, chaserRobot.position.y, chaserRobot.position.z);
     glRotatef((GLfloat)chaserRobot.yawAngle + chaserRobot.yawAdd, 0.0, 1.0, 0.0);
 
+    bool onGround = true;
+    if (chaserRobot.position.y > 2.5) {
+        onGround = false;
+    }
+
     // robot body
     glPushMatrix();
     drawBody();
@@ -112,13 +117,13 @@ void drawChaserRobot() {
     // robot left leg
     glPushMatrix();
     glTranslatef(0.0, 0.0, 0.5);
-    drawLeg(true, chaserRobot.viewableSpeed, &chaserRightLeg);
+    drawLeg(true, chaserRobot.viewableSpeed, &chaserRightLeg, onGround);
     glPopMatrix();
 
     // robot right leg
     glPushMatrix();
     glTranslatef(0.0, 0.0, -0.5);
-    drawLeg(false, chaserRobot.viewableSpeed, &chaserLeftLeg);
+    drawLeg(false, chaserRobot.viewableSpeed, &chaserLeftLeg, onGround);
     glPopMatrix();
 
     drawRobotArm();
@@ -130,6 +135,10 @@ void drawRunnerRobot() {
     glTranslatef(runnerRobot.position.x, runnerRobot.position.y, runnerRobot.position.z);
     glRotatef((GLfloat)runnerRobot.yawAngle - 90.0, 0.0, 1.0, 0.0);
     
+    bool onGround = true;
+    if (runnerRobot.position.y > 2.5) {
+        onGround = false;
+    }
     // printf("runnerRobot.viewableSpeed: %f\n", runnerRobot.viewableSpeed);
     
     /*
@@ -143,13 +152,13 @@ void drawRunnerRobot() {
     // robot left leg
     glPushMatrix();
     glTranslatef(0.0, 0.0, 0.5);
-    drawLeg(true, runnerRobot.viewableSpeed, &runnerRearRightLeg);
+    drawLeg(true, runnerRobot.viewableSpeed, &runnerRearRightLeg, onGround);
     glPopMatrix();
 
     // robot right leg
     glPushMatrix();
     glTranslatef(0.0, 0.0, -0.5);
-    drawLeg(false, runnerRobot.viewableSpeed, &runnerRearLeftLeg);
+    drawLeg(false, runnerRobot.viewableSpeed, &runnerRearLeftLeg, onGround);
     glPopMatrix();
 
     /*
@@ -173,13 +182,13 @@ void drawRunnerRobot() {
     // robot left leg
     glPushMatrix();
     glTranslatef(0.0, 0.0, 0.5);
-    drawLeg(true, runnerRobot.viewableSpeed, &runnerFrontRightLeg);
+    drawLeg(true, runnerRobot.viewableSpeed, &runnerFrontRightLeg, onGround);
     glPopMatrix();
 
     // robot right leg
     glPushMatrix();
     glTranslatef(0.0, 0.0, -0.5);
-    drawLeg(false, runnerRobot.viewableSpeed, &runnerFrontLeftLeg);
+    drawLeg(false, runnerRobot.viewableSpeed, &runnerFrontLeftLeg, onGround);
     glPopMatrix();
 
     // robot arm

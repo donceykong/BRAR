@@ -30,7 +30,7 @@ double prevTime;
 double remainingTime = 60.00;
 double elapsedTime = 0.0;
 double totalElapsedTime = 0.0;
-double totalScore = 0.0;
+double totalScore = 0.0;        //Change to: double totalScoreTimeCrunch = 0.0;
 
 double totalScoreRunner = 0.0;
 

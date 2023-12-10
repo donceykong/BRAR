@@ -42,7 +42,7 @@ $(OBJ)/%.o: $(SRC)/%.c $(DEPS)
 	$(CC) $(CFLG) -I$(INC) -c $< -o $@
 
 # Create archive
-$(OBJ)/CSCIx229.a: $(OBJ)/print.o
+$(OBJ)/CSCIx229.a: $(OBJ)/print.o $(OBJ)/projection.o
 	ar -rcs $@ $^
 
 # Link

@@ -28,6 +28,7 @@ const float SIbutton2YCenter = SIbutton2YDiff/2.0 + SIbutton2YMin;
 
 char SIstr1[50] = "";
 char SIstr2[50] = "";
+char SITopPlayer[50] = "";
 
 void drawSIBackground() {
     // Set up the view

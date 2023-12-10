@@ -1,24 +1,26 @@
 _________________________________________________________________________________
-                        SATURDAY
+                        SUNDAY
+
+- update obj collision detection in key updating so simplifications can be made and gittering during collision goes away.
+
+- Add user score sheet to show top three scores at end screen.
 
 - Fix key handling - USE ex15 as example
-    - Make code much easier to modify (less redundancy)
     - Remove keys to control robot arm...
     - New key mods:
-        - Move robot with arrow keys
-        - Zoom-in/out
-        - jump (space bar)
-        - Enable/Disable pose history, joint frames 
+        - Enable/Disable following camera (Allow for user to left click and drag to move camera?)
 
 - Check lighting for each shape
 
 - Add buttons to get back to main menu/replay at game over
 
-- Add buttons to scroll through items, obstacles, or robots in the view GAME_MODE
+- Add clickable buttons to scroll through items, obstacles, or robots in the view GAME_MODE
+
+_________________________________________________________________________________
+
+- Add more lights to randomly walk ("float") around scene. Will want to use struct to control and visualize lights.
 
 - Fix FPS handling to whatever example 24 does
-
-- Add user score sheet to show top three scores at end screen 
 
 - Make robot arm more interesting:
     - Add teeth to gripper
@@ -31,12 +33,13 @@ ________________________________________________________________________________
 
 - Add bump map to wall obstacles and use wood planks for box
 
-- Add ability for user to add walls behind them
-
-- RRT*/A* for chaser to move around obstacles to get runner robot?
+- RRT*/A* for chaser to move around obstacles to get runner robot with spheres as waypoints 
+    - As chaser reaches waypoints, delete them (set waypoint state to "REACHED" or "NOT_REACHED," similar to items)
 
 _________________________________________________________________________________
-                        SUNDAY
+                        MONDAY
+
+- Add ability for user to add walls behind them
 
 - Add wireframe bounding box to Robot struct for visulization
     - Will require algorithm to calculate the max/min of robots at all timesteps

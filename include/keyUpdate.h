@@ -5,20 +5,10 @@
 
 void updateRunner()
 {
-//   double robotXPosInc       = 0.00;
-//   double robotZPosInc       = 0.00;
-//   double joint2inc          = 0.00;
-  // double joint3inc = 0.00;
   double gripperRollinc     = 0.00;
   double gripperDistinc     = 0.00;
   
   runnerRobot.speedAdjust   = 0.00;
-
-//   // Joint 2 Adjust
-//   if (keyStates.y)
-//     joint2inc               =  5.00 * SPEED;
-//   if (keyStates.h)
-//     joint2inc               = -5.00 * SPEED;
 
   // Gripper Adjust
   if (keyStates.up)
@@ -125,13 +115,22 @@ void updateRunner()
   if (viewMode == 1) {
     orbitCamAngleY -= 0.05*(orbitCamAngleY-runnerRobot.yawAngle + 180);
     orbitCamZ      -= 0.08*(orbitCamZ-runnerRobot.position.z);
+    orbitCamY      -= 0.10*(orbitCamY-runnerRobot.position.y);
     orbitCamX      -= 0.08*(orbitCamX-runnerRobot.position.x);
   }
-  
-  double poseDiff = 0.5*sqrt((runnerRobot.position.x-chaserRobot.position.x)*(runnerRobot.position.x-chaserRobot.position.x) + (runnerRobot.position.z-chaserRobot.position.z)*(runnerRobot.position.z-chaserRobot.position.z));
-  overheadCamX = -runnerRobot.position.x + (runnerRobot.position.x-chaserRobot.position.x)/2.0;
-  overheadCamY = -1 - poseDiff;
-  overheadCamZ = -runnerRobot.position.z + (runnerRobot.position.z-chaserRobot.position.z)/2.0;
+  else if (viewMode == 2) {
+    overheadCamAngleY -= 0.04*(overheadCamAngleY - runnerRobot.yawAngle + 180.0);
+    overheadCamX -= 0.08*(overheadCamX + runnerRobot.position.x);
+    overheadCamY -= 0.08*(overheadCamY + runnerRobot.position.y);
+    overheadCamZ -= 0.08*(overheadCamZ + runnerRobot.position.z);
+
+    // // FOLLOW MIDLINE BW CHASER AND RUNNER (YAW ANGLE IS ONLY ON RUNNER AND NEEDS TO BE ANGLE OF LINE FROM CHASER TO RUNNER)
+    // overheadCamAngleY = runnerRobot.yawAngle - 180.0;
+    // double poseDiff = 0.5*sqrt((runnerRobot.position.x-chaserRobot.position.x)*(runnerRobot.position.x-chaserRobot.position.x) + (runnerRobot.position.z-chaserRobot.position.z)*(runnerRobot.position.z-chaserRobot.position.z));
+    // overheadCamX = -runnerRobot.position.x + (runnerRobot.position.x-chaserRobot.position.x)/2.0;
+    // overheadCamY = -1 - poseDiff;
+    // overheadCamZ = -runnerRobot.position.z + (runnerRobot.position.z-chaserRobot.position.z)/2.0;
+  }
 
   // Adjust joint angles
   double yaw = getYawOffset(chaserRobot.yawAngle, chaserRobot.position.x, chaserRobot.position.z, runnerRobot.position.x, runnerRobot.position.y, runnerRobot.position.z) * 180 / PI;
@@ -288,19 +287,20 @@ void updateTimeCrunch()
   light2_Z = -orbitRadius * cos(light2Rotation * PI / 180) + chaserRobot.position.z;
   lightrot += 0.5;
 
-  // CAMERA POS
+  // CAMERA POS CONTROL (IMITATES CAM STAYING AT LAST POSITION UNTIL SUMMONED :D)
   if (viewMode == 1) {
-    // Compute the camera position using spherical coordinates.
     orbitCamAngleY -= 0.05*(orbitCamAngleY-chaserRobot.yawAngle);
-    orbitCamY = 0.0;
     orbitCamZ -= 0.08*(orbitCamZ-chaserRobot.position.z);
+    orbitCamY -= 0.10*(orbitCamY-chaserRobot.position.y);
     orbitCamX -= 0.08*(orbitCamX-chaserRobot.position.x);
   }
+  else if (viewMode == 2) {
+    overheadCamAngleY -= 0.04*(overheadCamAngleY - chaserRobot.yawAngle);
+    overheadCamX -= 0.08*(overheadCamX + chaserRobot.position.x);
+    overheadCamY -= 0.08*(overheadCamY + chaserRobot.position.y);
+    overheadCamZ -= 0.08*(overheadCamZ + chaserRobot.position.z);
+  }
 
-  overheadCamX = -chaserRobot.position.x;
-  overheadCamY = -1;
-  overheadCamZ = -chaserRobot.position.z;
-  
   // ROBOT POSE
   chaserRobot.joint1Angle += 5.0*(nearestMapItem->position.y -chaserRobot.endEffectorPosition.y);
   computeForwardKinematics(); // call to get new endeffector pos

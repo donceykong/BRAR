@@ -14,12 +14,7 @@ GLfloat fpCamZoomX = 0.0, fpCamZoomY = 5.0, fpCamZoomZ = 10.0;
 GLfloat fpCamZoom = 1.0;
 
 GLfloat overheadCamX = 0.0, overheadCamY = 5.0, overheadCamZ = 0.0;
-
-// GLfloat angleX = 0.0f;
-// GLfloat distance = 0.0f;
-
-// int mouseX, mouseY;
-// int isDragging = 0;
+GLfloat overheadCamAngleY = 0.0f;
 
 void perspective(GLfloat fovy, GLfloat aspect, GLfloat zNear, GLfloat zFar) {
     GLfloat f = 1.0f / tan(fovy / 2.0f);
@@ -79,7 +74,7 @@ void setOverheadView() {
 
     glTranslatef(0.0, -fpCamZoomY*fpCamZoom, -fpCamZoomZ*fpCamZoom);
     glRotatef(90, 1, 0, 0);
-    glRotatef(-runnerRobot.yawAngle+180, 0, 1, 0);
+    glRotatef(-overheadCamAngleY, 0, 1, 0);
     glTranslatef(overheadCamX, overheadCamY, overheadCamZ);
 }
 

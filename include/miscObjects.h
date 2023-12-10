@@ -4,7 +4,7 @@
 #include "matrixMath.h"
 
 // Draw frames on robot joints
-extern bool showFrames;  // Show joint frames
+bool showFrames = false;
 
 void drawPoseFrame(float axisLen, float lineThickness) {
     glLineWidth(lineThickness);         

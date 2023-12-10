@@ -50,12 +50,6 @@
 // Global GAME_MODE enum
 enum GameMode GAME_MODE;
 
-// Draw frames on robot joints
-bool showFrames = false;
-
-// Draw robot pose history on map
-bool showPoseHist = false;
-
 GLfloat mat_ambient[] = {0.2, 0.2, 0.2, 1.0};  
 
 // Global Framerate variables
@@ -192,7 +186,7 @@ void displayRunner() {
 }
 
 double colorADJ = 0.0;
-void displayEndScreen() {
+void displayEndScreenTimeCrunch() {
     srand(time(NULL));  // set rand generator seed
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glDisable(GL_LIGHTING);
@@ -212,8 +206,12 @@ void displayEndScreen() {
     glColor3f(0.1 + colorADJ, 0.8+colorADJ, colorADJ); // Set text color (green)
     sprintf(SIstr2, "Total Score: %.5f", totalScore);
     renderText(SIstr2,  windowXDiff/20, windowYDiff/2 - 200, 2.0);
+
+    glColor3f(0.8 + colorADJ, 0.1+colorADJ, 0.1*colorADJ); // Set text color (green)
+    sprintf(SITopPlayer, "Top TC player: %s | Score: %f", topPlayerName, topScore);
+    renderText(SITopPlayer,  windowXDiff/20, windowYDiff/2 - 300, 1.0);
+
     colorADJ = (double)rand() / (RAND_MAX);
-    // printf("colorADJ: %f\n", colorADJ);
     
     //glutPostRedisplay();
     glFlush();
@@ -234,12 +232,17 @@ void displayEndScreenRunner() {
 
     // drawBackground();
     // Render some text on the screen
-    glColor3f(1.0, 0.0, 0.0); // Set text color (green)
+    glColor3f(1.0, 1.0, 1.0); // Set text color (green)
     renderText("GAME OVER", windowXDiff/20, windowYDiff/2, 4.0);
     
     glColor3f(0.1 + colorADJ, 0.8+colorADJ, colorADJ); // Set text color (green)
     sprintf(SIstr2, "Total Score: %.5f", totalScoreRunner);
     renderText(SIstr2,  windowXDiff/20, windowYDiff/2 - 200, 2.0);
+
+    glColor3f(0.8 + colorADJ, 0.1+colorADJ, 0.1*colorADJ); // Set text color (green)
+    sprintf(SITopPlayer, "Top RUN player: %s | Score: %f", topPlayerName, topScore);
+    renderText(SITopPlayer,  windowXDiff/20, windowYDiff/2 - 300, 1.0);
+
     colorADJ = (double)rand() / (RAND_MAX);
     
     //glutPostRedisplay();
@@ -247,6 +250,7 @@ void displayEndScreenRunner() {
     glutSwapBuffers();
 }
 
+bool GameJustEnded = false;
 void display() {
     switch (GAME_MODE) {
         case RUNNER:
@@ -254,6 +258,12 @@ void display() {
                 displayRunner();
             }
             else {
+                if (!GameJustEnded) {
+                    game.score = totalScoreRunner;
+                    saveScore(&game);
+                    readScores(&game);
+                    GameJustEnded = true;
+                }
                 displayEndScreenRunner();
             }
             break;
@@ -263,7 +273,13 @@ void display() {
                 chaserRobot.yawAdd = 90.0;
             }
             else {
-                displayEndScreen();
+                if (!GameJustEnded) {
+                    game.score = totalScore;
+                    saveScore(&game);
+                    readScores(&game);
+                    GameJustEnded = true;
+                }
+                displayEndScreenTimeCrunch();
             }
             break;
         case VIEW_ROBOT:
@@ -319,6 +335,36 @@ void mouseButtonCallback(int button, int state, int x, int y) {
     }
 }
 
+// int fov=55;       //  Field of view (for perspective)
+// double asp=1;     //  Aspect ratio
+// double dim=30.0;   //  Size of world
+// /*
+//  *  GLUT calls this routine when the window is resized
+//  */
+// void reshape(int width,int height)
+// {
+//    //  Ratio of the width to the height of the window
+//    asp = (height>0) ? (double)width/height : 1;
+//    //  Set the viewport to the entire window
+//    glViewport(0,0, RES*width,RES*height);
+//    //  Set projection
+//    Project(fov,asp,dim);
+// }
+
+// /*
+//  *  GLUT calls this routine when the window is resized
+//  */
+// int zh=0;         //  Azimuth of light
+// void idle()
+// {
+//    //  Elapsed time in seconds
+//    double t = glutGet(GLUT_ELAPSED_TIME)/1000.0;
+//    zh = fmod(90*t,360.0);
+//    //  Tell GLUT it is necessary to redisplay the scene
+//    glutPostRedisplay();
+// }
+
+//
 void timer(int value) {
     glutPostRedisplay();
 }
@@ -338,6 +384,8 @@ void idle() {
 }
 
 int main(int argc, char** argv) {
+    promptForPlayerName();
+
     // Init GLUT
     glutInit(&argc, argv);
 
@@ -363,6 +411,9 @@ int main(int argc, char** argv) {
 
     // Main Screen
     glutDisplayFunc(showMain ? drawButtonScreen : display);
+
+    // 
+    // glutReshapeFunc(reshape);
 
     // Arrow key callbacks
     glutSpecialFunc(special);

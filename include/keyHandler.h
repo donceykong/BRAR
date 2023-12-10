@@ -3,7 +3,7 @@
 
 #include <stdlib.h>
 
-struct KeyStatesStruct {
+typedef struct {
   bool space;       // space bar key - jump robot controlled by user
   bool spacePrev;   //
 
@@ -37,10 +37,10 @@ struct KeyStatesStruct {
   bool key3;           // UNUSED
   bool key4;           // Inc runner speed
   bool key5;           // dec runner speed
-};
+} KeyStatesStruct;
 
 bool lightKeyPressed = false;  // Keep track of whether '0' key is pressed
-struct KeyStatesStruct keyStates;
+KeyStatesStruct keyStates;
 
 void setRegularKeyState(unsigned char key, bool state) {
    switch (key) {
@@ -76,6 +76,7 @@ void setRegularKeyState(unsigned char key, bool state) {
             break;
         case 'f':
             keyStates.f = state;
+            if (state) {showFrames = !showFrames;}
             break;
         case 'g':
             keyStates.g = state;
@@ -91,14 +92,14 @@ void setRegularKeyState(unsigned char key, bool state) {
             break;
         case 'p':
             keyStates.p = state;
+            if (state) {showPoseHist = !showPoseHist;}
             break;
         case 'i':
             keyStates.i = state;
             break;
         case '0':
-            lightKeyPressed = !lightKeyPressed; // Toggle the light key state
-            lightsEnabled = lightKeyPressed; // Update lightEnabled accordingly
             keyStates.key0 = state;
+            if (state) {lightKeyPressed = !lightKeyPressed; lightsEnabled = lightKeyPressed;}
             break;
         case '1':
             keyStates.key1 = state;

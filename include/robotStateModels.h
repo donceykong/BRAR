@@ -61,7 +61,7 @@ void updateRunnerPoseList(RobotStruct *robot, int i) {
     robot->poseHist[i][3] = robot->yawAngle;      // runnerYawAngle
 }
 
-bool showPoseHist;
+bool showPoseHist = false;
 
 void displayPoseHistory(RobotStruct *robot) {
     static int iter = 0;
@@ -79,6 +79,7 @@ void displayPoseHistory(RobotStruct *robot) {
         iter = 0;
     }
     
+    glDisable(GL_LIGHTING);
     for (int i = 0; i < numberPoses; i++) {
         glPushMatrix();
         glTranslatef(robot->poseHist[i][0], robot->poseHist[i][1], robot->poseHist[i][2]);
@@ -89,9 +90,9 @@ void displayPoseHistory(RobotStruct *robot) {
         else if (robot->type == CHASER_ROBOT && showPoseHist) {
             drawPoseFrame(2.0, 10.0);
         }
-
         glPopMatrix();
     }
+    glEnable(GL_LIGHTING);
     iter++;
 }
 
@@ -120,7 +121,7 @@ double getYawOffset(double joint0Angle, double robotXPos, double robotZPos, doub
  * 
 */
 double timestep     =   0.05;   // Simulation timestep
-double gY           =  -9.81;   // Gravitational accel
+double gY           =  -4.4; //-9.81;   // Gravitational accel
 double forceY       =   0.00;   //
 
 double getNormalForce(RobotStruct *robot) {

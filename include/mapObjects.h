@@ -37,7 +37,6 @@ typedef struct {
 /*
  *      MAP OBSTACLES
 */
-
 enum mapObstacleType {
     WALL,  // 0
     BOX
