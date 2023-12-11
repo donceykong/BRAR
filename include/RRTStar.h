@@ -473,7 +473,7 @@ Path* rrtStar(Vector3 startPosition, Vector3 goalPosition, int maxIterations) {
 
     bool goalReached = false;
     double goalThreshold = 0.5;
-    double maxStepSize = 0.01;
+    double maxStepSize = 0.1;
     double parentSearchRad = 0.5;//*maxStepSize;
     double rewireSearchRad = 1.0;
     Node* newNode;
@@ -497,7 +497,7 @@ Path* rrtStar(Vector3 startPosition, Vector3 goalPosition, int maxIterations) {
             rewire(tree, newNode, rewireSearchRad*poseDiff);                 // 
         }
 
-        if (reachedGoal(newNode, goal, goalThreshold) && tree->treeSize > 1) {
+        if (reachedGoal(newNode, goal, goalThreshold) && tree->treeSize > 50) {
             // Goal reached, construct the path and make Waypoint struct
             goalReached = true;
             break;
