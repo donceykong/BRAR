@@ -48,7 +48,6 @@
 #include "lighting.h"
 // #include "keyHandler.h"
 #include "keyUpdate.h"         
-#include "dummy.h"
 
 // Global GAME_MODE enum
 enum GameMode GAME_MODE;

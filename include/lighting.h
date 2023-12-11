@@ -1,6 +1,8 @@
 #ifndef LIGHTING_H
 #define LIGHTING_H
 
+#include <math.h>
+
 bool lightsEnabled = true;
 bool SPOTLIGHT_ACTIVE = false;
 double lightrot = 0.0;

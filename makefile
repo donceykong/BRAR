@@ -45,11 +45,14 @@ $(OBJ)/%.o: $(SRC)/%.c $(DEPS)
 $(OBJ)/CSCIx229.a: $(OBJ)/print.o $(OBJ)/projection.o
 	ar -rcs $@ $^
 
-$(OBJ)/dummy.a: $(OBJ)/fiveTimes.o
+$(OBJ)/dummy.a: $(OBJ)/dummy.o
+	ar -rcs $@ $^
+
+$(OBJ)/keyHandler.a: $(OBJ)/keys.o
 	ar -rcs $@ $^
 
 # Link
-$(EXE): $(OBJ)/$(EXE).o $(OBJ)/CSCIx229.a $(OBJ)/dummy.a
+$(EXE): $(OBJ)/$(EXE).o $(OBJ)/CSCIx229.a $(OBJ)/dummy.a $(OBJ)/keyHandler.a
 	$(CC) $(CFLG) -o $@ $^ $(LIBS)
 
 # Clean

@@ -1,7 +1,17 @@
 #ifndef KEY_HANDLER_H
 #define KEY_HANDLER_H
 
+#ifdef __APPLE__
+#include <GLUT/glut.h>
+#else
+#include <GL/glut.h>
+#endif
+
 #include <stdlib.h>
+#include <stdbool.h>
+
+extern bool RRTSTAR_ACTIVE;
+extern bool lightKeyPressed;
 
 typedef struct {
   bool space;       // space bar key - jump robot controlled by user
@@ -39,127 +49,18 @@ typedef struct {
   bool key5;           // dec runner speed
 } KeyStatesStruct;
 
-bool RRTSTAR_ACTIVE = false;
-bool lightKeyPressed = false;  // Keep track of whether '0' key is pressed
-KeyStatesStruct keyStates;
+extern KeyStatesStruct keyStates;
 
-void setRegularKeyState(unsigned char key, bool state) {
-   switch (key) {
-        case 32: // ASCII value for space bar
-          keyStates.space = state;
-          break;
-        case 'w':
-            keyStates.w = state;
-            break;
-        case 's':
-            keyStates.s = state;
-            if (state) {SPOTLIGHT_ACTIVE = !SPOTLIGHT_ACTIVE;}
-            break;
-        case 'r':
-            keyStates.r = state;
-            if (state) {RRTSTAR_ACTIVE = !RRTSTAR_ACTIVE;}
-            break;
-        case 'a':
-            keyStates.a = state;
-            break;
-        case 'd':
-            keyStates.d = state;
-            break;
-        case 'j':
-            keyStates.j = state;
-            break;
-        case 'k':
-            keyStates.k = state;
-            break;
-        case 'y':
-            keyStates.y = state;
-            break;
-        case 'h':
-            keyStates.h = state;
-            break;
-        case 't':
-            keyStates.t = state;
-            break;
-        case 'f':
-            keyStates.f = state;
-            if (state) {showFrames = !showFrames;}
-            break;
-        case 'g':
-            keyStates.g = state;
-            break;
-        case 'v':
-            keyStates.v = state;
-            break;
-        case 'o':
-            keyStates.o = state;
-            break;
-        case 'l':
-            keyStates.l = state;
-            break;
-        case 'p':
-            keyStates.p = state;
-            if (state) {showPoseHist = !showPoseHist;}
-            break;
-        case 'i':
-            keyStates.i = state;
-            break;
-        case '0':
-            keyStates.key0 = state;
-            if (state) {lightKeyPressed = !lightKeyPressed; lightsEnabled = lightKeyPressed;}
-            break;
-        case '1':
-            keyStates.key1 = state;
-            break;
-        case '2':
-            keyStates.key2 = state;
-            break;
-        case '3':
-            keyStates.key3 = state;
-            break;
-        case '4':
-            keyStates.key4 = state;
-            break;
-        case '5':
-            keyStates.key5 = state;
-            break;
-        default:
-            return;
-    }
-}
+void setRegularKeyState(unsigned char key, bool state);
 
-void setSpecialKeyState (int key, bool state) {
-  switch (key) {
-    case GLUT_KEY_RIGHT: 
-      keyStates.right = state;
-      break;
-    case GLUT_KEY_LEFT: 
-      keyStates.left = state;
-      break;
-    case GLUT_KEY_UP: 
-      keyStates.up = state;
-      break;
-    case GLUT_KEY_DOWN: 
-      keyStates.down = state;
-      break;
-    default: 
-      return;
-  }
-}
+void setSpecialKeyState (int key, bool state);
 
-void special(int key, int x, int y) {
-    setSpecialKeyState(key, true);
-}
+void special(int key, int x, int y);
 
-void specialUp(int key, int x, int y) {
-    setSpecialKeyState(key, false);
-}
+void specialUp(int key, int x, int y);
 
-void handleKeys(unsigned char key, int x, int y) {
-    setRegularKeyState(key, true);
-}
+void handleKeys(unsigned char key, int x, int y);
 
-void handleKeysUp(unsigned char key, int x, int y) {
-    setRegularKeyState(key, false);
-}
+void handleKeysUp(unsigned char key, int x, int y);
 
 #endif // KEY_HANDLER_H
