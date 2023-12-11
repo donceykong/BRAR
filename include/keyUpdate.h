@@ -133,14 +133,18 @@ void updateRunner()
   }
 
   // Adjust joint angles
-  double yaw = getYawOffset(chaserRobot.yawAngle, chaserRobot.position.x, chaserRobot.position.z, runnerRobot.position.x, runnerRobot.position.y, runnerRobot.position.z) * 180 / PI;
-  chaserRobot.yawAngle  -= chaserRobot.speedAdjust * 0.1 * yaw; 
-  chaserRobot.joint1Angle     += (runnerRobot.position.y - chaserRobot.endEffectorPosition.y);
+  double yawDeg             = getYawOffset(chaserRobot.yawAngle, chaserRobot.position.x, chaserRobot.position.z, 
+                                           runnerRobot.position.x, runnerRobot.position.y, runnerRobot.position.z) 
+                                           * 180 / PI;
+
+  chaserRobot.yawAngle     -= chaserRobot.speedAdjust * 0.1 * yawDeg; 
+  chaserRobot.joint1Angle  += (runnerRobot.position.y - chaserRobot.endEffectorPosition.y);
+
   computeForwardKinematics(); // call to get new endeffector pos
   chaserRobot.joint2Angle     += (runnerRobot.position.y - chaserRobot.endEffectorPosition.y);
 
   runnerRobot.viewableSpeed = 20.0*fabsf(runnerRobot.speed) + 5.0*fabsf(gripperRollinc);
-  chaserRobot.viewableSpeed = fabsf(chaserRobot.speed) + fabsf(0.1*yaw);
+  chaserRobot.viewableSpeed = fabsf(chaserRobot.speed) + fabsf(0.1*yawDeg);
 
   // Grab runner robot
   if (!chaserRobot.gripperClosed && 

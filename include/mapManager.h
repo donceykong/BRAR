@@ -136,7 +136,6 @@ void checkCollision () {
     runnerRobot.inCollision = false;
     for (int i = 0; i < 30; i++) {
         chaserRobot.inCollision += detect_collision_AABB_TRANS(mapObstList[i], chaserRobot.position.x, chaserRobot.position.y, chaserRobot.position.z);
-        runnerRobot.inCollision += detect_collision_AABB_TRANS(mapObstList[i], runnerRobot.position.x, runnerRobot.position.y, runnerRobot.position.z);
     }
 }
 

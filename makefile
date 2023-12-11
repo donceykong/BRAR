@@ -16,7 +16,7 @@ CPP=g++
 # Msys/MinGW
 ifeq ($(OS),Windows_NT)
 CFLG=-O3 -Wall -DUSEGLEW
-LIBS=-lfreeglut -lglew32 -lglu32 -lopengl32 -lm
+LIBS=-lfreeglut -lglew32 -lglu32 -lopengl32 -lm -g
 CLEAN=del /F /Q *.exe *.o *.a
 else
 # OSX
@@ -26,7 +26,7 @@ CFLG=-O3 -Wall -Wno-deprecated-declarations -DRES=$(RES)
 LIBS=-framework GLUT -framework OpenGL
 # Linux/Unix/Solaris
 else
-CFLG=-O3 -Wall -I/usr/include/freetype2
+CFLG=-O0 -Wall -I/usr/include/freetype2 -g
 LIBS=-lglut -lGLU -lGL -lm -lfreetype
 endif
 # OSX/Linux/Unix/Solaris

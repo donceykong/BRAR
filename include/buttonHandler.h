@@ -115,4 +115,5 @@ void drawButtonScreen() {
     drawBackground();
     drawButtons();
     glutSwapBuffers();
+    glutPostRedisplay();
 }

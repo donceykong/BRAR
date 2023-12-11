@@ -28,9 +28,9 @@ bool detect_collision_AABB_TRANS(MapObstacle obstacle, double robotX, double rob
         double transformedRobotZ = sinYaw * (robotX - obstacle.position.x) + cosYaw * (robotZ - obstacle.position.z) + obstacle.position.z;
 
         // AABB collision check with transformed coordinates
-        return  (obstacle.minPos.x < transformedRobotX && obstacle.maxPos.x > transformedRobotX) &&
+        return  (obstacle.minPos.x < (transformedRobotX + 2.0) && obstacle.maxPos.x > (transformedRobotX - 2.0)) &&
                 (obstacle.minPos.y < robotY && obstacle.maxPos.y > robotY) &&
-                (obstacle.minPos.z < transformedRobotZ && obstacle.maxPos.z > transformedRobotZ);
+                (obstacle.minPos.z < (transformedRobotZ + 2.0) && obstacle.maxPos.z > (transformedRobotZ - 2.0));
     }
     else {
         printf("OBSTACLE DOES NOT HAVE TYPE - NO COLLISION DETECTED.\n");

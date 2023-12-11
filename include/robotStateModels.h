@@ -53,7 +53,7 @@ RobotStruct chaserRobot;
 
 /*
  * FUNCTIONS
-*/
+ */
 void updateRunnerPoseList(RobotStruct *robot, int i) {
     robot->poseHist[i][0] = robot->position.x;    // runnerXPos
     robot->poseHist[i][1] = robot->position.y;    // runnerYPos
@@ -98,20 +98,15 @@ void displayPoseHistory(RobotStruct *robot) {
 
 double getYawOffset(double joint0Angle, double robotXPos, double robotZPos, double objPosX, double objPosY, double objPosZ) {
     Matrix4x4 transformationMatrix = identityMatrix;
-    Vector3 axisOfRotation = {0.0f, 1.0f, 0.0f}; // Rotate around the y-axis
-    Matrix4x4 rMatrix = rotationMatrix(-joint0Angle, axisOfRotation.x, axisOfRotation.y, axisOfRotation.z);
-    
-    transformationMatrix = multiplyMatrix(rMatrix, transformationMatrix);
+    Vector3 axisOfRotation  = {0.0f, 1.0f, 0.0f};
+    Matrix4x4 rMatrix       = rotationMatrix(-joint0Angle, axisOfRotation.x, axisOfRotation.y, axisOfRotation.z);
+    transformationMatrix    = multiplyMatrix(rMatrix, transformationMatrix);
 
     // Set Obj pos as a Matrix
-    Matrix4x4 objPosMatrix = translationMatrix(objPosX - robotXPos, objPosY, objPosZ - robotZPos);
-    transformationMatrix = multiplyMatrix(transformationMatrix, objPosMatrix);
-
-    Vector3 relativeObjPos = extractPosition(transformationMatrix);
-    //printf("relativeObjPos.x: %f, relativeObjPos.z: %f\n\n", relativeObjPos.x, relativeObjPos.z);
-
-    double yawAngle = atanf(relativeObjPos.z / relativeObjPos.x);
-
+    Matrix4x4 objPosMatrix  = translationMatrix(objPosX - robotXPos, objPosY, objPosZ - robotZPos);
+    transformationMatrix    = multiplyMatrix(transformationMatrix, objPosMatrix);
+    Vector3 relativeObjPos  = extractPosition(transformationMatrix);
+    double yawAngle         = atanf(relativeObjPos.z / relativeObjPos.x);
     return yawAngle;
 }
 
@@ -119,9 +114,9 @@ double getYawOffset(double joint0Angle, double robotXPos, double robotZPos, doub
  *
  *
  * 
-*/
+ */
 double timestep     =   0.05;   // Simulation timestep
-double gY           =  -4.4; //-9.81;   // Gravitational accel
+double gY           =  -4.40;   //-9.81;   // Gravitational accel
 double forceY       =   0.00;   //
 
 double getNormalForce(RobotStruct *robot) {

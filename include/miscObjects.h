@@ -68,6 +68,14 @@ void drawFrame(float length) {
 //     Print("Z");
 // }
 
+void drawRRTLine(Vector3 nodePrevPos, Vector3 nodePos) {
+    glLineWidth(4.0f);          
+    glBegin(GL_LINES);
+    glVertex3d(nodePrevPos.x, nodePrevPos.y, nodePrevPos.z);
+    glVertex3d(nodePos.x, nodePos.y, nodePos.z);
+    glEnd();
+}
+
 void drawNearestLine(double nearestMapItemX, double nearestMapItemY, double nearestMapItemZ, Vector3 chaserRobotPos, Vector3 chaserRobotEndEffectorPos) {
     glLineWidth(4.0f);          
     glBegin(GL_LINES);
