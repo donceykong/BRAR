@@ -506,8 +506,14 @@ int main(int argc, char** argv) {
     previousTime = glutGet(GLUT_ELAPSED_TIME);
     glutIdleFunc(idle);
 
+    // Initialize mutex
+    pthread_mutex_init(&mutex, NULL);
+
     glutMainLoop();
 
+    // Destroy mutex before exiting
+    pthread_mutex_destroy(&mutex);
+    
     // Cleanup FreeType resources
     FT_Done_Face(face);
     FT_Done_FreeType(ft);
