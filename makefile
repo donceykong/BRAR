@@ -45,8 +45,11 @@ $(OBJ)/%.o: $(SRC)/%.c $(DEPS)
 $(OBJ)/CSCIx229.a: $(OBJ)/print.o $(OBJ)/projection.o
 	ar -rcs $@ $^
 
+$(OBJ)/dummy.a: $(OBJ)/fiveTimes.o
+	ar -rcs $@ $^
+
 # Link
-$(EXE): $(OBJ)/$(EXE).o $(OBJ)/CSCIx229.a
+$(EXE): $(OBJ)/$(EXE).o $(OBJ)/CSCIx229.a $(OBJ)/dummy.a
 	$(CC) $(CFLG) -o $@ $^ $(LIBS)
 
 # Clean
