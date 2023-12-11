@@ -25,7 +25,7 @@ typedef struct {
   bool f;           // UNUSED
   bool g;           // UNUSED
   bool v;           // UNUSED
-
+  bool r;           // RRTSTAR_ACTIVE ENABLE/DISABLE
   bool o;           // UNUSED
   bool l;           // UNUSED
   bool p;           // UNUSED
@@ -39,6 +39,7 @@ typedef struct {
   bool key5;           // dec runner speed
 } KeyStatesStruct;
 
+bool RRTSTAR_ACTIVE = false;
 bool lightKeyPressed = false;  // Keep track of whether '0' key is pressed
 KeyStatesStruct keyStates;
 
@@ -52,6 +53,11 @@ void setRegularKeyState(unsigned char key, bool state) {
             break;
         case 's':
             keyStates.s = state;
+            if (state) {SPOTLIGHT_ACTIVE = !SPOTLIGHT_ACTIVE;}
+            break;
+        case 'r':
+            keyStates.r = state;
+            if (state) {RRTSTAR_ACTIVE = !RRTSTAR_ACTIVE;}
             break;
         case 'a':
             keyStates.a = state;

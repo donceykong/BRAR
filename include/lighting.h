@@ -2,6 +2,7 @@
 #define LIGHTING_H
 
 bool lightsEnabled = true;
+bool SPOTLIGHT_ACTIVE = false;
 double lightrot = 0.0;
 
 double lightingDist = 4.0;
@@ -123,11 +124,15 @@ void showLights() {
     glLightfv(GL_LIGHT1, GL_AMBIENT,  ambientColor);
     glLightfv(GL_LIGHT1, GL_DIFFUSE,  diffuseColor);
     glLightfv(GL_LIGHT1, GL_SPECULAR, specularColor);
-    //glLightf(GL_LIGHT1, GL_SPOT_EXPONENT, spotExponent);
-    //glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, spotCutoff);
     glLightfv(GL_LIGHT1, GL_POSITION, light1Position);   // Translate the light
-    // GLfloat light1Direction[] = {sin(light1Rotation * M_PI / 180.0), 0.0, cos(light1Rotation * M_PI / 180.0), 1.0};
-    // glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, light1Direction);
+
+    if (SPOTLIGHT_ACTIVE) {
+        glLightf(GL_LIGHT1, GL_SPOT_EXPONENT, spotExponent);
+        glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, spotCutoff);
+
+        GLfloat light1Direction[] = {sin(light1Rotation * M_PI / 180.0), 0.0, cos(light1Rotation * M_PI / 180.0), 1.0};
+        glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, light1Direction);
+    }
 
     // glEnable(GL_LIGHT2);
 
@@ -172,7 +177,6 @@ void setupLighting() {
     } 
     else {
         glDisable(GL_LIGHTING);
-        glDisable(GL_LIGHT0);
         glDisable(GL_LIGHT1);
         glDisable(GL_LIGHT2);
     }

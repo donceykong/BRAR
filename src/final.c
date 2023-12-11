@@ -19,7 +19,7 @@
 #include <stdio.h>
 #include <ft2build.h>   // FreeType (used in main screen buttons)
 #include FT_FREETYPE_H
-#include <pthread.h>
+// #include <pthread.h>
 
 // In-house includes
 // #include "windowHandler.h"   // NO DEPENDS
@@ -65,34 +65,34 @@ bool showMain = true;
 // Mouse callback for game options
 int mouseCallbackEnabled = 1; // Global variable to control the callback
 
-// Global variables
-pthread_t rrtStarThread;
-bool rrtStarThreadRunning = false;
 Path* rrtStarResult = NULL;
-pthread_mutex_t mutex;
+// // Global variables
+// pthread_t rrtStarThread;
+// bool rrtStarThreadRunning = false;
+// pthread_mutex_t mutex;
 
-void* rrtStarThreadFunc(void* arg) {
-    // Perform RRT* calculations
-    Vector3 startPosition = chaserRobot.position;
-    Vector3 goalPosition = runnerRobot.position;
-    int maxIterations = 1000;
-    Path* newPath = rrtStar(startPosition, goalPosition, maxIterations);
+// void* rrtStarThreadFunc(void* arg) {
+//     // Perform RRT* calculations
+//     Vector3 startPosition = chaserRobot.position;
+//     Vector3 goalPosition = runnerRobot.position;
+//     int maxIterations = 1000;
+//     Path* newPath = rrtStar(startPosition, goalPosition, maxIterations);
 
-    pthread_mutex_lock(&mutex);
-    // Update the global result
-    rrtStarResult = newPath;
-    rrtStarThreadRunning = false;
-    pthread_mutex_unlock(&mutex);
+//     pthread_mutex_lock(&mutex);
+//     // Update the global result
+//     rrtStarResult = newPath;
+//     rrtStarThreadRunning = false;
+//     pthread_mutex_unlock(&mutex);
 
-    pthread_exit(NULL);
-}
+//     pthread_exit(NULL);
+// }
 
-void startRrtStarThread() {
-    if (!rrtStarThreadRunning) {
-        rrtStarThreadRunning = true;
-        pthread_create(&rrtStarThread, NULL, rrtStarThreadFunc, NULL);
-    }
-}
+// void startRrtStarThread() {
+//     if (!rrtStarThreadRunning) {
+//         rrtStarThreadRunning = true;
+//         pthread_create(&rrtStarThread, NULL, rrtStarThreadFunc, NULL);
+//     }
+// }
 
 void displayViewRobot() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -169,7 +169,6 @@ void displayTimeCrunch() {
     glutSwapBuffers();
 }
 
-int doRRT = 0;
 void displayRunner() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -199,26 +198,22 @@ void displayRunner() {
     setObjAbsorberPos(runnerRobot.position.x, runnerRobot.position.y, runnerRobot.position.z);
     updateMapCenter(runnerRobot.position.x, runnerRobot.position.z);
 
-    // if (doRRT == 100) {
-    //     rrtStar(chaserRobot.position, runnerRobot.position, 5000);
-    //     doRRT = 0;
-    // }
-    // doRRT++;
-    // rrtStar(chaserRobot.position, runnerRobot.position, 1000);
-    // displayRRTStarPath();
-
-    // Start the RRT* thread if not already running
-    startRrtStarThread();
-
-    pthread_mutex_lock(&mutex);
-    if (rrtStarResult) {
-        // Use rrtStarResult for rendering
+    if (RRTSTAR_ACTIVE) {
+        rrtStarResult = rrtStar(chaserRobot.endEffectorPosition, runnerRobot.position, 1000);
         displayRRTStarPath(rrtStarResult);
-        // After using the result, free it if necessary and set to NULL
-        free(rrtStarResult);
-        rrtStarResult = NULL;
     }
-    pthread_mutex_unlock(&mutex);
+    
+    // // Multi-thread RRT* (Performance is meh)
+    // startRrtStarThread(); // Start the RRT* thread if not already running
+    // pthread_mutex_lock(&mutex);
+    // if (rrtStarResult) {
+    //     // Use rrtStarResult for rendering
+    //     displayRRTStarPath(rrtStarResult);
+    //     // After using the result, free it if necessary and set to NULL
+    //     free(rrtStarResult);
+    //     rrtStarResult = NULL;
+    // }
+    // pthread_mutex_unlock(&mutex);
 
 
     glDisable(GL_DEPTH_TEST);
@@ -506,14 +501,19 @@ int main(int argc, char** argv) {
     previousTime = glutGet(GLUT_ELAPSED_TIME);
     glutIdleFunc(idle);
 
-    // Initialize mutex
-    pthread_mutex_init(&mutex, NULL);
+    // // Initialize mutex
+    // pthread_mutex_init(&mutex, NULL);
 
     glutMainLoop();
 
-    // Destroy mutex before exiting
-    pthread_mutex_destroy(&mutex);
-    
+    // // If the thread is running, join it
+    // if (rrtStarThreadRunning) {
+    //     pthread_join(rrtStarThread, NULL);
+    // }
+
+    // // Destroy mutex before exiting
+    // pthread_mutex_destroy(&mutex);
+
     // Cleanup FreeType resources
     FT_Done_Face(face);
     FT_Done_FreeType(ft);

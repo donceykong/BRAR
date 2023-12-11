@@ -20,12 +20,6 @@ void updateRunner()
   if (keyStates.left)
     gripperRollinc          =  5.00 * SPEED;
 
-  // if (key4) {
-  //   runnerRobot.speedAdjust += 0.01;
-  // } else if (key5) {
-  //   runnerRobot.speedAdjust -= 0.01;
-  // }
-
   // Gripper Adjust
   if (keyStates.j)
     gripperDistinc          = -0.01 * SPEED;
