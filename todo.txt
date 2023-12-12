@@ -1,61 +1,5 @@
-||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-
-----------------------------------------------------------------------------------------------------------------------------------------------
-
-||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 ______________________________________________________________________________________________________________________________________________
-                                                        MONDAY
-
-    #1  - 0.5 hrs:
-            - update obj collision detection in key updating so simplifications can be made and gittering during collision goes away.
-
-    #2  - 1 hr:
-            - Alphabetize keys and order by numbered keys
-            - Add key handles to README
-        
-    #3  - 1 hr:
-            - Fix key Update Code:
-                - Implement key handle uses
-                - Remove keys to control robot arm, besides in View robot
-                - Make functions more modular
-
-||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-    #1  - 1 hr:
-            -Add clickable buttons (or use arrow keys) to scroll through items, obstacles, or robots in the view GAME_MODE
-                - DISPLAY ITEM NAME, ROBOT NAME, or OBSTACLE NAME
-
-    #2  - 1 hr:
-            - Check lighting for each shape and fix as needed
-
-    #3  - 3 hrs:
-            - Make robot arm more interesting: (LIKE BRAR - DRAW FIRST)
-                - Add teeth to gripper (make black)
-                - Make links more interesting shape than cubic links (attempt Braccio)
-                - Add plates (similar to legs)
-
-    #4  - 3 hrs:
-            - Make obstacles more interesting:
-                - Use wood plank textures to make box (or just another obstacle)
-                - Add bump map to wall obstacles
-
-    #5  - 3 hrs:
-            - Make items more interesting
-                - Add something digital...
-                - Use transparent ability? (remove that code from designShapes)
-
-    #6  - 1 hr:
-            - Get rid of vent texture on runner and make body more interesting (look at spot)
-
-    #7  - 1 hr:
-            - Fix RRT* from "reaching goal" without producing waypoints
-
-||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-
-    #7  - 1 hrs: 
-            -  if RRTSTAR_ACTIVE, have chaser follow waypoints, delete them (set waypoint state to "REACHED" or "NOT_REACHED," similar to items)
-
-    #8  - 0.5 hr:
-            - Fix FPS handling to whatever example 24 does (or email prof is ex24 is what he intended)
+                                                STRETCH GOALS
 
     #9  - 2 hrs:
             - Add more lights to randomly walk ("float") around scene. Will want to use struct to control and visualize lights.
@@ -63,44 +7,6 @@ ________________________________________________________________________________
     #10  - 1 hr:
             - Add button to get back to main menu at game over and during gameplay
             - Add button to replay at game over
-
-    #11  - 3 hrs:
-            - Redo code: reduce global variables and make c files implentations for headers
-                - Reduce headers
-
-
-||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-
-----------------------------------------------------------------------------------------------------------------------------------------------
-
-||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-______________________________________________________________________________________________________________________________________________
-                                                        TUESDAY
-
-    - 0.5 hrs:
-        - Add ability for user to add walls (or other obstacle) behind them to validate RRT*
-    
-    - 3 hrs:
-        - Fix APPEARANCE of start screen, game play, and end screen
-
-    - 1 hr:
-        - Update README with keyhandles and background/theory
-
-    - 2 hrs:
-        - Get presentation mostly complete.
-
-( TOTAL:   __ HOURS )
-( REALITY: __ HOURS )
-||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-
-----------------------------------------------------------------------------------------------------------------------------------------------
-
-||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-______________________________________________________________________________________________________________________________________________
-                                                        WEDNESDAY
-
-    _________________________________________________________________________________
-                            STRETCH GOALS
 
         - 3 hrs:
             - Add wireframe bounding box to Robot struct for visulization
@@ -113,10 +19,82 @@ ________________________________________________________________________________
         - 4 hrs:
             - Add ground scene with texture.
 
-**************************** SUBMIT PROJECT ******************************************
 
-- Finish presentation
+||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+______________________________________________________________________________________________________________________________________________
+                                                        TUESDAY (~12 hours work)
+
+(START BY 10AM)
+    #1  - 3.0 hr:
+            - Fix code and headers. Ensure no compile warnings or errors.
+
+(START BY 1PM)
+    #2  - 2 hr:
+            - Alphabetize keys and order by numbered keys
+            - Add key handles to README
+            - Fix key Update Code:
+                - Move mouse feedback here from final.c
+                - Implement key handle uses
+                - Remove keys to control robot arm, besides in View robot
+                - Make functions more modular
+
+(START BY 3PM)
+    #3  - 2 hr:
+            -Add clickable buttons (or use arrow keys) to scroll through items, obstacles, or robots in the view GAME_MODE
+                - DISPLAY ITEM NAME, ROBOT NAME, or OBSTACLE NAME
+            - Check lighting for each shape and fix shapes as needed
+
+(START BY 5PM)
+    #5  - 5 hrs:
+            - Make robot arm more interesting: (LIKE BRAR - DRAW FIRST)
+                - Add teeth to gripper (make black)
+                - Make links more interesting shape than cubic links (attempt Braccio)
+                - Add plates (similar to legs)
+            - Make obstacles more interesting:
+                - Use wood plank textures to make box (or just another obstacle)
+                - Add bump map to wall obstacles
+            - Make items more interesting
+                - Add something digital...
+                - Use transparent ability? (remove that code from designShapes)
+            - Get rid of vent texture on runner and make body more interesting (look at spot)
+
+||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+______________________________________________________________________________________________________________________________________________
+                                                        WEDNESDAY
+
+(START BY 3PM)
+        #1 - 4 hrs
+                - Final Fixes to Robot appearances.
+
+(START BY 7PM)
+    - 2 hrs:
+        - Fix appearance of start screen, game play, and end screen
+
+(START BY 9PM)
+    - 0.5 hr:
+            - Fix FPS handling to whatever example 24 does (or email prof and ask if ex24 is what he intended).
+
+(START BY 9:30PM)
+    - 1 hr:
+        - Update README with keyhandles and background/theory
+
+**************************** SUBMIT PROJECT BY 10PM ******************************************
+
+- Complete presentation.
+
 
 ( TOTAL:   __ HOURS )
 ( REALITY: __ HOURS )
+||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+----------------------------------------------------------------------------------------------------------------------------------------------
+
+||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+______________________________________________________________________________________________________________________________________________
+                                                        THURSDAY
+
+
+**************************** DELIVER PRESENTATION ******************************************
+
+
 ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||

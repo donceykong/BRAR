@@ -48,11 +48,14 @@ $(OBJ)/CSCIx229.a: $(OBJ)/print.o $(OBJ)/projection.o
 $(OBJ)/keyHandler.a: $(OBJ)/keys.o
 	ar -rcs $@ $^
 
-# $(OBJ)/RRTStar.a: $(OBJ)/RRTStar.o
-# 	ar -rcs $@ $^
+$(OBJ)/matrixMath.a: $(OBJ)/matrixMath.o
+	ar -rcs $@ $^
+
+$(OBJ)/RRTStar.a: $(OBJ)/RRTStar.o
+	ar -rcs $@ $^
 
 # Link
-$(EXE): $(OBJ)/$(EXE).o $(OBJ)/CSCIx229.a $(OBJ)/keyHandler.a
+$(EXE): $(OBJ)/$(EXE).o $(OBJ)/CSCIx229.a $(OBJ)/keyHandler.a $(OBJ)/matrixMath.a $(OBJ)/RRTStar.a
 	$(CC) $(CFLG) -o $@ $^ $(LIBS)
 
 # Clean
