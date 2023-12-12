@@ -23,7 +23,7 @@
 
 // In-house includes
 // #include "windowHandler.h"   // NO DEPENDS
-//#include "matrixMath.h"         // NO DEPENDS
+#include "matrixMath.h"         // NO DEPENDS
 // #include "GameModes.h"       // NO DEPENDS
 #include "textureUtils.h"       // NO DEPENDS
 
