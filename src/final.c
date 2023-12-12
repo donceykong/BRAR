@@ -23,7 +23,7 @@
 
 // In-house includes
 // #include "windowHandler.h"   // NO DEPENDS
-#include "matrixMath.h"         // NO DEPENDS
+//#include "matrixMath.h"         // NO DEPENDS
 // #include "GameModes.h"       // NO DEPENDS
 #include "textureUtils.h"       // NO DEPENDS
 
@@ -39,7 +39,6 @@
 #include "robot.h"
 
 #include "mapManager.h"
-#include "RRTStar.h"
 #include "groundPlane.h"
 
 #include "forwardKinematics.h"
@@ -48,6 +47,8 @@
 #include "lighting.h"
 // #include "keyHandler.h"
 #include "keyUpdate.h"         
+
+#include "RRTStar.h"
 
 // Global GAME_MODE enum
 enum GameMode GAME_MODE;
@@ -205,7 +206,7 @@ void displayRunner() {
     // if (chaserRobot.inCollision) {RRTSTAR_ACTIVE = true;}
     if (RRTSTAR_ACTIVE) {
         if (doRRT) {
-            printf("RRT*\n");
+            // printf("RRT*\n");
             rrtStarResult = NULL;
             double obstYawAngles[30];
             Vector3 obstPos[30], obstMinPos[30], obstMaxPos[30];
@@ -218,26 +219,15 @@ void displayRunner() {
             setMapStateInfo(runnerRobot.position, chaserRobot.endEffectorPosition, obstPos, obstYawAngles, obstMinPos, obstMaxPos);
             rrtStarResult = rrtStar(100000);
             waypointInc = rrtStarResult->size - 1;
+            // printf("rrtStarResult->goalReached: %d\n", rrtStarResult->goalReached);
             doRRT = false;
         }
 
-    
-        double runnerDist = getEulerDistanceXZ(chaserRobot.endEffectorPosition.x, chaserRobot.endEffectorPosition.z, 
-                                               runnerRobot.position.x, runnerRobot.position.z);
-        double goalDist = getEulerDistanceXZ(chaserRobot.endEffectorPosition.x, chaserRobot.endEffectorPosition.z, 
-                                             rrtStarResult->positions[rrtStarResult->size - 1].x, rrtStarResult->positions[rrtStarResult->size - 1].x);
-
         if (goalReached) {// && (runnerDist - goalDist) > -1.0) {
             doRRT = false;
-            // if (doRRTInt > 5) {
-            //     doRRT = true;
-            //     doRRTInt = 0;
-            // }
-            // printf("Tracking waypoints\n");
-            if (waypointInc > -1) {// rrtStarResult->size) {
+            if (waypointInc > -1) {
                 WaypointPosX = rrtStarResult->positions[waypointInc].x;
                 WaypointPosZ = rrtStarResult->positions[waypointInc].z;
-                // printf("WaypointPosX: %f, WaypointPosZ: \n\n", WaypointPosX);
             
                 glColor3d(1,0,0.5);
                 glPushMatrix();
@@ -567,7 +557,7 @@ int main(int argc, char** argv) {
     addObstaclesToMapList();
     
     previousTime = glutGet(GLUT_ELAPSED_TIME);
-    // glutIdleFunc(idle);
+    glutIdleFunc(idle);
 
     // // Initialize mutex
     // pthread_mutex_init(&mutex, NULL);
