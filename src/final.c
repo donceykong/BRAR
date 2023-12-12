@@ -40,6 +40,7 @@
 #include "matrixMath.h"
 #include "CSCIx229.h"
 #include "screenInfo.h" // Still needs to load textures somehow.
+#include "textureUtils.h"
 
 // Global GAME_MODE enum
 enum GameMode GAME_MODE;
