@@ -17,38 +17,32 @@
 #include <math.h>
 #include <stdbool.h>  // Add this include for bool type
 #include <stdio.h>
-#include <ft2build.h>   // FreeType (used in main screen buttons)
-#include FT_FREETYPE_H
+// #include <ft2build.h>   // FreeType (used in main screen buttons)
+// #include FT_FREETYPE_H
 // #include <pthread.h>
 
 // In-house includes
-// #include "windowHandler.h"   // NO DEPENDS
-#include "matrixMath.h"         // NO DEPENDS
 // #include "GameModes.h"       // NO DEPENDS
 #include "textureUtils.h"       // NO DEPENDS
-
-// #include "ftTextHandler.h"
-// #include "buttonHandler.h"   
-#include "screenInfo.h"
-#include "CSCIx229.h"
-
-#include "designShapes.h"
-
+#include "designShapes.h"       //
 #include "robotStateModels.h"
 #include "miscObjects.h"
 #include "robot.h"
-
 #include "mapManager.h"
 #include "groundPlane.h"
-
 #include "forwardKinematics.h"
-
 #include "views.h"
-#include "lighting.h"
-// #include "keyHandler.h"
-#include "keyUpdate.h"         
+#include "lighting.h"       
 
+// #include "keyHandler.h"
+#include "keyUpdate.h"
+
+#include "screenInfo.h"         // Should be easy - only final.c uses
+
+// fixed headers
 #include "RRTStar.h"
+#include "matrixMath.h"
+#include "CSCIx229.h"
 
 // Global GAME_MODE enum
 enum GameMode GAME_MODE;
