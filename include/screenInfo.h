@@ -12,7 +12,7 @@
 #include <ft2build.h>   // FreeType (used in main screen buttons)
 #include FT_FREETYPE_H
 
-// #include "textureUtils.h"       // NO DEPENDS
+#include "textureUtils.h"       // NO DEPENDS
 
 // WINDOW INFO
 extern const int windowXPos;

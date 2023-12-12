@@ -175,8 +175,8 @@ void drawBackground() {
     // Draw the first button
     glColor3f(1.0, 1.0, 1.0);
     glEnable(GL_TEXTURE_2D);
-    // GLuint splashTex = loadTexture("./assets/robot_body.bmp");
-    // glBindTexture(GL_TEXTURE_2D, splashTex);
+    GLuint splashTex = loadTexture("./assets/robot_body.bmp");
+    glBindTexture(GL_TEXTURE_2D, splashTex);
     glBegin(GL_QUADS);
         glTexCoord2d(0, 0); glVertex2f(0, 0);
         glTexCoord2d(1, 0); glVertex2f(windowXDiff, 0);
@@ -242,8 +242,8 @@ void drawSIBackground() {
     // Draw the first button
     glColor3f(1.0, 1.0, 1.0); // Set color for the button (e.g., red)
     glEnable(GL_TEXTURE_2D);
-    // GLuint splashTex = loadTexture("./assets/robot_body.bmp");
-    // glBindTexture(GL_TEXTURE_2D, splashTex);
+    GLuint splashTex = loadTexture("./assets/robot_body.bmp");
+    glBindTexture(GL_TEXTURE_2D, splashTex);
     glBegin(GL_QUADS);
         glTexCoord2d(0, 0); glVertex2f(0, 0);
         glTexCoord2d(1, 0); glVertex2f(windowXDiff, 0);
