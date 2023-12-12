@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 #include <time.h>
+#include "textureUtils.h"       // NO DEPENDS
 #include "mapObjects.h"
 #include "collisionDetection.h"
 #include "GameModes.h"

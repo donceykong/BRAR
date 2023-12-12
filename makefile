@@ -57,8 +57,11 @@ $(OBJ)/RRTStar.a: $(OBJ)/RRTStar.o
 $(OBJ)/screenInfo.a: $(OBJ)/screenInfo.o
 	ar -rcs $@ $^
 
+$(OBJ)/textureUtils.a: $(OBJ)/textureUtils.o
+	ar -rcs $@ $^
+
 # Link
-$(EXE): $(OBJ)/$(EXE).o $(OBJ)/CSCIx229.a $(OBJ)/keyHandler.a $(OBJ)/matrixMath.a $(OBJ)/RRTStar.a $(OBJ)/screenInfo.a
+$(EXE): $(OBJ)/$(EXE).o $(OBJ)/CSCIx229.a $(OBJ)/keyHandler.a $(OBJ)/matrixMath.a $(OBJ)/RRTStar.a $(OBJ)/screenInfo.a $(OBJ)/textureUtils.a
 	$(CC) $(CFLG) -o $@ $^ $(LIBS)
 
 # Clean

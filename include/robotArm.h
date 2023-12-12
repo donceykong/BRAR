@@ -1,6 +1,8 @@
 #ifndef ROBOT_ARM_H
 #define ROBOT_ARM_H
 
+#include "textureUtils.h"       // NO DEPENDS
+
 void drawNormalArrow(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat scale) {
     glBegin(GL_LINES);
     glVertex3f(x, y, z);  // start point of the line (original vertex)

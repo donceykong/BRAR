@@ -17,11 +17,9 @@
 #include <math.h>
 #include <stdbool.h>  // Add this include for bool type
 #include <stdio.h>
-// #include <ft2build.h>   // FreeType (used in main screen buttons)
-// #include FT_FREETYPE_H
 // #include <pthread.h>
 
-// In-house includes
+// Local includes
 // #include "GameModes.h"       // NO DEPENDS
 #include "textureUtils.h"       // NO DEPENDS
 #include "designShapes.h"       //
