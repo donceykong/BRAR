@@ -6,7 +6,6 @@
 
 double WaypointPosX;
 double WaypointPosZ;
-bool goalReached;
 
 enum robotType {
     RUNNER_ROBOT,         // 0
