@@ -1,6 +1,7 @@
 #ifndef DESIGN_SHAPES_H
 #define DESIGN_SHAPES_H
 
+#include <math.h>
 #include "shapeEdges.h"
 
 void drawNormal(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat length) {

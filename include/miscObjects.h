@@ -2,6 +2,7 @@
 #define MISC_OBJECTS_H
 
 #include "matrixMath.h"
+#include "CSCIx229.h"
 
 // Draw frames on robot joints
 bool showFrames = false;

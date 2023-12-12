@@ -37,12 +37,11 @@
 // #include "keyHandler.h"
 #include "keyUpdate.h"
 
-#include "screenInfo.h"         // Should be easy - only final.c uses
-
 // fixed headers
 #include "RRTStar.h"
 #include "matrixMath.h"
 #include "CSCIx229.h"
+#include "screenInfo.h" // Still needs to load textures somehow.
 
 // Global GAME_MODE enum
 enum GameMode GAME_MODE;
