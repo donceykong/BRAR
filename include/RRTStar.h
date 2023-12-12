@@ -7,8 +7,20 @@
 #include <time.h>    // For time()
 
 // Local
-#include "matrixMath.h"
-#include "mapManager.h"
+// #include "matrixMath.h"
+// #include "mapManager.h"
+
+typedef struct {
+    Vector3 position;
+    double yawAngle;
+    Vector3 minPos, maxPos;
+} RRTObject; 
+
+typedef struct {
+    Vector3 start;
+    Vector3 goal;
+    RRTObject obst[30];  // Vec3 array of obstacle positions
+} mapStateInfo;
 
 typedef struct {
     Vector3* positions;  // Dynamic array to store positions
@@ -54,6 +66,37 @@ Path* createPath(int initialCapacity) {
         path->capacity = initialCapacity;
     }
     return path;
+}
+
+mapStateInfo map;
+void setMapStateInfo(Vector3 runnerPosition, Vector3 chaserPosition, Vector3 obstaclePositions[30], double obstacleYawAngles[30], Vector3 obstacleMinPositions[30], Vector3 obstacleMaxPositions[30]) {
+    map.start = chaserPosition;
+    map.goal  = runnerPosition;
+    for (int i = 0; i < 30; i++) {
+        map.obst[i].position = obstaclePositions[i];
+        map.obst[i].yawAngle = obstacleYawAngles[i];
+        map.obst[i].maxPos = obstacleMaxPositions[i];
+        map.obst[i].minPos = obstacleMinPositions[i];
+    }
+}
+
+bool detect_collision_RRT(double nodeX, double nodeY, double nodeZ) {
+    bool inCollision = false;
+
+    for (int i = 0; i < 30; i++) {
+        double cosYaw = cos(map.obst[i].yawAngle * PI / 180);
+        double sinYaw = sin(map.obst[i].yawAngle * PI / 180);
+
+        double transformedNodeX = cosYaw * (nodeX - map.obst[i].position.x) - sinYaw * (nodeZ - map.obst[i].position.z) + map.obst[i].position.x;
+        double transformedNodeZ = sinYaw * (nodeX - map.obst[i].position.x) + cosYaw * (nodeZ - map.obst[i].position.z) + map.obst[i].position.z;
+
+        // AABB collision check with transformed coordinates
+        inCollision +=  (map.obst[i].minPos.x < (transformedNodeX + 2.0) && map.obst[i].maxPos.x > (transformedNodeX - 2.0)) &&
+                        (map.obst[i].minPos.y < nodeY && map.obst[i].maxPos.y > nodeY) &&
+                        (map.obst[i].minPos.z < (transformedNodeZ + 2.0) && map.obst[i].maxPos.z > (transformedNodeZ - 2.0));
+    }
+
+    return inCollision;
 }
 
 // Function to add a position to the path
@@ -116,7 +159,7 @@ nodeTree* initializeTree(double startX, double startZ) {
     nodes->root->position.x = startX;   
     nodes->root->position.y = 2.0;          // Doesnt really matter (unused), but let's set anyways.
     nodes->root->position.z = startZ;
-    nodes->root->cost       = calculateDistanceFromGoal(nodes->root, runnerRobot.position);
+    nodes->root->cost       = calculateDistanceFromGoal(nodes->root, map.goal);
     nodes->root->parent     = NULL;         // Root node has no parent
     nodes->root->children   = NULL;         // Root node has no children, yet
     nodes->treeSize         = 1;  // Tree starts with one node
@@ -138,6 +181,8 @@ Node* createNode(double x, double z) {
     return node;
 }
 
+int randStartCenter = 1;
+double circleRad = 0.25;
 Node* getRandomNode() {
     // Initialize random seed - usually done once at the beginning of the program
     srand(time(NULL));
@@ -150,18 +195,61 @@ Node* getRandomNode() {
     // double x = mapCenterX + radius * cos(angle);
     // double z = mapCenterZ + radius * sin(angle);
 
-
     // Center gussing about robot positions
-    double poseDiff = sqrt((runnerRobot.position.x-chaserRobot.position.x)*(runnerRobot.position.x-chaserRobot.position.x) + 
-                    (runnerRobot.position.z-chaserRobot.position.z)*(runnerRobot.position.z-chaserRobot.position.z));
+    double dx = map.goal.x-map.start.x;
+    double dz = map.goal.z-map.start.z;
+    double poseDiff = circleRad*sqrt(dx * dx + dz * dz);
     
     double angle  = ((double)rand() / (double)RAND_MAX) * 2.0 * M_PI;
     double radius = ((double)rand() / (double)RAND_MAX) * poseDiff;
 
+    if (circleRad < 1.0) {
+        circleRad = circleRad + 0.05;
+    }
+    // else {
+    //     circleRad = 0.25;
+    // }
+    double searchCenterX;
+    double searchCenterZ;
+    double x;
+    double z;
     // Calculate x and z using polar coordinates
-    double x = chaserRobot.position.x + radius * cos(angle);
-    double z = chaserRobot.position.z + radius * sin(angle);
+    if (randStartCenter == 1) {
+        searchCenterX = map.start.x;
+        searchCenterZ = map.start.z;
+        randStartCenter += 1;
+    }
+    else if (randStartCenter == 2) {
+        searchCenterX = map.start.x + dx/2;
+        searchCenterZ = map.start.z + dz/2;
+        randStartCenter += 1;
+    }
+    else if (randStartCenter == 3){
+        searchCenterX = map.goal.x;
+        searchCenterZ = map.goal.z;
+        randStartCenter = 1;
+    }
 
+    x = searchCenterX + radius * cos(angle);
+    z = searchCenterZ + radius * sin(angle);
+    // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glPushMatrix();
+    glColor3f(1, 1, 1); // Set edge color (e.g., green)
+    glTranslatef(searchCenterX, 1.0, searchCenterZ);
+    glLineWidth(6.0f);         // Set line width to 2.0 pixels
+    glBegin(GL_LINES);
+    glVertex3f(0, 0, 0);        // Center vertex
+    for (int i = 0; i <= 100; i += 2) {
+        GLfloat angle = PI/2.0 + i * 2.0*M_PI / 100; 
+        GLfloat z = -poseDiff * sin(angle);
+        GLfloat x = -poseDiff * cos(angle);
+
+        glNormal3f(x, 0, z);
+        glVertex3f(x, 0, z);
+    }
+    glEnd();
+    glPopMatrix();
+    glColor3f(1, 1, 1); // Set edge color (e.g., green)
 
     // Create a new node
     Node* randomNode = (Node*)malloc(sizeof(Node));
@@ -226,7 +314,7 @@ bool nodesInCollision(Node* node1, Node* node2) {
     double dx = node2->position.x - node1->position.x;
     double dz = node2->position.z - node1->position.z;
     double distance = calculateDistance(node1, node2);
-    double disc = 1.0;
+    double disc = 0.01;
 
     // Number of discretization steps based on distance and discretization length
     int steps = (int)(distance / disc);
@@ -238,13 +326,7 @@ bool nodesInCollision(Node* node1, Node* node2) {
         double x = node1->position.x + t * dx;
         double z = node1->position.z + t * dz;
 
-        // Check collision at the interpolated point
-        for (int i = 0; i < 30; i++) {
-            if (detect_collision_AABB_TRANS(mapObstList[i], x, 2.0, z)) {  // Assuming y = 2.0 as in your structure
-                inCollision = true;
-                break;
-            }
-        }
+        inCollision = detect_collision_RRT(x, 2.0, z);
 
         if (inCollision) {
             break;
@@ -257,7 +339,7 @@ bool nodesInCollision(Node* node1, Node* node2) {
 // Function to calculate cost of what a node will be, based on assigned parent
 double calculateCost(Node* potentialParent, Node* newNode) {
     double distance = calculateDistance(potentialParent, newNode);
-    double distanceFromGoal = calculateDistanceFromGoal(newNode, runnerRobot.position);
+    double distanceFromGoal = calculateDistanceFromGoal(newNode, map.goal);
     return potentialParent->cost + distance + distanceFromGoal;  // Total cost is parent's cost plus the distance to the new node
 }
 
@@ -295,10 +377,64 @@ Node* nearestNeighbor(nodeTree* tree, Node* randomNode) {
     return nearest;
 }
 
+
+
+
+void drawNode(Node* node) {
+    // Draw the node
+    glPushMatrix();
+    glTranslatef(node->position.x, node->position.y, node->position.z);
+    glColor3f(1, 0, 0); // Set node color (e.g., red)
+    glutSolidSphere(0.1, 10, 10); // Draw a small sphere to represent the node
+    glPopMatrix();
+}
+
+void drawEdge(Vector3 start, Vector3 end) {
+    // Draw an edge between two nodes
+    glBegin(GL_LINES);
+    glColor3f(0, 1, 0); // Set edge color (e.g., green)
+    glVertex3f(start.x, start.y, start.z);
+    glVertex3f(end.x, end.y, end.z);
+    glEnd();
+}
+
+// Node* steer(Node* nearest, Node* randomNode, double stepSize) {
+//     // Calculate the direction from nearest to randomNode
+//     double dx = randomNode->position.x - nearest->position.x;
+//     double dz = randomNode->position.z - nearest->position.z;
+//     double distance = sqrt(dx * dx + dz * dz);                    
+//     if (!detect_collision_RRT(randomNode->position.x, 2.0, randomNode->position.z) && (distance < stepSize)) {
+//         return createNode(randomNode->position.x, randomNode->position.z);
+//     }
+
+//     // Initialize value and steer once towards random node
+//     double dxPercent = dx / distance;
+//     double dzPercent = dz / distance;
+//     double newX = nearest->position.x + dxPercent * stepSize;
+//     double newZ = nearest->position.z + dzPercent * stepSize;
+//     //printf("dxPercent + dzPercent: %f\n\n", dxPercent + dzPercent); // check they are normalized
+//     printf("\n\n");
+//     // continue steering until hitting an obstacle or distance is within stepSize of random node
+//     while (!detect_collision_RRT(newX, 2.0, newZ) && (distance > stepSize)) {
+//         dx = randomNode->position.x - newX;
+//         dz = randomNode->position.z - newZ;
+//         distance = sqrt(dx * dx + dz * dz);    
+//         dxPercent = dx / distance;
+//         dzPercent = dz / distance;
+//         printf("distance: %f\n", distance); // check they are normalized
+//         // Calculate a scaled direction to step towards the random node
+//         newX += dxPercent * stepSize;
+//         newZ += dzPercent * stepSize;
+//     }
+
+//     // Create and return the new node
+//     return createNode(newX, newZ);
+// }
+
 Node* steer(Node* nearest, Node* randomNode, double maxStepSize) {
     // Calculate the direction from nearest to randomNode
-    double dx = nearest->position.x - nearest->position.x;
-    double dz = nearest->position.z - nearest->position.z;
+    double dx = randomNode->position.x - nearest->position.x;
+    double dz = randomNode->position.z - nearest->position.z;
     double distance = sqrt(dx * dx + dz * dz);                    
 
     // If the distance is smaller than the step size, just return the random node
@@ -348,13 +484,13 @@ void chooseParent(Node* newNode, Node* nearest, nodeTree* tree, double searchRad
     newNode->parent = nearest;
     newNode->cost = calculateCost(nearest, newNode);
     
-    Node* bestParent = nearest;  // Start with the nearest node as the current best parent
-    double bestCost  = newNode->cost;  // Start with the cost from the nearest node
+    Node* bestParent = nearest;         // Start with the nearest node as the current best parent
+    double bestCost  = newNode->cost;   // Start with the cost from the nearest node
 
     findPotentialParents(tree->root, newNode, &bestParent, &bestCost, searchRadius);
 
-    newNode->parent = bestParent; // Update to the best parent found
-    newNode->cost = bestCost;     // Update to the best cost found
+    newNode->parent = bestParent;       // Update to the best parent found
+    newNode->cost = bestCost;           // Update to the best cost found
 }
 
 void addNodeToTree(nodeTree* tree, Node* newNode) {
@@ -378,7 +514,7 @@ void rewireNodeIfCostLower(Node* nodeToCheck, Node* newNode, double searchRadius
     }
 
     double distance = calculateDistance(nodeToCheck, newNode);
-    double distanceFromGoal = calculateDistanceFromGoal(nodeToCheck, runnerRobot.position);
+    double distanceFromGoal = 4*calculateDistanceFromGoal(nodeToCheck, map.goal);
     if (distance < searchRadius && !nodesInCollision(nodeToCheck, newNode)) {
         double potentialNewCost = newNode->cost + distance + distanceFromGoal;
         if (potentialNewCost < nodeToCheck->cost) {
@@ -438,10 +574,12 @@ void displayRRTStarPath(Path* path) {
         pathPosPrev.z = path->positions[0].z;
 
         for (int i = 1; i < path->size; i++) {
+            glColor3d(0,1,0);
             glPushMatrix();
             glTranslatef(path->positions[i].x, 2.0, path->positions[i].z);
             Sphere(0.5, 3, 3);
             glPopMatrix();
+            glColor3d(1,1,1);
 
             drawRRTLine(pathPosPrev, path->positions[i]);
             //printf("Position: X: %f, Z: %f\n", path->positions[i].x, path->positions[i].z);
@@ -453,41 +591,114 @@ void displayRRTStarPath(Path* path) {
     }
 }
 
+Path* path = NULL;
+// Path* pathList[1];
+// int pathListSize = 0;
+// int pathListIter = 0;
+// void addPrevPathNodes (nodeTree* tree, Path* path) {
+//     for (int j = 0; j < pathListSize; j++) {
+//         Path* path = pathList[j];
 
-Path* rrtStar(Vector3 startPosition, Vector3 goalPosition, int maxIterations) {
-    Path* path = NULL;
-    nodeTree* tree  = initializeTree(startPosition.x, startPosition.z);
-    Node* goal = createNode(goalPosition.x, goalPosition.z); // Using the createNode function
+//         // Handle last added node in path (prev start pos)
+//         Node* pathNode = createNode(path->positions[0].x, path->positions[0].z);
+//         pathNode->parent = NULL;
+//         addNodeToTree(tree, pathNode);
+//         Node* prevPathNode = pathNode;
 
-    bool goalReached = false;
+//         for (int i = 1; i < path->size; i++) {
+//             pathNode = createNode(path->positions[i].x, path->positions[i].z);
+            
+//             glColor3d(0.5,0.5,0.5);
+//             glPushMatrix();
+//             glTranslatef(path->positions[i].x, 2.0, path->positions[i].z);
+//             Sphere(0.25, 3, 3);
+//             glPopMatrix();
+//             glColor3d(1,1,1);
+
+//             pathNode->parent = prevPathNode;
+//             addNodeToTree(tree, pathNode);
+//             prevPathNode = pathNode;
+//         }
+//     }
+// }
+
+
+
+nodeTree* tree;
+
+void displayRRTTreeRecursive(Node* node) {
+    if (node == NULL) return;
+
+    // Draw the current node
+    drawNode(node);
+
+    // Draw an edge to its parent (if it has one)
+    if (node->parent) {
+        drawEdge(node->position, node->parent->position);
+    }
+
+    // Recursively draw children
+    ChildNode* childNode = node->children;
+    while (childNode != NULL) {
+        displayRRTTreeRecursive(childNode->child);
+        childNode = childNode->next;
+    }
+}
+
+void displayRRTTree() {
+    if (tree == NULL || tree->root == NULL) return;
+    // Start the recursive display from the root
+    displayRRTTreeRecursive(tree->root);
+    glutPostRedisplay();
+    glFlush();
+    glutSwapBuffers();
+}
+
+// Path* allPaths = NULL;
+Path* rrtStar(int maxIterations) {
+    tree = initializeTree(map.start.x, map.start.z);
+    Node* goal = createNode(map.goal.x, map.goal.z);
+
+    goalReached = false;
+    // double goalThreshold = 1.0;
+    // double maxStepSize = 1.0;
+    // double parentSearchRad = 2.0;
+    // double rewireSearchRad = 3.0;
     double goalThreshold = 1.0;
-    double maxStepSize = 0.2;
-    double parentSearchRad = 1.0;
-    double rewireSearchRad = 2.0;
+    double maxStepSize = 8.0;
+    double parentSearchRad = 10;
+    double rewireSearchRad = 20.0;
     Node* randomNode;
     Node* nearest;
     Node* newNode;
     int testGoal = 0;
     
+    // path -> size = 0;
+    if (path != NULL) {
+        // addPrevPathNodes (tree, pathList);
+        // path = NULL;
+    }
     for (int i = 0; i < maxIterations; i++) {
-        if (testGoal == 10) {
+        if (testGoal == 0) {
+            circleRad = 0.25;
             randomNode = goal;
-            testGoal = 0;  
+            testGoal = 20;  
         } else {
             randomNode = getRandomNode();
         }
-        testGoal += 1;
+        testGoal -= 1;
 
         nearest = nearestNeighbor(tree, randomNode);
         newNode = steer(nearest, randomNode, maxStepSize);
-
+        
         if (!nodesInCollision(nearest, newNode)) {
             chooseParent(newNode, nearest, tree, parentSearchRad);  // Start with nearest node as best parent initially
             addNodeToTree(tree, newNode);                           // Add new node to the tree list
             rewire(tree, newNode, rewireSearchRad);                 // 
+            displayRRTTree();
         }
 
-        if (reachedGoal(newNode, goal, goalThreshold) && i > 25) {
+        if (reachedGoal(newNode, goal, goalThreshold)) {
             // Goal reached, construct the path and make Waypoint struct
             goalReached = true;
             break;
@@ -496,8 +707,16 @@ Path* rrtStar(Vector3 startPosition, Vector3 goalPosition, int maxIterations) {
 
     if (goalReached) {
         // printf(" *GOAL REACHED!\n\n");
-        path = backtrackToStart(newNode); // newNode is the node that reached the goal
-        // displayRRTStarPath();
+        path = backtrackToStart(newNode); // newNode is the node that reached the goal (may be the goal)
+        // pathList[pathListIter] = path;
+        // pathListIter++;
+        // pathListSize++;
+        // if (pathListIter == 0) {
+        //     pathListIter = 0;
+        // }
+        // if (pathListSize == 1) {
+        //     pathListSize = 0;
+        // }
         // free(path->positions);
         // free(path);
     }

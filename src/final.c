@@ -169,6 +169,9 @@ void displayTimeCrunch() {
     glutSwapBuffers();
 }
 
+bool doRRT = true;
+int waypointInc = 1;
+int doRRTInt = 0;
 void displayRunner() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -198,9 +201,73 @@ void displayRunner() {
     setObjAbsorberPos(runnerRobot.position.x, runnerRobot.position.y, runnerRobot.position.z);
     updateMapCenter(runnerRobot.position.x, runnerRobot.position.z);
 
+    // RRT*     
+    // if (chaserRobot.inCollision) {RRTSTAR_ACTIVE = true;}
     if (RRTSTAR_ACTIVE) {
-        rrtStarResult = rrtStar(chaserRobot.endEffectorPosition, runnerRobot.position, 1000);
-        displayRRTStarPath(rrtStarResult);
+        if (doRRT) {
+            printf("RRT*\n");
+            rrtStarResult = NULL;
+            double obstYawAngles[30];
+            Vector3 obstPos[30], obstMinPos[30], obstMaxPos[30];
+            for (int i=0; i<30; i++) {
+                obstPos[i] = mapObstList[i].position;
+                obstYawAngles[i] = mapObstList[i].yawAngle; 
+                obstMinPos[i] = mapObstList[i].minPos;
+                obstMaxPos[i] = mapObstList[i].maxPos;
+            }
+            setMapStateInfo(runnerRobot.position, chaserRobot.endEffectorPosition, obstPos, obstYawAngles, obstMinPos, obstMaxPos);
+            rrtStarResult = rrtStar(100000);
+            waypointInc = rrtStarResult->size - 1;
+            doRRT = false;
+        }
+
+    
+        double runnerDist = getEulerDistanceXZ(chaserRobot.endEffectorPosition.x, chaserRobot.endEffectorPosition.z, 
+                                               runnerRobot.position.x, runnerRobot.position.z);
+        double goalDist = getEulerDistanceXZ(chaserRobot.endEffectorPosition.x, chaserRobot.endEffectorPosition.z, 
+                                             rrtStarResult->positions[rrtStarResult->size - 1].x, rrtStarResult->positions[rrtStarResult->size - 1].x);
+
+        if (goalReached) {// && (runnerDist - goalDist) > -1.0) {
+            doRRT = false;
+            // if (doRRTInt > 5) {
+            //     doRRT = true;
+            //     doRRTInt = 0;
+            // }
+            // printf("Tracking waypoints\n");
+            if (waypointInc > -1) {// rrtStarResult->size) {
+                WaypointPosX = rrtStarResult->positions[waypointInc].x;
+                WaypointPosZ = rrtStarResult->positions[waypointInc].z;
+                // printf("WaypointPosX: %f, WaypointPosZ: \n\n", WaypointPosX);
+            
+                glColor3d(1,0,0.5);
+                glPushMatrix();
+                glTranslatef(WaypointPosX, 2.0, WaypointPosZ);
+                Sphere(0.4, 3, 3);
+                glPopMatrix();
+                glColor3d(1,1,1);
+                
+                double dx = WaypointPosX - chaserRobot.endEffectorPosition.x;
+                double dz = WaypointPosZ - chaserRobot.endEffectorPosition.z;
+                double dist = sqrt(dx * dx + dz * dz);
+                if (dist < 0.01) {
+                    waypointInc--;
+                }
+            }
+            else if (waypointInc == -1) {
+                doRRT = true;
+            }
+            doRRTInt++;
+        }
+        else {
+            doRRT = true;
+        }
+
+        if (RRTSTAR_TREE_SHOW) {
+            displayRRTStarPath(rrtStarResult);
+        }
+        else {
+            displayRRTStarPath(rrtStarResult);
+        }
     }
     
     // // Multi-thread RRT* (Performance is meh)
@@ -316,6 +383,7 @@ void display() {
                 }
                 displayEndScreenRunner();
             }
+            glutPostRedisplay(); // Request to redraw the scene
             break;
         case TIME_CRUNCH:
             if (remainingTime > 0.0) {
@@ -499,7 +567,7 @@ int main(int argc, char** argv) {
     addObstaclesToMapList();
     
     previousTime = glutGet(GLUT_ELAPSED_TIME);
-    glutIdleFunc(idle);
+    // glutIdleFunc(idle);
 
     // // Initialize mutex
     // pthread_mutex_init(&mutex, NULL);

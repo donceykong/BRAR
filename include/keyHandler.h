@@ -11,6 +11,7 @@
 #include <stdbool.h>
 
 extern bool RRTSTAR_ACTIVE;
+extern bool RRTSTAR_TREE_SHOW;
 extern bool lightKeyPressed;
 
 typedef struct {
@@ -36,6 +37,7 @@ typedef struct {
   bool g;           // UNUSED
   bool v;           // UNUSED
   bool r;           // RRTSTAR_ACTIVE ENABLE/DISABLE
+  bool R;           // RRTSTAR_TREE show/hide
   bool o;           // UNUSED
   bool l;           // UNUSED
   bool p;           // UNUSED

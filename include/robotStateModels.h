@@ -4,6 +4,10 @@
 #include <stdlib.h>
 #include "miscObjects.h"
 
+double WaypointPosX;
+double WaypointPosZ;
+bool goalReached;
+
 enum robotType {
     RUNNER_ROBOT,         // 0
     CHASER_ROBOT,         // 1

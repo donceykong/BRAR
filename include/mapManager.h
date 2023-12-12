@@ -43,8 +43,8 @@ void setObjAbsorberPos(double x, double y, double z) {
 }
 
 void drawSemiCylinderEdgesMap(GLfloat radius, int segments, double percentFull) {
-    glColor3f(1.0, 0.0, 0.0);  // Red color
-    glLineWidth(4.0f);         // Set line width to 2.0 pixels
+    glColor3f(1.0, 0.0, 0.0);
+    glLineWidth(4.0f);
     glBegin(GL_LINES);
     glVertex3f(0, 0, 0);        // Center vertex
     for (int i = 0; i <= segments; i += 2) {
@@ -144,7 +144,7 @@ void plotMapObstacles () {
     chaserRobot.inCollision = false;
     runnerRobot.inCollision = false;
     for (int i = 0; i < 30; i++) {
-        bool chaserInCollisionCurr = detect_collision_AABB_TRANS(mapObstList[i], chaserRobot.position.x, chaserRobot.position.y, chaserRobot.position.z);
+        bool chaserInCollisionCurr = detect_collision_AABB_TRANS(mapObstList[i], chaserRobot.endEffectorPosition.x, chaserRobot.endEffectorPosition.y, chaserRobot.endEffectorPosition.z);
         bool runnerInCollisionCurr = detect_collision_AABB_TRANS(mapObstList[i], runnerRobot.position.x, runnerRobot.position.y, runnerRobot.position.z);
         chaserRobot.inCollision += chaserInCollisionCurr; //detect_collision(mapObstList[i], chaserRobot.position.x, chaserRobot.position.y, chaserRobot.position.z);
         runnerRobot.inCollision += runnerInCollisionCurr; //detect_collision(mapObstList[i], runnerRobot.position.x, runnerRobot.position.y, runnerRobot.position.z);

@@ -3,7 +3,8 @@
 #include "keyHandler.h"
 
 bool RRTSTAR_ACTIVE = false;
-bool lightKeyPressed = false;  // Keep track of whether '0' key is pressed
+bool RRTSTAR_TREE_SHOW = false;     // Show RRT Tree
+bool lightKeyPressed = false;       // Keep track of whether '0' key is pressed
 KeyStatesStruct keyStates;
 
 void setRegularKeyState(unsigned char key, bool state) {
@@ -20,7 +21,10 @@ void setRegularKeyState(unsigned char key, bool state) {
             break;
         case 'r':
             keyStates.r = state;
-            if (state) {RRTSTAR_ACTIVE = !RRTSTAR_ACTIVE;}
+            if (keyStates.r) {RRTSTAR_ACTIVE = !RRTSTAR_ACTIVE;}
+        case 'R':
+            keyStates.R = state;
+            if (keyStates.R) {RRTSTAR_TREE_SHOW = !RRTSTAR_TREE_SHOW;}
             break;
         case 'a':
             keyStates.a = state;

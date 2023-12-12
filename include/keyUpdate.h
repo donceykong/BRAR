@@ -63,9 +63,19 @@ void updateRunner()
     runnerRobot.position.x += runnerRobot.speed * sin(angleYradians);
 
     // Move chaser
-    chaserRobot.position.x -= chaserRobot.speedAdjust * 0.02 * (chaserRobot.endEffectorPosition.x-runnerRobot.position.x);
-    chaserRobot.position.z -= chaserRobot.speedAdjust * 0.02 * (chaserRobot.endEffectorPosition.z-runnerRobot.position.z);
-    chaserRobot.speed       = chaserRobot.speedAdjust * getEulerDistanceXZ(chaserRobot.endEffectorPosition.x, chaserRobot.endEffectorPosition.z, runnerRobot.position.x, runnerRobot.position.z);
+    double chaserGain;
+    if (RRTSTAR_ACTIVE) {
+      chaserGain = 0.2;
+      chaserRobot.position.x -= chaserRobot.speedAdjust * chaserGain * (chaserRobot.endEffectorPosition.x-WaypointPosX);
+      chaserRobot.position.z -= chaserRobot.speedAdjust * chaserGain * (chaserRobot.endEffectorPosition.z-WaypointPosZ);
+      chaserRobot.speed       = chaserRobot.speedAdjust * getEulerDistanceXZ(chaserRobot.endEffectorPosition.x, chaserRobot.endEffectorPosition.z, WaypointPosX, WaypointPosZ);
+    }
+    else {
+      chaserGain = 0.02;
+      chaserRobot.position.x -= chaserRobot.speedAdjust * chaserGain * (chaserRobot.endEffectorPosition.x-runnerRobot.position.x);
+      chaserRobot.position.z -= chaserRobot.speedAdjust * chaserGain * (chaserRobot.endEffectorPosition.z-runnerRobot.position.z);
+      chaserRobot.speed       = chaserRobot.speedAdjust * getEulerDistanceXZ(chaserRobot.endEffectorPosition.x, chaserRobot.endEffectorPosition.z, runnerRobot.position.x, runnerRobot.position.z);
+    }
   }
   else {
     if (chaserRobot.joint1Angle <= 90.0) {
@@ -127,9 +137,17 @@ void updateRunner()
   }
 
   // Adjust joint angles
-  double yawDeg             = getYawOffset(chaserRobot.yawAngle, chaserRobot.position.x, chaserRobot.position.z, 
+  double yawDeg;
+  if (RRTSTAR_ACTIVE) {
+    yawDeg = 10.0*getYawOffset(chaserRobot.yawAngle, chaserRobot.position.x, chaserRobot.position.z, 
+                          WaypointPosX, 2.0, WaypointPosZ) 
+                          * 180 / PI;
+  }
+  else {
+    yawDeg = getYawOffset(chaserRobot.yawAngle, chaserRobot.position.x, chaserRobot.position.z, 
                                            runnerRobot.position.x, runnerRobot.position.y, runnerRobot.position.z) 
                                            * 180 / PI;
+  }
 
   chaserRobot.yawAngle     -= chaserRobot.speedAdjust * 0.1 * yawDeg; 
   chaserRobot.joint1Angle  += (runnerRobot.position.y - chaserRobot.endEffectorPosition.y);
