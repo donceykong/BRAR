@@ -1,6 +1,8 @@
 #ifndef ROBOT_BODY_H
 #define ROBOT_BODY_H
 
+#include "textureUtils.h"       // NO DEPENDS
+
 void robotTorso(double percentFull, double thickness, double faceC[3], bool topLayer) {
     glPushMatrix();
 

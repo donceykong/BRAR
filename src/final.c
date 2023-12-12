@@ -21,7 +21,6 @@
 
 // Local includes
 // #include "GameModes.h"       // NO DEPENDS
-#include "textureUtils.h"       // NO DEPENDS
 #include "designShapes.h"       //
 #include "robotStateModels.h"
 #include "miscObjects.h"

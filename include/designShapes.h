@@ -2,6 +2,8 @@
 #define DESIGN_SHAPES_H
 
 #include <math.h>
+
+#include "textureUtils.h"       // NO DEPENDS
 #include "shapeEdges.h"
 
 void drawNormal(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat length) {

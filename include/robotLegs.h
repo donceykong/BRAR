@@ -1,6 +1,8 @@
 #ifndef ROBOT_LEGS_H
 #define ROBOT_LEGS_H
 
+#include "textureUtils.h"       // NO DEPENDS
+
 enum legType {
     LEFT_LEG,   // 0
     RIGHT_LEG   // 1
