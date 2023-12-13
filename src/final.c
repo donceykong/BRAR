@@ -23,9 +23,9 @@
 // Local includes
 // #include "GameModes.h"           // 1. EASY
 #include "miscObjects.h"            // 2. EASY - just add to draw.h/draw.c
-#include "robot.h"                  // 5. MEDIUM - Make 3 source, keep one header
+#include "robot.h"                  // 5. MEDIUM - Make 3 source, keep one header. Add robotArm/legs to draw.h and make drawArm.c, drawLegs.c???
 #include "mapManager.h"             // 7. HARD - merge in keyUpdate as a controller? rename to controller?
-#include "groundPlane.h"            // 4. EASY
+#include "groundPlane.h"            // 4. EASY - Add to draw.h lib? maybe make a drawGround.c file
 #include "views.h"                  // 3. EASY
 #include "keyUpdate.h"              // 6. HARD - merge with mapMan? rename to controller?
 

@@ -1,43 +1,32 @@
-______________________________________________________________________________________________________________________________________________
-                                                STRETCH GOALS
-
-    #10  - 1 hr:
-            - Add button to get back to main menu at game over and during gameplay
-            - Add button to replay at game over
-
-        - 3 hrs:
-            - Add wireframe bounding box to Robot struct for visulization
-                - Will require algorithm to calculate the max/min of robots at all timesteps
-                - Can be used for OBB collision detection
-
-        - 4 hrs:
-            - Implement OBB detection for obstacles (use for overlapping and for robot cubic boundary)
-
-        - 4 hrs:
-            - Add ground scene with texture.
-
-
 ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 ______________________________________________________________________________________________________________________________________________
-                                                        WEDNESDAY
+                                                        WEDNESDAY (10 hrs)
+        
+    #1  - 2 hr:
+            - Finish fixing header-source imports & refactoring as needed
 
-    #9  - 2 hrs:
-            - Make code so lights randomly walk ("float") around scene. Will want to use struct to control and visualize lights.
-(START BY 1PM)
     #2  - 2 hr:
             - Alphabetize keys and order by numbered keys
-            - Add key handles to README
             - Fix key Update Code:
                 - Move mouse feedback here from final.c
                 - Implement key handle uses
-                - Remove keys to control robot arm, besides in View robot
-                - Make functions more modular
+                        - Drag screen to move camera tracking (will use views.c)
+                        - Turn off lighting completely
+                        - Change speed values
+                        - Change lighting values
+                        - Change Material values
+                        - Change RRT* values
+                        - Remove keys to control robot arm, besides in View robot
+
     #3  - 2 hr:
             -Add clickable buttons (or use arrow keys) to scroll through items, obstacles, or robots in the view GAME_MODE
                 - DISPLAY ITEM NAME, ROBOT NAME, or OBSTACLE NAME
+            - Add button to get back to main menu at game over and during gameplay
+            - Add button to replay at game over
             - Check lighting for each shape and fix shapes as needed
+
     #5  - 5 hrs:
-            - Make robot arm more interesting: (LIKE BRAR - DRAW FIRST)
+            - Make robot arm more interesting: (LIKE BRACCIO - DRAW FIRST)
                 - Add teeth to gripper (make black)
                 - Make links more interesting shape than cubic links (attempt Braccio)
                 - Add plates (similar to legs)
@@ -46,23 +35,23 @@ ________________________________________________________________________________
                 - Add bump map to wall obstacles
             - Make items more interesting
                 - Add something digital...
-                - Use transparent ability? (remove that code from designShapes)
+                - Use transparent ability? (dont forget to remove that code from draw.c)
             - Get rid of vent texture on runner and make body more interesting (look at spot)
+
     - 2 hrs:
         - Fix appearance of start screen, game play, and end screen
-    - 0.5 hr:
+    
+    - 0.5 hrs:
             - Fix FPS handling to whatever example 24 does (or email prof and ask if ex24 is what he intended).
+    
     - 1 hr:
-        - Update README with keyhandles and background/theory
+        - Update README with keyhandles and background/theory, libs: omp, freetype
 
 
 **************************** SUBMIT PROJECT BY 10PM ******************************************
 
 - Complete presentation.
 
-||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-
-----------------------------------------------------------------------------------------------------------------------------------------------
 
 ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 ______________________________________________________________________________________________________________________________________________

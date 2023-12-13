@@ -1,13 +1,7 @@
 // Doncey Albin
-//
+// lighting library
 
 #include "lighting.h"
-
-// GLfloat light1_X = 0.80, light1_Y = 2.00, light1_Z = 0.00;
-// GLfloat light1Rotation = 0.0f;
-
-// GLfloat light2_X = 0.80, light2_Y = 2.00, light2_Z = 0.00;
-// GLfloat light2Rotation = 0.0f;
 
 float sinInc = 0.0;
 
