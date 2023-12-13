@@ -1,9 +1,13 @@
 #ifndef KEY_UPDATE_H
 #define KEY_UPDATE_H
 
-#include "keyHandler.h"
+// local
+#include "lighting.h"
+#include "keys.h"
 
-void updateRunner()
+double lightrot = 0.0; // TODO: remove this eventually
+
+void updateRunner(LightArray* lights)
 {
   double gripperRollinc     = 0.00;
   double gripperDistinc     = 0.00;
@@ -98,16 +102,15 @@ void updateRunner()
 
   // THE LIGHTING
   double orbitRadius = 4.0;
-  light1Rotation = lightrot + runnerRobot.yawAngle + 45.0;
-  light1_X = -orbitRadius * sin(light1Rotation * PI / 180) + runnerRobot.position.x;
-  light1_Y = runnerRobot.position.y;
-  light1_Z = -orbitRadius * cos(light1Rotation * PI / 180) + runnerRobot.position.z;
+  lights->light[0].angularPos.y += 0.05*(runnerRobot.yawAngle + 45.0 - lights->light[0].angularPos.y);
+  lights->light[0].position.x   += 0.05*(runnerRobot.position.x - lights->light[0].position.x - orbitRadius*sin(lights->light[0].angularPos.y * PI / 180));
+  lights->light[0].position.y   += 0.05*(runnerRobot.position.y - lights->light[0].position.y);
+  lights->light[0].position.z   += 0.05*(runnerRobot.position.z - lights->light[0].position.z - orbitRadius*cos(lights->light[0].angularPos.y * PI / 180));
 
-  light2Rotation = lightrot + runnerRobot.yawAngle - 45.0;
-  light2_X = -orbitRadius * sin(light2Rotation * PI / 180) + runnerRobot.position.x;
-  light2_Y = runnerRobot.position.y;
-  light2_Z = -orbitRadius * cos(light2Rotation * PI / 180) + runnerRobot.position.z;
-  lightrot += 0.5;
+  lights->light[1].angularPos.y += 0.05*(runnerRobot.yawAngle - 45.0 - lights->light[1].angularPos.y);
+  lights->light[1].position.x   += 0.05*(runnerRobot.position.x - lights->light[1].position.x - orbitRadius*sin(lights->light[1].angularPos.y * PI / 180));
+  lights->light[1].position.y   += 0.05*(runnerRobot.position.y - lights->light[1].position.y);
+  lights->light[1].position.z   += 0.05*(runnerRobot.position.z - lights->light[1].position.z - orbitRadius*cos(lights->light[1].angularPos.y * PI / 180));
 
   // Camera Position & Orientation
   // View Zoom Adjust
@@ -227,7 +230,7 @@ void updateRunner()
 
 
 
-void updateTimeCrunch()
+void updateTimeCrunch(LightArray* lights)
 {
 //   double robotXPosInc = 0.00;
 //   double robotZPosInc = 0.00;
@@ -292,15 +295,15 @@ void updateTimeCrunch()
 
   // TODO: FIX THE LIGHTING
   double orbitRadius = 4.0;
-  light1Rotation = lightrot + chaserRobot.yawAngle + 45.0 + 180;
-  light1_X = -orbitRadius * sin(light1Rotation * PI / 180) + chaserRobot.position.x;
-  light1_Y = chaserRobot.position.y;
-  light1_Z = -orbitRadius * cos(light1Rotation * PI / 180) + chaserRobot.position.z;
+  lights->light[0].angularPos.y = lightrot + chaserRobot.yawAngle + 45.0 + 180;
+  lights->light[0].position.x = -orbitRadius * sin(lights->light[0].angularPos.y * PI / 180) + chaserRobot.position.x;
+  lights->light[0].position.y = chaserRobot.position.y;
+  lights->light[0].position.z = -orbitRadius * cos(lights->light[0].angularPos.y * PI / 180) + chaserRobot.position.z;
 
-  light2Rotation = lightrot + chaserRobot.yawAngle + -45 + 180;
-  light2_X = -orbitRadius * sin(light2Rotation * PI / 180) + chaserRobot.position.x;
-  light2_Y = chaserRobot.position.y;
-  light2_Z = -orbitRadius * cos(light2Rotation * PI / 180) + chaserRobot.position.z;
+  lights->light[1].angularPos.y = lightrot + chaserRobot.yawAngle + -45 + 180;
+  lights->light[1].position.x = -orbitRadius * sin(lights->light[1].angularPos.y * PI / 180) + chaserRobot.position.x;
+  lights->light[1].position.y = chaserRobot.position.y;
+  lights->light[1].position.z = -orbitRadius * cos(lights->light[1].angularPos.y * PI / 180) + chaserRobot.position.z;
   lightrot += 0.5;
 
   // CAMERA POS CONTROL (IMITATES CAM STAYING AT LAST POSITION UNTIL SUMMONED :D)
@@ -381,7 +384,7 @@ void updateTimeCrunch()
 
 
 
-void updateViewRobot()
+void updateViewRobot(LightArray* lights)
 {
 //   double robotXPosInc = 0.00;
 //   double robotZPosInc = 0.00;
@@ -418,12 +421,6 @@ void updateViewRobot()
       gripperDistinc = -0.01;
   }
 
-  // lighting Distance Adjust
-  if (keyStates.o)
-    lightingDist *= 0.99;
-  if (keyStates.l)
-    lightingDist *= 1.1;
-
   // View Zoom Adjust
   if (keyStates.o)
     fpCamZoom *= 0.99;
@@ -439,15 +436,15 @@ void updateViewRobot()
 
   // TODO: FIX THE LIGHTING
   double orbitRadius = 4.0;
-  light1Rotation = lightrot + chaserRobot.yawAngle + 45.0 + 180;
-  light1_X = -orbitRadius * sin(light1Rotation * PI / 180) + chaserRobot.position.x;
-  light1_Y = chaserRobot.position.y + 1;
-  light1_Z = -orbitRadius * cos(light1Rotation * PI / 180) + chaserRobot.position.z;
+  lights->light[0].angularPos.y = lightrot + chaserRobot.yawAngle + 45.0 + 180;
+  lights->light[0].position.x = -orbitRadius * sin(lights->light[0].angularPos.y * PI / 180) + chaserRobot.position.x;
+  lights->light[0].position.y = chaserRobot.position.y + 1;
+  lights->light[0].position.z = -orbitRadius * cos(lights->light[0].angularPos.y * PI / 180) + chaserRobot.position.z;
 
-  light2Rotation = lightrot + chaserRobot.yawAngle - 45.0 + 180;
-  light2_X = -orbitRadius * sin(light2Rotation * PI / 180) + chaserRobot.position.x;
-  light2_Y = chaserRobot.position.y + 1;
-  light2_Z = -orbitRadius * cos(light2Rotation * PI / 180) + chaserRobot.position.z;
+  lights->light[1].angularPos.y = lightrot + chaserRobot.yawAngle - 45.0 + 180;
+  lights->light[1].position.x = -orbitRadius * sin(lights->light[1].angularPos.y * PI / 180) + chaserRobot.position.x;
+  lights->light[1].position.y = chaserRobot.position.y + 1;
+  lights->light[1].position.z = -orbitRadius * cos(lights->light[1].angularPos.y * PI / 180) + chaserRobot.position.z;
   lightrot += 0.8;
 
   if (viewMode == 1) {

@@ -1,25 +1,25 @@
 #ifndef ROBOT_BODY_H
 #define ROBOT_BODY_H
 
-#include "textureUtils.h"       // NO DEPENDS
+#include "draw.h"
 
 void robotTorso(double percentFull, double thickness, double faceC[3], bool topLayer) {
     glPushMatrix();
 
     glTranslatef(0.0, -0.2, 0.0);     // Translate to bring cube top down
     glColor3f(faceC[0], faceC[1], faceC[2]);        // face color
-    getParallelogram(0.5*percentFull, 0.4, thickness);  // Draw paralellogram
+    drawParallelogram(0.5*percentFull, 0.4, thickness);  // Draw paralellogram
     glTranslatef(0.0, 0.2, 0.0);    
 
     glTranslatef(0.0, 0.05, 0.0);
     glColor3f(faceC[0], faceC[1], faceC[2]); // face color  
-    getCuboid(0.5*percentFull, 0.1, thickness);
+    drawCuboid(0.5*percentFull, 0.1, thickness);
     glTranslatef(0.0, 0.05, 0.0);     // top of cube
 
     glTranslatef(0.0, 0.05, 0.0);     // shift halfway of parallelogram
     glRotatef(180, 0.0, 0.0, 1.0);    // Rotate 180
     glColor3f(faceC[0], faceC[1], faceC[2]);        // face color
-    getParallelogram(0.5*percentFull, 0.1, thickness);
+    drawParallelogram(0.5*percentFull, 0.1, thickness);
 
     glPopMatrix();
 }

@@ -1,3 +1,6 @@
+// OpenMP header
+#include <omp.h>
+
 #include "RRTStar.h"
 
 // Global Vars
@@ -44,6 +47,7 @@ void setMapStateInfo(Vector3 runnerPosition, Vector3 chaserPosition, Vector3 obs
 bool detect_collision_RRT(double nodeX, double nodeY, double nodeZ) {
     bool inCollision = false;
 
+    #pragma omp parallel for
     for (int i = 0; i < 30; i++) {
         double cosYaw = cos(map.obst[i].yawAngle * PI / 180);
         double sinYaw = sin(map.obst[i].yawAngle * PI / 180);
@@ -151,8 +155,8 @@ Node* getRandomNode() {
     // double radius = ((double)rand() / (double)RAND_MAX) * mapRadius;
 
     // Calculate x and z using polar coordinates
-    // double x = mapCenterX + radius * cos(angle);
-    // double z = mapCenterZ + radius * sin(angle);
+    // double x = mapCenter.x + radius * cos(angle);
+    // double z = mapCenter.z + radius * sin(angle);
 
     // Center gussing about robot positions
     double dx = map.goal.x-map.start.x;
@@ -279,17 +283,18 @@ bool nodesInCollision(Node* node1, Node* node2) {
     int steps = (int)(distance / disc);
     bool inCollision = false;
 
+    #pragma omp parallel for
     for (int step = 0; step <= steps; step++) {
         // Calculate interpolated point
         double t = (double)step / (double)steps;
         double x = node1->position.x + t * dx;
         double z = node1->position.z + t * dz;
 
-        inCollision = detect_collision_RRT(x, 2.0, z);
+        inCollision += detect_collision_RRT(x, 2.0, z);
 
-        if (inCollision) {
-            break;
-        }
+        // if (inCollision) {
+        //     break;
+        // }
     }
 
     return inCollision;
@@ -645,12 +650,12 @@ Path* rrtStar(int maxIterations) {
             chooseParent(newNode, nearest, tree, parentSearchRad);  // Start with nearest node as best parent initially
             addNodeToTree(tree, newNode);                           // Add new node to the tree list
             rewire(tree, newNode, rewireSearchRad);                 // 
-            displayRRTTree();
+            // displayRRTTree();
         }
 
         if (reachedGoal(newNode, goal, goalThreshold)) {
             // Goal reached, construct the path and make Waypoint struct
-            printf("WHAT");
+            // printf("WHAT");
             goalReached = true;
             break;
         }

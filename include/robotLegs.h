@@ -1,7 +1,7 @@
 #ifndef ROBOT_LEGS_H
 #define ROBOT_LEGS_H
 
-#include "textureUtils.h"       // NO DEPENDS
+#include "draw.h"
 
 enum legType {
     LEFT_LEG,   // 0
@@ -42,16 +42,16 @@ void robotThigh(double percentFull, double thickness, double faceC[3], bool topL
 
     glTranslatef(0.0, -0.05, 0.0);                                  // Move cube top down
     glColor3f(faceC[0], faceC[1], faceC[2]);                        // face color
-    getCuboid(0.4*percentFull, 0.1, thickness);                       // Draw cube
+    drawCuboid(0.4*percentFull, 0.1, thickness);                       // Draw cube
 
     glTranslatef(0.0, -0.1, 0.0);                                   // Translate to bring parallelogram top down
     glColor3f(faceC[0], faceC[1], faceC[2]);                        // face color
-    getParallelogram(0.4*percentFull, 0.1, thickness);              // Draw parallelogram
+    drawParallelogram(0.4*percentFull, 0.1, thickness);              // Draw parallelogram
 
     glTranslatef(0.0, -0.25, 0.0);                                  // Move cube top down
     glColor3f(faceC[0], faceC[1], faceC[2]);                        // face color
-    getCuboid(0.2*percentFull, 0.4, thickness);                       // Draw cube
-    glTranslatef(0.0, -0.2, 0.0);                                   // To get to end of cube
+    drawCuboid(0.2*percentFull, 0.4, thickness);                       // Draw cube
+    glTranslatef(0.0, -0.2, 0.0);                                   // To draw to end of cube
 
     if (!topLayer) {
         glTranslatef(0.0, -0.06, thickness/4);      // To get to end cylinder center
@@ -81,24 +81,24 @@ void robotShin(double percentFull, double thickness, double faceC[3], bool topLa
     glTranslatef(0.0, -0.1, 0.0);               // Translate to bring cube top down
     if (!topLayer) {
         glColor3f(faceC[0], faceC[1], faceC[2]);    // Green face color
-        getCuboid(0.2*percentFull, 0.15, thickness/2);   // Draw Cube
+        drawCuboid(0.2*percentFull, 0.15, thickness/2);   // Draw Cube
     }
     glTranslatef(0.0, -0.15/2, 0.0);               // To get to end of cube
     glTranslatef(0.0, 0.0, thickness/4);              // To shift back from 3/4 of thickness
     
     glTranslatef(0.0, -0.15, 0.0);               // Translate to bring cube top down
     glColor3f(faceC[0], faceC[1], faceC[2]);    // Green face color
-    getCuboid(0.2*percentFull, 0.3, thickness);   // Draw Cube
+    drawCuboid(0.2*percentFull, 0.3, thickness);   // Draw Cube
     glTranslatef(0.0, -0.15, 0.0);               // To get to end of cube
     
     glTranslatef(0.0, -0.05, 0.0);              // Translate to bring parallelogram top down
     glColor3f(faceC[0], faceC[1], faceC[2]);    // Green face color
-    getParallelogram(0.2*percentFull, 0.1, thickness);            // Draw parallelogram
+    drawParallelogram(0.2*percentFull, 0.1, thickness);            // Draw parallelogram
     glTranslatef(0.0, -0.05, 0.0);              // To get to end of parallelogram
     
     glTranslatef(0.0, -0.2, 0.0);               // Translate to bring cube top down
     glColor3f(faceC[0], faceC[1], faceC[2]);    // Green face color
-    getCuboid(0.1*percentFull, 0.4, thickness);                     // Draw Cube
+    drawCuboid(0.1*percentFull, 0.4, thickness);                     // Draw Cube
     glTranslatef(0.0, -0.2, 0.0);               // To get to end of cube
 
     //0.1 + 0.075 + 0.3 + 0.1 + 0.4  = 0.975 -> length so far
@@ -125,20 +125,20 @@ void robotFoot() {
     glRotatef(-20.0, 0.0, 0.0, 1.0);                //
     glTranslatef(0.15, 0.0, 0.0);                   // Translate to bring cube top down
     glColor3f(faceC[0], faceC[1], faceC[2]);        // face color
-    getRightTriPrism(0.3, 0.15, 0.05);
+    drawRightTriPrism(0.3, 0.15, 0.05);
     glTranslatef(0.0, -0.075, 0.0); 
 
     glTranslatef(0.0, -0.025, 0.125);               // Translate to bring cube top down
     glRotatef(90.0, 1.0, 0.0, 0.0);                 //
     glColor3f(faceC[0], faceC[1], faceC[2]);        // face color
-    getRightTriPrism(0.3, 0.15, 0.05);
+    drawRightTriPrism(0.3, 0.15, 0.05);
     glRotatef(-90.0, 1.0, 0.0, 0.0);                //
     glTranslatef(0.0, 0.025,  -0.125); 
 
     glTranslatef(0.0, -0.025, -0.125);              // Translate to bring cube top down
     glRotatef(-90.0, 1.0, 0.0, 0.0);                //
     glColor3f(faceC[0], faceC[1], faceC[2]);        // face color
-    getRightTriPrism(0.3, 0.15, 0.05);              // 
+    drawRightTriPrism(0.3, 0.15, 0.05);              // 
     glRotatef(90.0, 1.0, 0.0, 0.0);                 //
     glTranslatef(0.0, 0.025,  0.125); 
 
@@ -146,7 +146,7 @@ void robotFoot() {
     glRotatef(20.0, 0.0, 0.0, 1.0);                
     glRotatef(180.0, 0.0, 0.0, 1.0);                // 
     glColor3f(faceC[0], faceC[1], faceC[2]);        // face color
-    getParallelogram(0.2, 0.05, 0.2);               // Draw parallelogram
+    drawParallelogram(0.2, 0.05, 0.2);               // Draw parallelogram
     glRotatef(180.0, 0.0, 0.0, 1.0); 
     glRotatef(-20.0, 0.0, 0.0, 1.0); 
     glTranslatef(-(0.15 - 0.1/2.0), 0.025, 0.0);    // Translate back
@@ -161,14 +161,14 @@ void robotFoot() {
     glRotatef(-6.66, 0.0, 0.0, 1.0);                //
     glTranslatef(0.225, 0.0, 0.0);                   // Translate to bring cube top down
     glColor3f(faceC[0], faceC[1], faceC[2]);        // face color
-    getRightTriPrism(0.45, 0.05, 0.05);
+    drawRightTriPrism(0.45, 0.05, 0.05);
     glTranslatef(0.0, -0.05, 0.0); 
 
     glTranslatef(0.45/2.0 - 0.1/2.0, -0.0, 0.0);      // Translate prism center to bottom of foot
     glRotatef(20.0, 0.0, 0.0, 1.0);                
     glRotatef(180.0, 0.0, 0.0, 1.0);                // 
     glColor3f(faceC[0], faceC[1], faceC[2]);        // face color
-    getParallelogram(0.2, 0.05, 0.1);               // Draw parallelogram
+    drawParallelogram(0.2, 0.05, 0.1);               // Draw parallelogram
     glRotatef(180.0, 0.0, 0.0, 1.0); 
     glRotatef(-20.0, 0.0, 0.0, 1.0); 
     glTranslatef(-(0.45/2.0 - 0.1/2.0), 0.0, 0.0);    // Translate back

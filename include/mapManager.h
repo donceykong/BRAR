@@ -3,13 +3,15 @@
 
 #include <stdlib.h>
 #include <time.h>
+#include "matrixMath.h"
+#include "draw.h"
 #include "textureUtils.h"       // NO DEPENDS
 #include "mapObjects.h"
 #include "collisionDetection.h"
 #include "GameModes.h"
 
-double mapCenterX = 0.0;
-double mapCenterZ = 0.0;
+bool mapCenterUpdated;
+Vector3 mapCenter;
 double mapRadius = 100.0;
 double map_time =   0.0;
 
@@ -61,7 +63,7 @@ void drawSemiCylinderEdgesMap(GLfloat radius, int segments, double percentFull) 
 
 void plotMapBorder () {
     glPushMatrix();
-    glTranslatef(mapCenterX, 1.0, mapCenterZ);
+    glTranslatef(mapCenter.x, 1.0, mapCenter.z);
     drawSemiCylinderEdgesMap(mapRadius, 10000, 100.0);
     glPopMatrix();
 }
@@ -84,8 +86,8 @@ void addObstaclesToMapList() {
 
             // Generate random position as before
             double mapDiameter = 2.0 * mapRadius;
-            randObstPosX = mapDiameter*((double)rand() / RAND_MAX - 0.5) + mapCenterX;
-            randObstPosZ = mapDiameter*((double)rand() / RAND_MAX - 0.5) + mapCenterZ;
+            randObstPosX = mapDiameter*((double)rand() / RAND_MAX - 0.5) + mapCenter.x;
+            randObstPosZ = mapDiameter*((double)rand() / RAND_MAX - 0.5) + mapCenter.z;
 
             // Check distance from all previously placed obstacles
             for (int j = 0; j < i; j++) {
@@ -141,7 +143,6 @@ void checkCollision () {
 }
 
 void plotMapObstacles () {
-    glEnable(GL_DEPTH_TEST);
     chaserRobot.inCollision = false;
     runnerRobot.inCollision = false;
     for (int i = 0; i < 30; i++) {
@@ -173,7 +174,7 @@ void plotMapObstacles () {
                     glColor3f(1.0, 1.0, 1.0);
                 }
                 BMPtexture = BMPtexture7;
-                getCuboid(mapObstList[i].width, mapObstList[i].height, mapObstList[i].depth);
+                drawCuboid(mapObstList[i].width, mapObstList[i].height, mapObstList[i].depth);
                 break;
             case WALL:
                 if (chaserInCollisionCurr || runnerInCollisionCurr) {
@@ -183,13 +184,12 @@ void plotMapObstacles () {
                     glColor3f(1.0, 1.0, 1.0);
                 }
                 BMPtexture = BMPtexture6;
-                getCuboid(mapObstList[i].width, mapObstList[i].height, mapObstList[i].depth);
+                drawCuboid(mapObstList[i].width, mapObstList[i].height, mapObstList[i].depth);
                 break;
             default:
         }
         glPopMatrix();
     }
-    glDisable(GL_DEPTH_TEST);
 }
 
 void addItemsToMapList() {
@@ -203,8 +203,8 @@ void addItemsToMapList() {
 
             // Generate random position as before
             double mapDiameter = 2.0 * mapRadius;
-            randObjPosX = mapDiameter*((double)rand() / RAND_MAX - 0.5) + mapCenterX;
-            randObjPosZ = mapDiameter*((double)rand() / RAND_MAX - 0.5) + mapCenterZ;
+            randObjPosX = mapDiameter*((double)rand() / RAND_MAX - 0.5) + mapCenter.x;
+            randObjPosZ = mapDiameter*((double)rand() / RAND_MAX - 0.5) + mapCenter.z;
 
             // Check distance from all previously placed obstacles
             for (int j = 0; j < 30; j++) {
@@ -292,8 +292,6 @@ void setNearest(int listIter) {
 }
 
 void plotMapItems() {
-    glEnable(GL_DEPTH_TEST);  // Enable depth testing
-    // glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     map_time += 0.005;
     for (int i = 0; i < 10; i++) {
         // If Obj pos = runner pos, set runner adjust and robot adjust based on type
@@ -364,7 +362,7 @@ void plotMapItems() {
                     glColor3f(0.0, 1.0, 0.0);
                 }
                 //BMPtexture = BMPtexture5;
-                getParallelogram(mapItemList[i].size, mapItemList[i].size, mapItemList[i].size);
+                drawParallelogram(mapItemList[i].size, mapItemList[i].size, mapItemList[i].size);
                 break;
             case SPHERE:
                 if (mapItemList[i].state == COLLECTED) {
@@ -374,7 +372,7 @@ void plotMapItems() {
                     glColor3f(0.0, 1.0, 1.0);
                 }
                 //BMPtexture = BMPtexture5;
-                Sphere(mapItemList[i].size/2.0, 4, 4);
+                drawSphere(mapItemList[i].size/2.0, 4, 4);
                 break;
             case CUBE:
                 if (mapItemList[i].state == COLLECTED) {
@@ -384,7 +382,7 @@ void plotMapItems() {
                     glColor3f(1.0, 0.0, 0.0);
                 }
                 //BMPtexture = BMPtexture5;
-                getCuboid(mapItemList[i].size, mapItemList[i].size, mapItemList[i].size);
+                drawCuboid(mapItemList[i].size, mapItemList[i].size, mapItemList[i].size);
                 break;
             case EMPTY:
                 //printf("    - Map obj %d is EMPTY.\n", i);
@@ -397,14 +395,28 @@ void plotMapItems() {
 }
 
 void updateMapCenter (double robotPosX, double robotPosZ) {
-    double dist = getEulerDistanceXZ(mapCenterX, mapCenterZ, robotPosX, robotPosZ);
+    double dist = getEulerDistanceXZ(mapCenter.x, mapCenter.z, robotPosX, robotPosZ);
     if (dist > mapRadius) {
         // printf("Map center updated\n");
-        mapCenterX = robotPosX;
-        mapCenterZ = robotPosZ;
+        mapCenter.x = robotPosX;
+        mapCenter.z = robotPosZ;
+        
         addObstaclesToMapList();
         addItemsToMapList();
+
+        mapCenterUpdated = true;
     }
+}
+
+void initMap () {
+    mapCenter.x = 0.0;
+    mapCenter.y = 1.0;
+    mapCenter.z = 0.0;
+
+    addObstaclesToMapList();
+    addItemsToMapList();
+    
+    mapCenterUpdated = true;
 }
 
 #endif // MAP_MANAGER_H

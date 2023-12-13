@@ -1,10 +1,13 @@
 // keys library
 // Doncey Albin
-#include "keyHandler.h"
+#include "keys.h"
 
 bool RRTSTAR_ACTIVE = false;
 bool RRTSTAR_TREE_SHOW = false;     // Show RRT Tree
 bool lightKeyPressed = false;       // Keep track of whether '0' key is pressed
+bool lightsEnabled = true;
+bool spotlightsEnabled = false;
+
 KeyStatesStruct keyStates;
 
 void setRegularKeyState(unsigned char key, bool state) {
@@ -17,7 +20,7 @@ void setRegularKeyState(unsigned char key, bool state) {
             break;
         case 's':
             keyStates.s = state;
-            // if (state) {SPOTLIGHT_ACTIVE = !SPOTLIGHT_ACTIVE;}
+            if (state) {spotlightsEnabled = !spotlightsEnabled;}
             break;
         case 'r':
             keyStates.r = state;
@@ -72,7 +75,7 @@ void setRegularKeyState(unsigned char key, bool state) {
             break;
         case '0':
             keyStates.key0 = state;
-            // if (state) {lightKeyPressed = !lightKeyPressed; lightsEnabled = lightKeyPressed;}
+            if (state) {lightKeyPressed = !lightKeyPressed; lightsEnabled = lightKeyPressed;}
             break;
         case '1':
             keyStates.key1 = state;

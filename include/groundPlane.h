@@ -96,9 +96,9 @@ void drawPortals() {
     }
 }
 
-void drawGroundPlane() {
+void drawGroundPlane(Vector3 mapCenter) {
     glPushMatrix();
-    glTranslatef(mapCenterX, 0.00, mapCenterZ);
+    glTranslatef(mapCenter.x, 0.00, mapCenter.z);
 
     glColor3f(1.0, 1.0, 1.0);     // Blue color
     glBegin(GL_TEXTURE_2D);

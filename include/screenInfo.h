@@ -9,10 +9,10 @@
 
 #include <stdlib.h>
 #include <stdbool.h>
-#include <ft2build.h>   // FreeType (used in main screen buttons)
+#include <ft2build.h>       // FreeType (used in main screen buttons)
 #include FT_FREETYPE_H
 
-#include "textureUtils.h"       // NO DEPENDS
+#include "textureUtils.h"
 
 // WINDOW INFO
 extern const int windowXPos;

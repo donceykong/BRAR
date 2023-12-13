@@ -1,5 +1,6 @@
-
-// Created by: Doncey Albin
+// Doncey Albin
+// final executable
+// Fall 2023, Computer Graphics, CU Boulder
 
 #ifdef __APPLE__
 #include <GLUT/glut.h>
@@ -20,26 +21,26 @@
 // #include <pthread.h>
 
 // Local includes
-// #include "GameModes.h"       // NO DEPENDS
-#include "designShapes.h"       //
-#include "robotStateModels.h"
-#include "miscObjects.h"
-#include "robot.h"
-#include "mapManager.h"
-#include "groundPlane.h"
-#include "forwardKinematics.h"
-#include "views.h"
-#include "lighting.h"       
-
-// #include "keyHandler.h"
-#include "keyUpdate.h"
+// #include "GameModes.h"           // 1. EASY
+#include "miscObjects.h"            // 2. EASY - just add to draw.h/draw.c
+#include "robot.h"                  // 5. MEDIUM - Make 3 source, keep one header
+#include "mapManager.h"             // 7. HARD - merge in keyUpdate as a controller? rename to controller?
+#include "groundPlane.h"            // 4. EASY
+#include "views.h"                  // 3. EASY
+#include "keyUpdate.h"              // 6. HARD - merge with mapMan? rename to controller?
 
 // fixed headers
+// #include "keys.h"
 #include "RRTStar.h"
 #include "matrixMath.h"
 #include "CSCIx229.h"
-#include "screenInfo.h" // Still needs to load textures somehow.
+#include "screenInfo.h"
 #include "textureUtils.h"
+// #include "draw.h"        // isnt used here...
+#include "lighting.h"    
+
+// // OpenMP header
+// #include <omp.h>
 
 // Global GAME_MODE enum
 enum GameMode GAME_MODE;
@@ -56,6 +57,9 @@ bool showMain = true;
 
 // Mouse callback for game options
 int mouseCallbackEnabled = 1; // Global variable to control the callback
+
+// global lights array
+LightArray lights;
 
 Path* rrtStarResult = NULL;
 // // Global variables
@@ -93,13 +97,13 @@ void displayViewRobot() {
 
     glEnable(GL_DEPTH_TEST);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+    glColorMaterial(GL_FRONT_AND_BACK, GL_SPOT_DIRECTION);
     glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_ambient);
     glEnable(GL_COLOR_MATERIAL);
     
-    updateViewRobot();
+    updateViewRobot(&lights);
     displayView();
-    setupLighting();
+    // setupLighting();
 
     glPushMatrix();
     glTranslatef(0.0, 2.0, 0.0);        // Translate to bring parallelogram top down
@@ -117,10 +121,16 @@ void displayTimeCrunch() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glEnable(GL_DEPTH_TEST);
-    updateTimeCrunch(); // Needs to use nearest map object pose as controller basis for arm
     getYPosition(&chaserRobot);
     displayView();
-    setupLighting();
+
+    if (mapCenterUpdated) {
+        resetLighting(mapCenter, &lights);
+        mapCenterUpdated = false;
+    }
+    updateLighting(lightsEnabled, spotlightsEnabled, &lights);
+
+    updateTimeCrunch(&lights); 
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
@@ -132,7 +142,7 @@ void displayTimeCrunch() {
     // glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
     // glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,Emission);
 
-    drawGroundPlane();
+    drawGroundPlane(mapCenter);
     displayPoseHistory(&chaserRobot);
     drawChaserRobot();                    // Draw chaser (collector)
     computeForwardKinematics();
@@ -167,19 +177,46 @@ int doRRTInt = 0;
 void displayRunner() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    checkRobotCaptured();   //
-    updateRunner();
-    checkRobotCaptured();
-    displayView();
-    setupLighting();
-
-    glEnable(GL_DEPTH_TEST);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_ambient);
-    glEnable(GL_COLOR_MATERIAL);
+    // glEnable(GL_DEPTH_TEST);
+    // glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    // glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+    // glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_ambient);
+    // glEnable(GL_COLOR_MATERIAL);
     
-    drawGroundPlane();
+    // set the view
+    displayView();
+
+    if (mapCenterUpdated) {
+        printf("reseting lighting\n");
+        resetLighting(mapCenter, &lights);
+        mapCenterUpdated = false;
+    }
+
+    checkRobotCaptured();
+    updateRunner(&lights);
+
+    // glEnable(GL_CULL_FACE);
+    glEnable(GL_DEPTH_TEST);
+
+    updateLighting(lightsEnabled, spotlightsEnabled, &lights);
+
+    glPolygonMode(GL_FRONT, GL_FILL);
+    glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+    glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
+    // Diffuse Material
+    GLfloat mat_diffuse[] = {0.8f, 0.8f, 0.8f, 1.0f};
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse);
+    // Specular Material
+    GLfloat mat_specular[] = {1.0f, 1.0f, 1.0f, 1.0f};
+    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+    // Shininess
+    GLfloat shininess = 120.0f;
+    glMaterialf(GL_FRONT, GL_SHININESS, shininess);
+
+    glEnable(GL_COLOR_MATERIAL);
+
+    // updateLighting(lightsEnabled, spotlightsEnabled, &lights);
+    drawGroundPlane(mapCenter);
     drawChaserRobot();                    // Draw chaser (collector)
     drawRunnerRobot();                    // Draw runner
     computeForwardKinematics();
@@ -208,7 +245,7 @@ void displayRunner() {
                 obstMaxPos[i] = mapObstList[i].maxPos;
             }
             setMapStateInfo(runnerRobot.position, chaserRobot.endEffectorPosition, obstPos, obstYawAngles, obstMinPos, obstMaxPos);
-            rrtStarResult = rrtStar(100000);
+            rrtStarResult = rrtStar(1000);
             waypointInc = rrtStarResult->size - 1;
             // printf("rrtStarResult->goalReached: %d\n", rrtStarResult->goalReached);
             doRRT = false;
@@ -223,7 +260,7 @@ void displayRunner() {
                 glColor3d(1,0,0.5);
                 glPushMatrix();
                 glTranslatef(WaypointPosX, 2.0, WaypointPosZ);
-                Sphere(0.4, 3, 3);
+                drawSphere(0.4, 3, 3);
                 glPopMatrix();
                 glColor3d(1,1,1);
                 
@@ -543,10 +580,9 @@ int main(int argc, char** argv) {
     BMPtexture6 = loadTexture("./assets/flagstone.bmp");
     BMPtexture7 = loadTexture("./assets/wooden_crate.bmp");
 
-    // setRunnerPoseList();
-    addItemsToMapList();
-    addObstaclesToMapList();
-    
+    // initialize map
+    initMap();
+
     previousTime = glutGet(GLUT_ELAPSED_TIME);
     glutIdleFunc(idle);
 

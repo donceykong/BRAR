@@ -26,8 +26,8 @@ CFLG=-O3 -Wall -Wno-deprecated-declarations -DRES=$(RES)
 LIBS=-framework GLUT -framework OpenGL
 # Linux/Unix/Solaris
 else
-CFLG=-O0 -Wall -I/usr/include/freetype2 -g
-LIBS=-lglut -lGLU -lGL -lm -lfreetype
+CFLG=-O3 -Wall -I/usr/include/freetype2 -g -fopenmp
+LIBS=-lglut -lGLU -lGL -lm -lfreetype -fopenmp
 endif
 # OSX/Linux/Unix/Solaris
 CLEAN=rm -f $(EXE) $(OBJ)/*.o $(OBJ)/*.a
@@ -45,7 +45,7 @@ $(OBJ)/%.o: $(SRC)/%.c $(DEPS)
 $(OBJ)/CSCIx229.a: $(OBJ)/print.o $(OBJ)/projection.o
 	ar -rcs $@ $^
 
-$(OBJ)/keyHandler.a: $(OBJ)/keys.o
+$(OBJ)/keys.a: $(OBJ)/keys.o
 	ar -rcs $@ $^
 
 $(OBJ)/matrixMath.a: $(OBJ)/matrixMath.o
@@ -60,8 +60,14 @@ $(OBJ)/screenInfo.a: $(OBJ)/screenInfo.o
 $(OBJ)/textureUtils.a: $(OBJ)/textureUtils.o
 	ar -rcs $@ $^
 
+$(OBJ)/draw.a: $(OBJ)/draw.o
+	ar -rcs $@ $^
+
+$(OBJ)/lighting.a: $(OBJ)/lighting.o
+	ar -rcs $@ $^
+
 # Link
-$(EXE): $(OBJ)/$(EXE).o $(OBJ)/CSCIx229.a $(OBJ)/keyHandler.a $(OBJ)/matrixMath.a $(OBJ)/RRTStar.a $(OBJ)/screenInfo.a $(OBJ)/textureUtils.a
+$(EXE): $(OBJ)/$(EXE).o $(OBJ)/CSCIx229.a $(OBJ)/keys.a $(OBJ)/matrixMath.a $(OBJ)/RRTStar.a $(OBJ)/screenInfo.a $(OBJ)/textureUtils.a $(OBJ)/draw.a $(OBJ)/lighting.a
 	$(CC) $(CFLG) -o $@ $^ $(LIBS)
 
 # Clean
