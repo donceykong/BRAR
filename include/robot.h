@@ -132,7 +132,7 @@ void drawChaserRobot() {
 
 void drawRunnerRobot() {
     glPushMatrix();
-    glTranslatef(runnerRobot.position.x, runnerRobot.position.y, runnerRobot.position.z);
+    glTranslatef(runnerRobot.position.x, runnerRobot.position.y, runnerRobot.position.z + 1.75/2);
     glRotatef((GLfloat)runnerRobot.yawAngle - 90.0, 0.0, 1.0, 0.0);
     
     bool onGround = true;
@@ -167,6 +167,7 @@ void drawRunnerRobot() {
     glPushMatrix();
     glTranslatef(1.0, 0.0, 0.0);  // Move cube to center between thighs
     glColor3f(1.0, 1.0, 1.0);    // face color
+    BMPtexture = BMPtexture5;                         // TODO: Change initial texture
     drawCuboid(1.50, 0.4, 0.4);   // Draw cube
     glPopMatrix();
 

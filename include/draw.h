@@ -8,7 +8,11 @@
 #endif
 
 #include <math.h>
+#include <stdbool.h>
+
+#include "matrixMath.h"
 #include "textureUtils.h"
+#include "keys.h"
 
 /*
  ***************************** Misc shapes *****************************
@@ -17,6 +21,11 @@
 // Draw normal 
 void drawNormal(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat length);
 
+void drawFrame(float length);
+
+void drawPoseFrame(float axisLen, float lineThickness);
+
+void drawP2PLine(Vector3 point1, Vector3 point2);
 
 /*
  ***************************** Shape edges *****************************

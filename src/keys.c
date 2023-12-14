@@ -3,10 +3,15 @@
 #include "keys.h"
 
 bool RRTSTAR_ACTIVE = false;
-bool RRTSTAR_TREE_SHOW = false;     // Show RRT Tree
+bool displayRRTSPath = false;     // Show RRT Tree
 bool lightKeyPressed = false;       // Keep track of whether '0' key is pressed
-bool lightsEnabled = true;
+bool lightsEnabled = false;
 bool spotlightsEnabled = false;
+bool displayRRTSearch = true;
+bool useMapArea = false;
+bool waypointTracking = false;      // follow rrt* waypoints
+bool showFrames = false;
+bool showPoseHist = false;
 
 KeyStatesStruct keyStates;
 
@@ -15,8 +20,8 @@ void setRegularKeyState(unsigned char key, bool state) {
         case 32: // ASCII value for space bar
           keyStates.space = state;
           break;
-        case 'w':
-            keyStates.w = state;
+        case 'a':
+            keyStates.a = state;
             break;
         case 's':
             keyStates.s = state;
@@ -27,38 +32,42 @@ void setRegularKeyState(unsigned char key, bool state) {
             if (keyStates.r) {RRTSTAR_ACTIVE = !RRTSTAR_ACTIVE;}
         case 'R':
             keyStates.R = state;
-            if (keyStates.R) {RRTSTAR_TREE_SHOW = !RRTSTAR_TREE_SHOW;}
+            if (keyStates.R) {displayRRTSPath = !displayRRTSPath;}
             break;
-        case 'a':
-            keyStates.a = state;
+        case 'c':
+            keyStates.c = state;
+            if (state && specularLightVal > 0.0) {
+                specularLightVal -= 0.01;
+                printf("ambientLightVal: %f, diffuseLightVal: %f, specularLightVal: %f\n", ambientLightVal, diffuseLightVal, specularLightVal);
+            }
+            break;
+        case 'C':
+            keyStates.C = state;
+            if (state && specularLightVal < 1.0) {
+                specularLightVal += 0.01;
+                printf("ambientLightVal: %f, diffuseLightVal: %f, specularLightVal: %f\n", ambientLightVal, diffuseLightVal, specularLightVal);
+            }
             break;
         case 'd':
             keyStates.d = state;
             break;
-        case 'j':
-            keyStates.j = state;
-            break;
-        case 'k':
-            keyStates.k = state;
-            break;
-        case 'y':
-            keyStates.y = state;
-            break;
-        case 'h':
-            keyStates.h = state;
-            break;
         case 't':
             keyStates.t = state;
+            if (state) {displayRRTSearch = !displayRRTSearch;}
+            break;
+        case 'T':
+            keyStates.t = state;
+            if (state) {useMapArea = !useMapArea;}
             break;
         case 'f':
             keyStates.f = state;
-            // if (state) {showFrames = !showFrames;}
+            if (state) {showFrames = !showFrames;}
             break;
-        case 'g':
-            keyStates.g = state;
+        case 'i':
+            keyStates.i = state;
             break;
-        case 'v':
-            keyStates.v = state;
+        case 'k':
+            keyStates.k = state;
             break;
         case 'o':
             keyStates.o = state;
@@ -68,10 +77,39 @@ void setRegularKeyState(unsigned char key, bool state) {
             break;
         case 'p':
             keyStates.p = state;
-            // if (state) {showPoseHist = !showPoseHist;}
+            if (state) {showPoseHist = !showPoseHist;}
             break;
-        case 'i':
-            keyStates.i = state;
+        case 'w':
+            keyStates.w = state;
+            if (state) {waypointTracking = !waypointTracking;}
+            break;
+        case 'x':
+            keyStates.x = state;
+            if (state && diffuseLightVal > 0.0) {
+                diffuseLightVal -= 0.01;
+                printf("ambientLightVal: %f, diffuseLightVal: %f, specularLightVal: %f\n", ambientLightVal, diffuseLightVal, specularLightVal);
+            }
+            break;
+        case 'X':
+            keyStates.X = state;
+            if (state && diffuseLightVal < 1.0) {
+                diffuseLightVal += 0.01;
+                printf("ambientLightVal: %f, diffuseLightVal: %f, specularLightVal: %f\n", ambientLightVal, diffuseLightVal, specularLightVal);
+            }
+            break;
+        case 'z':
+            keyStates.z = state;
+            if (state && ambientLightVal > 0.0) {
+                ambientLightVal -= 0.01;
+                printf("ambientLightVal: %f, diffuseLightVal: %f, specularLightVal: %f\n", ambientLightVal, diffuseLightVal, specularLightVal);
+            }
+            break;
+        case 'Z':
+            keyStates.Z = state;
+            if (state && ambientLightVal < 1.0) {
+                ambientLightVal += 0.01;
+                printf("ambientLightVal: %f, diffuseLightVal: %f, specularLightVal: %f\n", ambientLightVal, diffuseLightVal, specularLightVal);
+            }
             break;
         case '0':
             keyStates.key0 = state;
@@ -88,9 +126,6 @@ void setRegularKeyState(unsigned char key, bool state) {
             break;
         case '4':
             keyStates.key4 = state;
-            break;
-        case '5':
-            keyStates.key5 = state;
             break;
         default:
             return;

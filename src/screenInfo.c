@@ -283,6 +283,16 @@ void drawSI(const char *str1, const char *str2) {
     renderText(str2, windowXDiff-SIbutton1XDiff + 70, windowYDiff- (2*SIbutton2YDiff+SIbuttonSepY) + 20, 1.0);
 }
 
+void drawWarning(const char *str1) {
+    // Set up the view
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluOrtho2D(0.0, windowXDiff, 0.0, windowYDiff);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    renderText(str1, 0, 10.0, 1.0);
+}
 // void drawScreenInfo() {
 //     //drawBackground();
 //     drawSI();

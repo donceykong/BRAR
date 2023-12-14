@@ -2,7 +2,10 @@
 #define ROBOT_STATE_MODELS_H
 
 #include <stdlib.h>
-#include "miscObjects.h"
+
+#include "matrixMath.h"
+#include "draw.h"
+#include "keys.h"
 
 double WaypointPosX;
 double WaypointPosZ;
@@ -63,8 +66,6 @@ void updateRunnerPoseList(RobotStruct *robot, int i) {
     robot->poseHist[i][2] = robot->position.z;    // runnerZPos
     robot->poseHist[i][3] = robot->yawAngle;      // runnerYawAngle
 }
-
-bool showPoseHist = false;
 
 void displayPoseHistory(RobotStruct *robot) {
     static int iter = 0;

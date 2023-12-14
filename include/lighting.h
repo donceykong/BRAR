@@ -14,9 +14,13 @@
 #include "draw.h"
 #include "matrixMath.h"
 
+extern double ambientLightVal;
+extern double diffuseLightVal;
+extern double specularLightVal;
+
 typedef struct {
-    double speed;                //
-    bool inCollision;            //
+    double speed;              
+    bool inCollision;           
 
     Vector3 position;
     Vector3 velocity;
@@ -48,10 +52,14 @@ void illumLight(lightStruct* light, int lightIter);
 
 void drawLight(lightStruct* light);
 
-void showLights (bool spotlightsEnabled, LightArray* lights);
+void showLights (bool lightsEnabled, bool spotlightsEnabled, LightArray* lights);
+
+void initLighting(Vector3 mapCenter, LightArray* lights);
 
 // Reset lights
 void resetLighting(Vector3 mapCenter, LightArray* lights);
+
+void resetLightingView(LightArray* lights);
 
 void updateLighting(bool lightsEnabled, bool spotlightsEnabled, LightArray* lights);
 

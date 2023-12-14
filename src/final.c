@@ -18,11 +18,9 @@
 #include <math.h>
 #include <stdbool.h>  // Add this include for bool type
 #include <stdio.h>
-// #include <pthread.h>
 
 // Local includes
 // #include "GameModes.h"           // 1. EASY
-#include "miscObjects.h"            // 2. EASY - just add to draw.h/draw.c
 #include "robot.h"                  // 5. MEDIUM - Make 3 source, keep one header. Add robotArm/legs to draw.h and make drawArm.c, drawLegs.c???
 #include "mapManager.h"             // 7. HARD - merge in keyUpdate as a controller? rename to controller?
 #include "groundPlane.h"            // 4. EASY - Add to draw.h lib? maybe make a drawGround.c file
@@ -36,16 +34,23 @@
 #include "CSCIx229.h"
 #include "screenInfo.h"
 #include "textureUtils.h"
-// #include "draw.h"        // isnt used here...
+#include "draw.h"        // isnt used here...
 #include "lighting.h"    
-
-// // OpenMP header
-// #include <omp.h>
 
 // Global GAME_MODE enum
 enum GameMode GAME_MODE;
 
-GLfloat mat_ambient[] = {0.2, 0.2, 0.2, 1.0};  
+char warning[100] = "";
+
+GLfloat mat_ambient[] = {0.05, 0.05, 0.05, 1.0};  
+GLfloat mat_specular[] = {1.0f, 1.0f, 1.0f, 1.0f};
+GLfloat mat_diffuse[] = {1.0f, 1.0f, 1.0f, 1.0f};
+GLfloat shininess = 120.0f;
+
+GLfloat mat_ambient_map[] = {0.0, 0.0, 0.0, 1.0};  
+GLfloat mat_specular_map[] = {0.0f, 0.0f, 0.0f, 1.0f};
+GLfloat mat_diffuse_map[] = {0.0f, 0.0f, 0.0f, 1.0f};
+GLfloat shininess_map = 120.0f;
 
 // Global Framerate variables
 int previousTime = 0;
@@ -61,53 +66,30 @@ int mouseCallbackEnabled = 1; // Global variable to control the callback
 // global lights array
 LightArray lights;
 
+// RRT initial settings (DO NOT MODIFY)
+bool doRRT = true;
+int waypointInc = 1;
+int doRRTInt = 0;
 Path* rrtStarResult = NULL;
-// // Global variables
-// pthread_t rrtStarThread;
-// bool rrtStarThreadRunning = false;
-// pthread_mutex_t mutex;
 
-// void* rrtStarThreadFunc(void* arg) {
-//     // Perform RRT* calculations
-//     Vector3 startPosition = chaserRobot.position;
-//     Vector3 goalPosition = runnerRobot.position;
-//     int maxIterations = 1000;
-//     Path* newPath = rrtStar(startPosition, goalPosition, maxIterations);
-
-//     pthread_mutex_lock(&mutex);
-//     // Update the global result
-//     rrtStarResult = newPath;
-//     rrtStarThreadRunning = false;
-//     pthread_mutex_unlock(&mutex);
-
-//     pthread_exit(NULL);
-// }
-
-// void startRrtStarThread() {
-//     if (!rrtStarThreadRunning) {
-//         rrtStarThreadRunning = true;
-//         pthread_create(&rrtStarThread, NULL, rrtStarThreadFunc, NULL);
-//     }
-// }
 
 void displayViewRobot() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-    chaserRobot.speed = 0.0;
+    chaserRobot.speed = 1.0;
+    resetLightingView(&lights);
 
     glEnable(GL_DEPTH_TEST);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    glColorMaterial(GL_FRONT_AND_BACK, GL_SPOT_DIRECTION);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_ambient);
+    glPolygonMode(GL_FRONT, GL_FILL);
+    glColorMaterial(GL_FRONT, GL_SPOT_DIRECTION);
+    glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
     glEnable(GL_COLOR_MATERIAL);
     
+    updateLighting(lightsEnabled, spotlightsEnabled, &lights);
     updateViewRobot(&lights);
     displayView();
-    // setupLighting();
 
     glPushMatrix();
-    glTranslatef(0.0, 2.0, 0.0);        // Translate to bring parallelogram top down
-    glColor3f(1,1,1);    // Green face color
     drawChaserRobot();                    // Draw chaser (collector)
     glPopMatrix();
 
@@ -152,7 +134,7 @@ void displayTimeCrunch() {
     plotMapItems();
     setObjAbsorberPos(chaserRobot.position.x, chaserRobot.position.y, chaserRobot.position.z);
     updateMapCenter (chaserRobot.position.x, chaserRobot.position.z);
-    drawNearestLine(nearestMapItem->position.x, nearestMapItem->position.y, nearestMapItem->position.z, chaserRobot.position, chaserRobot.endEffectorPosition);
+    drawP2PLine(nearestMapItem->position, chaserRobot.endEffectorPosition);
     glDisable(GL_DEPTH_TEST);
 
     currentTime = time(NULL);
@@ -171,23 +153,13 @@ void displayTimeCrunch() {
     glutSwapBuffers();
 }
 
-bool doRRT = true;
-int waypointInc = 1;
-int doRRTInt = 0;
 void displayRunner() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    // glEnable(GL_DEPTH_TEST);
-    // glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    // glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-    // glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_ambient);
-    // glEnable(GL_COLOR_MATERIAL);
     
     // set the view
     displayView();
 
     if (mapCenterUpdated) {
-        printf("reseting lighting\n");
         resetLighting(mapCenter, &lights);
         mapCenterUpdated = false;
     }
@@ -197,61 +169,95 @@ void displayRunner() {
 
     // glEnable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
+    glPolygonMode(GL_FRONT, GL_FILL);
 
     updateLighting(lightsEnabled, spotlightsEnabled, &lights);
 
-    glPolygonMode(GL_FRONT, GL_FILL);
+    glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient_map);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse_map);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular_map);
+    glMaterialf(GL_FRONT, GL_SHININESS, shininess_map);
     glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
-    glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
-    // Diffuse Material
-    GLfloat mat_diffuse[] = {0.8f, 0.8f, 0.8f, 1.0f};
-    glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse);
-    // Specular Material
-    GLfloat mat_specular[] = {1.0f, 1.0f, 1.0f, 1.0f};
-    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
-    // Shininess
-    GLfloat shininess = 120.0f;
-    glMaterialf(GL_FRONT, GL_SHININESS, shininess);
-
     glEnable(GL_COLOR_MATERIAL);
-
-    // updateLighting(lightsEnabled, spotlightsEnabled, &lights);
     drawGroundPlane(mapCenter);
+    glDisable(GL_COLOR_MATERIAL);
+
+    glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+    glMaterialf(GL_FRONT, GL_SHININESS, shininess);
+    glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+    glEnable(GL_COLOR_MATERIAL);
     drawChaserRobot();                    // Draw chaser (collector)
     drawRunnerRobot();                    // Draw runner
     computeForwardKinematics();
+    glDisable(GL_COLOR_MATERIAL);
 
     //drawText3D();
     displayPoseHistory(&runnerRobot);
 
+    glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient_map);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse_map);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular_map);
+    glMaterialf(GL_FRONT, GL_SHININESS, shininess_map);
+    glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+    glEnable(GL_COLOR_MATERIAL);
     plotMapBorder();
     plotMapObstacles();
     plotMapItems();
+    glDisable(GL_COLOR_MATERIAL);
+
     setObjAbsorberPos(runnerRobot.position.x, runnerRobot.position.y, runnerRobot.position.z);
     updateMapCenter(runnerRobot.position.x, runnerRobot.position.z);
 
     // RRT*     
-    // if (chaserRobot.inCollision) {RRTSTAR_ACTIVE = true;}
     if (RRTSTAR_ACTIVE) {
-        if (doRRT) {
+        if (doRRT || doRRTInt > 100) {
             // printf("RRT*\n");
             rrtStarResult = NULL;
             double obstYawAngles[30];
             Vector3 obstPos[30], obstMinPos[30], obstMaxPos[30];
+            Vector3 nearestObst2Chaser = mapObstList[0].position;   // init
+            double distObstChaserMin = 6;
+            Vector3 chaserBeginPos;
             for (int i=0; i<30; i++) {
                 obstPos[i] = mapObstList[i].position;
                 obstYawAngles[i] = mapObstList[i].yawAngle; 
                 obstMinPos[i] = mapObstList[i].minPos;
                 obstMaxPos[i] = mapObstList[i].maxPos;
+
+                double distObstChaser = getEulerDistanceXZ(chaserRobot.endEffectorPosition.x, chaserRobot.endEffectorPosition.z, mapObstList[i].position.x, mapObstList[i].position.z);
+                if (distObstChaser < distObstChaserMin) {
+                    nearestObst2Chaser = mapObstList[i].position;
+                    distObstChaserMin = distObstChaser;
+                }
             }
-            setMapStateInfo(runnerRobot.position, chaserRobot.endEffectorPosition, obstPos, obstYawAngles, obstMinPos, obstMaxPos);
-            rrtStarResult = rrtStar(1000);
+            if (distObstChaserMin < 6) {
+                chaserBeginPos.x = chaserRobot.endEffectorPosition.x - 5*(nearestObst2Chaser.x - chaserRobot.endEffectorPosition.x) / distObstChaserMin;
+                chaserBeginPos.y = 2.0;
+                chaserBeginPos.z = chaserRobot.endEffectorPosition.z - 5*(nearestObst2Chaser.z - chaserRobot.endEffectorPosition.z) / distObstChaserMin;
+            }
+            else {
+                chaserBeginPos.x = chaserRobot.endEffectorPosition.x;
+                chaserBeginPos.y = 2.0;
+                chaserBeginPos.z = chaserRobot.endEffectorPosition.z;
+            }
+            setMapStateInfo(runnerRobot.position, chaserBeginPos, obstPos, obstYawAngles, obstMinPos, obstMaxPos, mapCenter);
+            rrtStarResult = rrtStar(10000);
             waypointInc = rrtStarResult->size - 1;
             // printf("rrtStarResult->goalReached: %d\n", rrtStarResult->goalReached);
+            doRRTInt = 0;
             doRRT = false;
         }
 
-        if (goalReached) {// && (runnerDist - goalDist) > -1.0) {
+        if (displayRRTSPath) {
+            displayRRTStarPath(rrtStarResult);
+        }
+    }
+
+    // waypoint tracking
+    if (waypointTracking && RRTSTAR_ACTIVE) {
+        if (goalReached) {
             doRRT = false;
             if (waypointInc > -1) {
                 WaypointPosX = rrtStarResult->positions[waypointInc].x;
@@ -274,34 +280,26 @@ void displayRunner() {
             else if (waypointInc == -1) {
                 doRRT = true;
             }
-            doRRTInt++;
         }
         else {
             doRRT = true;
         }
-
-        if (RRTSTAR_TREE_SHOW) {
-            displayRRTStarPath(rrtStarResult);
-        }
-        else {
-            displayRRTStarPath(rrtStarResult);
-        }
+    }
+    else if (waypointTracking && !RRTSTAR_ACTIVE) {
+        sprintf(warning, "Waypoint tracking will not be enabled until RRT* is!");
+    }
+    else if (!waypointTracking && RRTSTAR_ACTIVE) {
+        sprintf(warning, "Note: Waypoint tracking not enabled.");
+        doRRTInt++;
     }
     
-    // // Multi-thread RRT* (Performance is meh)
-    // startRrtStarThread(); // Start the RRT* thread if not already running
-    // pthread_mutex_lock(&mutex);
-    // if (rrtStarResult) {
-    //     // Use rrtStarResult for rendering
-    //     displayRRTStarPath(rrtStarResult);
-    //     // After using the result, free it if necessary and set to NULL
-    //     free(rrtStarResult);
-    //     rrtStarResult = NULL;
-    // }
-    // pthread_mutex_unlock(&mutex);
-
-
     glDisable(GL_DEPTH_TEST);
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluOrtho2D(0.0, windowXDiff, 0.0, windowYDiff);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
 
     currentTime = time(NULL);
     elapsedTime = difftime(currentTime, prevTime);
@@ -314,6 +312,8 @@ void displayRunner() {
     sprintf(SIstr1, "Time: %.5f", totalElapsedTime);
     sprintf(SIstr2, "Total Score: %.5f", totalScoreRunner);
     drawSI(SIstr1, SIstr2);
+    drawWarning(warning);
+    sprintf(warning, " ");
 
     //glutPostRedisplay();
     glFlush();
@@ -582,6 +582,7 @@ int main(int argc, char** argv) {
 
     // initialize map
     initMap();
+    initLighting(mapCenter, &lights);
 
     previousTime = glutGet(GLUT_ELAPSED_TIME);
     glutIdleFunc(idle);

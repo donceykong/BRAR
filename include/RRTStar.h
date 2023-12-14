@@ -17,6 +17,15 @@
 #include "matrixMath.h"
 
 extern bool goalReached;
+extern bool useMapArea;     // bool for deciding on area for generating random node
+extern bool displayRRTSearch;
+
+typedef struct {
+    Vector3 searchCenter;
+    double searchRad;
+
+    Vector3 position;
+} randXYZRadius;
 
 typedef struct {
     Vector3 position;
@@ -27,6 +36,7 @@ typedef struct {
 typedef struct {
     Vector3 start;
     Vector3 goal;
+    Vector3 center;
     RRTObject obst[30];  // Vec3 array of obstacle positions
 } mapStateInfo;
 
@@ -53,84 +63,11 @@ typedef struct {
     int treeSize;           // Number of nodes in tree.
 } nodeTree;
 
-double calculateDistance(Node* node1, Node* node2);
-double calculateDistanceFromGoal(Node* node1, Vector3 goal);
-
-// Function to initialize the path
-Path* createPath(int initialCapacity);
 void setMapStateInfo(Vector3 runnerPosition, Vector3 chaserPosition, Vector3 obstaclePositions[30], 
-                    double obstacleYawAngles[30], Vector3 obstacleMinPositions[30], Vector3 obstacleMaxPositions[30]);
+                    double obstacleYawAngles[30], Vector3 obstacleMinPositions[30], Vector3 obstacleMaxPositions[30], Vector3 mapCenter);
 
-bool detect_collision_RRT(double nodeX, double nodeY, double nodeZ);
-
-// Function to add a position to the path
-void addPositionToPath(Path* path, Vector3 position);
-
-// Function to backtrack from the goal node to the start node
-Path* backtrackToStart(Node* goalNode);
-
-
-// Function to create and initialize the node tree for RRT*.
-nodeTree* initializeTree(double startX, double startZ);
-
-// Turn XZ coords into a node and return pointer
-Node* createNode(double x, double z);
-
-// Function to retreive random node in map
-Node* getRandomNode();
-
-// Child node management
-ChildNode* findChildNode(Node* parent, Node* child);
-
-Node* getNextSibling(ChildNode* childNode);
-
-Node* getFirstChild(Node* node);
-
-void addChild(Node* parentNode, Node* childNode);
-
-void freeChildNodes(Node* node);
-
-// Function to check if the path between two nodes is collision-free.
-bool nodesInCollision(Node* node1, Node* node2);
-
-// Function to calculate cost of what a node will be, based on assigned parent
-double calculateCost(Node* potentialParent, Node* newNode);
-
-void findNearest(Node* currentNode, Node* targetNode, Node** nearestNode, double* minDistance);
-
-// Function to find the nearest node in the tree to a given point.
-Node* nearestNeighbor(nodeTree* tree, Node* randomNode);
-
-
-
-// REMOVE
-void drawNode(Node* node);
-
-void drawEdge(Vector3 start, Vector3 end);
-
-
-
-Node* steer(Node* nearest, Node* randomNode, double maxStepSize);
-
-void findPotentialParents(Node* currentNode, Node* newNode, Node** bestParent, double* bestCost, double searchRadius);
-void chooseParent(Node* newNode, Node* nearest, nodeTree* tree, double searchRadius);
-
-void addNodeToTree(nodeTree* tree, Node* newNode);
-
-// Function to rewire the tree around the new node if it provides a shorter path for its neighbors.
-void rewireNodeIfCostLower(Node* nodeToCheck, Node* newNode, double searchRadius);
-
-void rewireNodes(Node* currentNode, Node* newNode, double searchRadius);
-
-void rewire(nodeTree* tree, Node* newNode, double searchRadius);
-
-bool reachedGoal(Node* newNode, Node* goal, double goalThreshold);
-
+// To display path of RRT*
 void displayRRTStarPath(Path* path);
-
-void displayRRTTreeRecursive(Node* node);
-
-void displayRRTTree();
 
 // Main RRT* function
 Path* rrtStar(int maxIterations);

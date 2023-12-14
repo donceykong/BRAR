@@ -73,6 +73,8 @@ void drawSIBackground();
 
 void drawSI(const char *str1, const char *str2);
 
+void drawWarning(const char *str1);
+
 // void drawScreenInfo();
 
 #endif // SCREEN_INFO_H

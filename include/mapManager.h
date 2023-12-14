@@ -138,7 +138,8 @@ void checkCollision () {
     chaserRobot.inCollision = false;
     runnerRobot.inCollision = false;
     for (int i = 0; i < 30; i++) {
-        chaserRobot.inCollision += detect_collision_AABB_TRANS(mapObstList[i], chaserRobot.position.x, chaserRobot.position.y, chaserRobot.position.z);
+        chaserRobot.inCollision += detect_collision_AABB_TRANS(mapObstList[i], chaserRobot.endEffectorPosition.x, chaserRobot.endEffectorPosition.y, chaserRobot.endEffectorPosition.z);
+        runnerRobot.inCollision += detect_collision_AABB_TRANS(mapObstList[i], runnerRobot.position.x, runnerRobot.position.y, runnerRobot.position.z);
     }
 }
 
@@ -361,7 +362,7 @@ void plotMapItems() {
                 else {
                     glColor3f(0.0, 1.0, 0.0);
                 }
-                //BMPtexture = BMPtexture5;
+                BMPtexture = BMPtexture5;
                 drawParallelogram(mapItemList[i].size, mapItemList[i].size, mapItemList[i].size);
                 break;
             case SPHERE:
@@ -371,7 +372,7 @@ void plotMapItems() {
                 else {
                     glColor3f(0.0, 1.0, 1.0);
                 }
-                //BMPtexture = BMPtexture5;
+                BMPtexture = BMPtexture5;
                 drawSphere(mapItemList[i].size/2.0, 4, 4);
                 break;
             case CUBE:
@@ -381,7 +382,7 @@ void plotMapItems() {
                 else {
                     glColor3f(1.0, 0.0, 0.0);
                 }
-                //BMPtexture = BMPtexture5;
+                BMPtexture = BMPtexture5;
                 drawCuboid(mapItemList[i].size, mapItemList[i].size, mapItemList[i].size);
                 break;
             case EMPTY:

@@ -1,6 +1,3 @@
-// OpenMP header
-#include <omp.h>
-
 #include "RRTStar.h"
 
 // Global Vars
@@ -33,9 +30,10 @@ Path* createPath(int initialCapacity) {
     return path;
 }
 
-void setMapStateInfo(Vector3 runnerPosition, Vector3 chaserPosition, Vector3 obstaclePositions[30], double obstacleYawAngles[30], Vector3 obstacleMinPositions[30], Vector3 obstacleMaxPositions[30]) {
+void setMapStateInfo(Vector3 runnerPosition, Vector3 chaserPosition, Vector3 obstaclePositions[30], double obstacleYawAngles[30], Vector3 obstacleMinPositions[30], Vector3 obstacleMaxPositions[30], Vector3 mapCenter) {
     map.start = chaserPosition;
     map.goal  = runnerPosition;
+    map.center = mapCenter;
     for (int i = 0; i < 30; i++) {
         map.obst[i].position = obstaclePositions[i];
         map.obst[i].yawAngle = obstacleYawAngles[i];
@@ -47,7 +45,6 @@ void setMapStateInfo(Vector3 runnerPosition, Vector3 chaserPosition, Vector3 obs
 bool detect_collision_RRT(double nodeX, double nodeY, double nodeZ) {
     bool inCollision = false;
 
-    #pragma omp parallel for
     for (int i = 0; i < 30; i++) {
         double cosYaw = cos(map.obst[i].yawAngle * PI / 180);
         double sinYaw = sin(map.obst[i].yawAngle * PI / 180);
@@ -56,9 +53,9 @@ bool detect_collision_RRT(double nodeX, double nodeY, double nodeZ) {
         double transformedNodeZ = sinYaw * (nodeX - map.obst[i].position.x) + cosYaw * (nodeZ - map.obst[i].position.z) + map.obst[i].position.z;
 
         // AABB collision check with transformed coordinates
-        inCollision +=  (map.obst[i].minPos.x < (transformedNodeX + 2.0) && map.obst[i].maxPos.x > (transformedNodeX - 2.0)) &&
+        inCollision +=  (map.obst[i].minPos.x < (transformedNodeX + 2.2) && map.obst[i].maxPos.x > (transformedNodeX - 2.2)) &&
                         (map.obst[i].minPos.y < nodeY && map.obst[i].maxPos.y > nodeY) &&
-                        (map.obst[i].minPos.z < (transformedNodeZ + 2.0) && map.obst[i].maxPos.z > (transformedNodeZ - 2.0));
+                        (map.obst[i].minPos.z < (transformedNodeZ + 2.2) && map.obst[i].maxPos.z > (transformedNodeZ - 2.2));
     }
 
     return inCollision;
@@ -127,7 +124,7 @@ nodeTree* initializeTree(double startX, double startZ) {
     nodes->root->cost       = calculateDistanceFromGoal(nodes->root, map.goal);
     nodes->root->parent     = NULL;         // Root node has no parent
     nodes->root->children   = NULL;         // Root node has no children, yet
-    nodes->treeSize         = 1;  // Tree starts with one node
+    nodes->treeSize         = 1;            // Tree starts with one node
 
     return nodes;
 }
@@ -146,80 +143,113 @@ Node* createNode(double x, double z) {
     return node;
 }
 
+randXYZRadius getRandXYZRadius () {
+    randXYZRadius rrtRandXYZRadius;
+
+    double angle  = ((double)rand() / (double)RAND_MAX) * 2.0 * M_PI;
+    double radius;
+    double x;
+    double y = 4.0;  // constant
+    double z;
+    if (useMapArea) {
+        // Generate a random angle and radius within map
+        float mapRadius = 100.00;
+        rrtRandXYZRadius.searchRad = mapRadius;
+        radius = ((double)rand() / (double)RAND_MAX) * mapRadius;
+        rrtRandXYZRadius.searchCenter.x  = map.center.x;
+        rrtRandXYZRadius.searchCenter.y = 2.0;
+        rrtRandXYZRadius.searchCenter.z = map.center.z;
+        // Calculate x and z using polar coordinates
+        x = map.center.x + radius * cos(angle);
+        z = map.center.z + radius * sin(angle);
+    }
+    else {
+        // Bound through circles traversing through robot positions
+        double dx = map.goal.x-map.start.x;
+        double dz = map.goal.z-map.start.z;
+        double poseDiff = circleRad*sqrt(dx * dx + dz * dz);
+        rrtRandXYZRadius.searchRad = poseDiff;
+        radius = ((double)rand() / (double)RAND_MAX) * poseDiff;
+
+        if (circleRad < 1.0) {
+            circleRad = circleRad + 0.05;
+        }
+        // else {
+        //     circleRad = 0.25;
+        // }
+        // Calculate x and z using polar coordinates
+        if (randStartCenter == 1) {
+            rrtRandXYZRadius.searchCenter.x = map.start.x;
+            rrtRandXYZRadius.searchCenter.z = map.start.z;
+            randStartCenter += 1;
+        }
+        else if (randStartCenter == 2) {
+            rrtRandXYZRadius.searchCenter.x = map.start.x + dx/2;
+            rrtRandXYZRadius.searchCenter.z = map.start.z + dz/2;
+            randStartCenter += 1;
+        }
+        else {
+            rrtRandXYZRadius.searchCenter.x = map.goal.x;
+            rrtRandXYZRadius.searchCenter.z = map.goal.z;
+            randStartCenter = 1;
+        }
+        rrtRandXYZRadius.searchCenter.y = 2.0;
+        
+        x = rrtRandXYZRadius.searchCenter.x + radius * cos(angle);
+        z = rrtRandXYZRadius.searchCenter.z + radius * sin(angle);
+    }
+    
+    rrtRandXYZRadius.position.x = x;
+    rrtRandXYZRadius.position.y = y;
+    rrtRandXYZRadius.position.z = z;
+
+    return rrtRandXYZRadius;
+}
+
+void displaySearchBoundary (randXYZRadius rrtRandXYZRadius) {
+    glPushMatrix();
+    glColor3f(1, 1, 1);
+    glTranslatef(rrtRandXYZRadius.searchCenter.x, rrtRandXYZRadius.searchCenter.y, rrtRandXYZRadius.searchCenter.z);
+    glLineWidth(6.0f);
+    glBegin(GL_LINES);
+    glVertex3f(0, 0, 0);
+    for (int i = 0; i <= 100; i += 2) {
+        GLfloat angle = PI/2.0 + i * 2.0*M_PI / 100; 
+        GLfloat z = -rrtRandXYZRadius.searchRad * sin(angle);
+        GLfloat x = -rrtRandXYZRadius.searchRad * cos(angle);
+        glNormal3f(x, 0, z);
+        glVertex3f(x, 0, z);
+    }
+
+    // Draw where random node is
+    glColor3d(0,0,1);
+    glPushMatrix();
+    glTranslatef(rrtRandXYZRadius.position.x, 2.0, rrtRandXYZRadius.position.z);
+    glutSolidSphere(0.1, 3, 3);
+    glPopMatrix();
+    glColor3d(1,1,1);
+
+    glEnd();
+    glPopMatrix();
+    glColor3f(1, 1, 1);
+}
+
 Node* getRandomNode() {
     // Initialize random seed - usually done once at the beginning of the program
     srand(time(NULL));
 
-    // Generate a random angle and radius
-    // double angle  = ((double)rand() / (double)RAND_MAX) * 2.0 * M_PI;
-    // double radius = ((double)rand() / (double)RAND_MAX) * mapRadius;
+    randXYZRadius rrtRandXYZRadius = getRandXYZRadius();
 
-    // Calculate x and z using polar coordinates
-    // double x = mapCenter.x + radius * cos(angle);
-    // double z = mapCenter.z + radius * sin(angle);
-
-    // Center gussing about robot positions
-    double dx = map.goal.x-map.start.x;
-    double dz = map.goal.z-map.start.z;
-    double poseDiff = circleRad*sqrt(dx * dx + dz * dz);
-    
-    double angle  = ((double)rand() / (double)RAND_MAX) * 2.0 * M_PI;
-    double radius = ((double)rand() / (double)RAND_MAX) * poseDiff;
-
-    if (circleRad < 1.0) {
-        circleRad = circleRad + 0.05;
-    }
-    // else {
-    //     circleRad = 0.25;
+    // if (displayRRTSearch) {
+    //     displaySearchBoundary(rrtRandXYZRadius);
     // }
-    double searchCenterX;
-    double searchCenterZ;
-    double x;
-    double z;
-    // Calculate x and z using polar coordinates
-    if (randStartCenter == 1) {
-        searchCenterX = map.start.x;
-        searchCenterZ = map.start.z;
-        randStartCenter += 1;
-    }
-    else if (randStartCenter == 2) {
-        searchCenterX = map.start.x + dx/2;
-        searchCenterZ = map.start.z + dz/2;
-        randStartCenter += 1;
-    }
-    else if (randStartCenter == 3){
-        searchCenterX = map.goal.x;
-        searchCenterZ = map.goal.z;
-        randStartCenter = 1;
-    }
-
-    x = searchCenterX + radius * cos(angle);
-    z = searchCenterZ + radius * sin(angle);
-    // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glPushMatrix();
-    glColor3f(1, 1, 1); // Set edge color (e.g., green)
-    glTranslatef(searchCenterX, 1.0, searchCenterZ);
-    glLineWidth(6.0f);         // Set line width to 2.0 pixels
-    glBegin(GL_LINES);
-    glVertex3f(0, 0, 0);        // Center vertex
-    for (int i = 0; i <= 100; i += 2) {
-        GLfloat angle = PI/2.0 + i * 2.0*M_PI / 100; 
-        GLfloat z = -poseDiff * sin(angle);
-        GLfloat x = -poseDiff * cos(angle);
-
-        glNormal3f(x, 0, z);
-        glVertex3f(x, 0, z);
-    }
-    glEnd();
-    glPopMatrix();
-    glColor3f(1, 1, 1); // Set edge color (e.g., green)
 
     // Create a new node
     Node* randomNode = (Node*)malloc(sizeof(Node));
     if (randomNode != NULL) {
-        randomNode->position.x = x;
-        randomNode->position.y = 2.0;  // y doesn't matter but set to 2.0
-        randomNode->position.z = z;
+        randomNode->position.x = rrtRandXYZRadius.position.x;
+        randomNode->position.y = rrtRandXYZRadius.position.y;  // y doesn't matter but set to 2.0
+        randomNode->position.z = rrtRandXYZRadius.position.z;
         randomNode->cost = 0;
         randomNode->parent = NULL;     // No parent as it's a random node
     }
@@ -283,7 +313,6 @@ bool nodesInCollision(Node* node1, Node* node2) {
     int steps = (int)(distance / disc);
     bool inCollision = false;
 
-    #pragma omp parallel for
     for (int step = 0; step <= steps; step++) {
         // Calculate interpolated point
         double t = (double)step / (double)steps;
@@ -339,15 +368,12 @@ Node* nearestNeighbor(nodeTree* tree, Node* randomNode) {
     return nearest;
 }
 
-
-
-
 void drawNode(Node* node) {
     // Draw the node
     glPushMatrix();
     glTranslatef(node->position.x, node->position.y, node->position.z);
     glColor3f(1, 0, 0); // Set node color (e.g., red)
-    glutSolidSphere(0.1, 10, 10); // Draw a small sphere to represent the node
+    glutSolidSphere(1.0, 10, 10); // Draw a small sphere to represent the node
     glPopMatrix();
 }
 
@@ -359,41 +385,6 @@ void drawEdge(Vector3 start, Vector3 end) {
     glVertex3f(end.x, end.y, end.z);
     glEnd();
 }
-
-
-// Node* steer(Node* nearest, Node* randomNode, double stepSize) {
-//     // Calculate the direction from nearest to randomNode
-//     double dx = randomNode->position.x - nearest->position.x;
-//     double dz = randomNode->position.z - nearest->position.z;
-//     double distance = sqrt(dx * dx + dz * dz);                    
-//     if (!detect_collision_RRT(randomNode->position.x, 2.0, randomNode->position.z) && (distance < stepSize)) {
-//         return createNode(randomNode->position.x, randomNode->position.z);
-//     }
-
-//     // Initialize value and steer once towards random node
-//     double dxPercent = dx / distance;
-//     double dzPercent = dz / distance;
-//     double newX = nearest->position.x + dxPercent * stepSize;
-//     double newZ = nearest->position.z + dzPercent * stepSize;
-//     //printf("dxPercent + dzPercent: %f\n\n", dxPercent + dzPercent); // check they are normalized
-//     printf("\n\n");
-//     // continue steering until hitting an obstacle or distance is within stepSize of random node
-//     while (!detect_collision_RRT(newX, 2.0, newZ) && (distance > stepSize)) {
-//         dx = randomNode->position.x - newX;
-//         dz = randomNode->position.z - newZ;
-//         distance = sqrt(dx * dx + dz * dz);    
-//         dxPercent = dx / distance;
-//         dzPercent = dz / distance;
-//         printf("distance: %f\n", distance); // check they are normalized
-//         // Calculate a scaled direction to step towards the random node
-//         newX += dxPercent * stepSize;
-//         newZ += dzPercent * stepSize;
-//     }
-
-//     // Create and return the new node
-//     return createNode(newX, newZ);
-// }
-
 
 Node* steer(Node* nearest, Node* randomNode, double maxStepSize) {
     // Calculate the direction from nearest to randomNode
@@ -541,12 +532,11 @@ void displayRRTStarPath(Path* path) {
             glColor3d(0,1,0);
             glPushMatrix();
             glTranslatef(path->positions[i].x, 2.0, path->positions[i].z);
-            glutSolidSphere(0.5, 3, 3);
+            glutSolidSphere(0.1, 3, 3);
             glPopMatrix();
             glColor3d(1,1,1);
 
             drawEdge(pathPosPrev, path->positions[i]);
-            // drawRRTLine(pathPosPrev, path->positions[i]);
             
             pathPosPrev.x = path->positions[i].x;
             pathPosPrev.y = path->positions[i].y;
@@ -554,36 +544,6 @@ void displayRRTStarPath(Path* path) {
         }
     }
 }
-
-// Path* pathList[1];
-// int pathListSize = 0;
-// int pathListIter = 0;
-// void addPrevPathNodes (nodeTree* tree, Path* path) {
-//     for (int j = 0; j < pathListSize; j++) {
-//         Path* path = pathList[j];
-
-//         // Handle last added node in path (prev start pos)
-//         Node* pathNode = createNode(path->positions[0].x, path->positions[0].z);
-//         pathNode->parent = NULL;
-//         addNodeToTree(tree, pathNode);
-//         Node* prevPathNode = pathNode;
-
-//         for (int i = 1; i < path->size; i++) {
-//             pathNode = createNode(path->positions[i].x, path->positions[i].z);
-            
-//             glColor3d(0.5,0.5,0.5);
-//             glPushMatrix();
-//             glTranslatef(path->positions[i].x, 2.0, path->positions[i].z);
-//             Sphere(0.25, 3, 3);
-//             glPopMatrix();
-//             glColor3d(1,1,1);
-
-//             pathNode->parent = prevPathNode;
-//             addNodeToTree(tree, pathNode);
-//             prevPathNode = pathNode;
-//         }
-//     }
-// }
 
 void displayRRTTreeRecursive(Node* node) {
     if (node == NULL) return;
@@ -619,10 +579,6 @@ Path* rrtStar(int maxIterations) {
     tree = initializeTree(map.start.x, map.start.z);
     Node* goal = createNode(map.goal.x, map.goal.z);
 
-    // double goalThreshold = 1.0;
-    // double maxStepSize = 1.0;
-    // double parentSearchRad = 2.0;
-    // double rewireSearchRad = 3.0;
     goalReached = false;
     double goalThreshold = 1.0;
     double maxStepSize = 8.0;
@@ -645,12 +601,17 @@ Path* rrtStar(int maxIterations) {
 
         nearest = nearestNeighbor(tree, randomNode);
         newNode = steer(nearest, randomNode, maxStepSize);
-        
+        glutPostRedisplay();
+        glFlush();
+        glutSwapBuffers();
+
         if (!nodesInCollision(nearest, newNode)) {
             chooseParent(newNode, nearest, tree, parentSearchRad);  // Start with nearest node as best parent initially
             addNodeToTree(tree, newNode);                           // Add new node to the tree list
             rewire(tree, newNode, rewireSearchRad);                 // 
-            // displayRRTTree();
+            if (displayRRTSearch) {
+                displayRRTTree();
+            }
         }
 
         if (reachedGoal(newNode, goal, goalThreshold)) {
@@ -664,20 +625,11 @@ Path* rrtStar(int maxIterations) {
     if (goalReached) {
         // printf(" *GOAL REACHED!\n\n");
         path = backtrackToStart(newNode); // newNode is the node that reached the goal (may be the goal)
-        // pathList[pathListIter] = path;
-        // pathListIter++;
-        // pathListSize++;
-        // if (pathListIter == 0) {
-        //     pathListIter = 0;
-        // }
-        // if (pathListSize == 1) {
-        //     pathListSize = 0;
-        // }
         // free(path->positions);
         // free(path);
     }
     else {
-        printf(" *GOAL NOT REACHED!\n\n");
+        // printf(" *GOAL NOT REACHED!\n\n");
     }
     return path;
 }

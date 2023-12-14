@@ -1,7 +1,9 @@
 ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 ______________________________________________________________________________________________________________________________________________
                                                         WEDNESDAY (10 hrs)
-        
+
+- Fix RRT wall issue
+
     #1  - 2 hr:
             - Finish fixing header-source imports & refactoring as needed
 
@@ -17,6 +19,7 @@ ________________________________________________________________________________
                         - Change Material values
                         - Change RRT* values
                         - Remove keys to control robot arm, besides in View robot
+                        - Decrement/Increment number rand lights OR turn on/off them with fn vals?
 
     #3  - 2 hr:
             -Add clickable buttons (or use arrow keys) to scroll through items, obstacles, or robots in the view GAME_MODE
@@ -26,10 +29,6 @@ ________________________________________________________________________________
             - Check lighting for each shape and fix shapes as needed
 
     #5  - 5 hrs:
-            - Make robot arm more interesting: (LIKE BRACCIO - DRAW FIRST)
-                - Add teeth to gripper (make black)
-                - Make links more interesting shape than cubic links (attempt Braccio)
-                - Add plates (similar to legs)
             - Make obstacles more interesting:
                 - Use wood plank textures to make box (or just another obstacle)
                 - Add bump map to wall obstacles
@@ -40,7 +39,7 @@ ________________________________________________________________________________
 
     - 2 hrs:
         - Fix appearance of start screen, game play, and end screen
-    
+        
     - 0.5 hrs:
             - Fix FPS handling to whatever example 24 does (or email prof and ask if ex24 is what he intended).
     

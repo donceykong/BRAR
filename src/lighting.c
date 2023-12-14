@@ -5,16 +5,22 @@
 
 float sinInc = 0.0;
 
+double ambientLightVal = 0.02;
+double diffuseLightVal = 0.64;
+double specularLightVal = 1.0;
+
 void enableLights(LightArray* lights) {
-    for (int i = 0; i < 8; i++) {
-        GLenum glLight = GL_LIGHT0 + i;
+    glEnable(GL_LIGHT0);
+    for (int i = 1; i < 8; i++) {
+        GLenum glLight = i;
         glEnable(glLight);
     }
 }
 
 void disableLights(LightArray* lights) {
-    for (int i = 0; i < 8; i++) {
-        GLenum glLight = GL_LIGHT0 + i;
+    glEnable(GL_LIGHT0);
+    for (int i = 1; i < 8; i++) {
+        GLenum glLight = i;
         glDisable(glLight);
     }
 }
@@ -68,27 +74,31 @@ void drawLight(lightStruct* light) {
 
     glTranslatef(light->position.x, light->position.y, light->position.z);
     glRotatef(light->angularPos.y + 180.0, 0.0f, 1.0f, 0.0f);
+    drawSphere(0.2, 100, 100);
     drawPrism(light->rectangleWidth, light->rectangleHeight, light->prismBase, light->prismHeight);
     glPopMatrix();
 
     glDisable(GL_DEPTH_TEST);
 }
 
-void showLights(bool spotlightsEnabled, LightArray* lights) {
-    // for (int i = 0; i < 8; i++) {
-    //     drawLight(&(lights->light[i])); // Draw the light
-    // }
+void showLights(bool lightingEnabled, bool spotlightsEnabled, LightArray* lights) {
     for (int i = 0; i < 8; i++) {
-
         // generate random position and angle increments for lights
-        if (i > 1) {
-            lights->light[i].position.x += cos(sinInc)*(rand() % 2 - 1);     // +/- 100 units from center.x
-            lights->light[i].position.z += sin(sinInc)*(rand() % 2 - 1);     // +/- 100 units from center.z
-            // lights->light[i].position.y += sin(sinInc)*(rand() % 2 - 1);     // +/- 5 units
-            // lights->light[i].angularPos.x += sin(sinInc)*(rand() % 20 - 10);   // 0 to 10 increments TODO: add roll/pitch
-            lights->light[i].angularPos.y += sin(sinInc)*(rand() % 21 - 10);   // 0 to 10 increments
-            // lights->light[i].angularPos.z += sin(sinInc)*(rand() % 20 - 10);   // 0 to 10 increments TODO: add roll/pitch
+        if (i > 0 && lightingEnabled) {
+            lights->light[i].ambient = 0.2*ambientLightVal;
+            lights->light[i].diffuse = 0.2*diffuseLightVal;
+            lights->light[i].specular = 0.2*specularLightVal;
+            lights->light[i].position.x += 0.1*cos(sinInc)*(rand() % 2 - 1);     // +/- 100 units from center.x
+            lights->light[i].position.z += 0.1*sin(sinInc)*(rand() % 2 - 1);     // +/- 100 units from center.z
+            lights->light[i].angularPos.y += 0.1*sin(sinInc)*(rand() % 21 - 10);   // 0 to 10 increments
             sinInc += 0.01;
+            drawLight(&(lights->light[i])); // Draw the light
+        } 
+        else if (i == 0) {
+            lights->light[i].ambient = ambientLightVal;
+            lights->light[i].diffuse = diffuseLightVal;
+            lights->light[i].specular = specularLightVal;
+            drawLight(&(lights->light[i])); // Draw the light
         }
         if (spotlightsEnabled) {
             lights->light[i].spotlightOn = true;
@@ -97,24 +107,83 @@ void showLights(bool spotlightsEnabled, LightArray* lights) {
             lights->light[i].spotlightOn = false;
             illumLight(&(lights->light[i]), i); // Regular light illumination
         }
-        drawLight(&(lights->light[i])); // Draw the light
     }
     glEnable(GL_DEPTH_TEST);
+}
+
+void resetLightingView(LightArray* lights) {
+    for (int i = 1; i < 8; i++) {
+        if (i < 2) {
+            // Set light parameters
+            lights->light[i].ambient = ambientLightVal;
+            lights->light[i].diffuse = diffuseLightVal;
+            lights->light[i].specular = specularLightVal;
+            lights->light[i].spotExponent = 1.0;
+            lights->light[i].spotCutoff = 10.0; //45
+            lights->light[i].rectangleWidth = 0.5;
+            lights->light[i].rectangleHeight = 0.5;
+            lights->light[i].prismHeight = 1.0;
+            lights->light[i].prismBase = 0.5;
+        }
+        else {
+            GLenum glLight = GL_LIGHT0 + i;
+            glDisable(glLight);
+            // Random positions around the map center
+            lights->light[i].position.x = INFINITY;
+            lights->light[i].position.z = INFINITY;
+            lights->light[i].position.y = INFINITY;
+        }
+    }
 }
 
 // Reset lights 3 though 8: lights[2] : lights[9] as map has updated
 // TODO make sure lights are far from obstacles
 void resetLighting(Vector3 mapCenter, LightArray* lights) {
     for (int i = 0; i < 8; i++) { // Starting from 2, as the array is 0-indexed (3rd light is at index 2)
-        if (i < 2) {
+        if (i < 1) {
+            // Set light parameters
+            lights->light[i].ambient = ambientLightVal;
+            lights->light[i].diffuse = diffuseLightVal;
+            lights->light[i].specular = specularLightVal;
+            lights->light[i].spotExponent = 1.0;
+            lights->light[i].spotCutoff = 45.0; //45
+            lights->light[i].rectangleWidth = 0.5;
+            lights->light[i].rectangleHeight = 0.5;
+            lights->light[i].prismHeight = 1.0;
+            lights->light[i].prismBase = 0.5;
+        }
+        else {
+            // Random positions around the map center
+            lights->light[i].position.x = mapCenter.x + (rand() % 201 - 100); // +/- 100 units from center.x
+            lights->light[i].position.z = mapCenter.z + (rand() % 201 - 100); // +/- 100 units from center.z
+            lights->light[i].position.y = 10 + (rand() % 11 - 5); // 10 +/- 5 units
+            // Random angular position
+            lights->light[i].angularPos.y = rand() % 361; // 0 to 360 degrees
+            // Set light parameters
+            lights->light[i].ambient = ambientLightVal;
+            lights->light[i].diffuse = diffuseLightVal;
+            lights->light[i].specular = specularLightVal;
+            lights->light[i].spotExponent = 1.0;
+            lights->light[i].spotCutoff = 45.0;
+            lights->light[i].rectangleWidth = 1.0;
+            lights->light[i].rectangleHeight = 1.0;
+            lights->light[i].prismHeight = 2.0;
+            lights->light[i].prismBase = 1.0;
+        }
+    }
+}
+
+void initLighting(Vector3 mapCenter, LightArray* lights) {
+    for (int i = 0; i < 8; i++) { // Starting from 2, as the array is 0-indexed (3rd light is at index 2)
+        if (i < 1) {
             lights->light[i].position.x = 0.00;
             lights->light[i].position.y = 0.00;
             lights->light[i].position.z = 0.00;
             lights->light[i].angularPos.y = 0.00;
             // Set light parameters
-            lights->light[i].ambient = 0.3;
-            lights->light[i].diffuse = 0.2;
-            lights->light[i].specular = 1.0;
+            lights->light[i].ambient = ambientLightVal;
+            lights->light[i].diffuse = diffuseLightVal;
+            lights->light[i].specular = specularLightVal;
             lights->light[i].spotExponent = 1.0;
             lights->light[i].spotCutoff = 10.0; //45
             lights->light[i].rectangleWidth = 0.5;
@@ -130,9 +199,9 @@ void resetLighting(Vector3 mapCenter, LightArray* lights) {
             // Random angular position
             lights->light[i].angularPos.y = rand() % 361; // 0 to 360 degrees
             // Set light parameters
-            lights->light[i].ambient = 0.01;
-            lights->light[i].diffuse = 0.01;
-            lights->light[i].specular = 0.04;
+            lights->light[i].ambient = ambientLightVal;
+            lights->light[i].diffuse = diffuseLightVal;
+            lights->light[i].specular = specularLightVal;
             lights->light[i].spotExponent = 0.9;
             lights->light[i].spotCutoff = 10.0;
             lights->light[i].rectangleWidth = 1.0;
@@ -151,5 +220,5 @@ void updateLighting(bool lightsEnabled, bool spotlightsEnabled, LightArray* ligh
         disableLights(lights);
     }
 
-    showLights(spotlightsEnabled, lights);
+    showLights(lightsEnabled, spotlightsEnabled, lights);
 }

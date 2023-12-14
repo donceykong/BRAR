@@ -16,6 +16,61 @@ void drawNormal(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat
     glEnd();
 }
 
+void drawFrame(float length) {
+    glLineWidth(4.0f);          // Set line width to 2.0 pixels
+    if (showFrames) { 
+      glBegin(GL_LINES);
+          // X axis in red
+          glColor3f(1.0f, 0.0f, 0.0f);
+          glVertex3f(0.0f, 0.0f, 0.0f);
+          glVertex3f(length, 0.0f, 0.0f);
+
+          // Y Axis in Green
+          glColor3f(0.0f, 1.0f, 0.0f);
+          glVertex3f(0.0f, 0.0f, 0.0f);
+          glVertex3f(0.0f, length, 0.0f);
+
+          // Z Axis in Blue
+          glColor3f(0.0f, 0.0f, 1.0f);
+          glVertex3f(0.0f, 0.0f, 0.0f);
+          glVertex3f(0.0f, 0.0f, length);
+      glEnd();
+    }
+    glColor3f(1.0f, 1.0f, 1.0f);
+}
+
+void drawPoseFrame(float axisLen, float lineThickness) {
+    glLineWidth(lineThickness);         
+    glBegin(GL_LINES);
+        // X axis in red
+        glColor3f(1.0f, 0.0f, 0.0f);
+        glVertex3f(0.0f, 0.0f, 0.0f);
+        glVertex3f(axisLen, 0.0f, 0.0f);
+
+        // Y Axis in Green
+        glColor3f(0.0f, 1.0f, 0.0f);
+        glVertex3f(0.0f, 0.0f, 0.0f);
+        glVertex3f(0.0f, axisLen, 0.0f);
+
+        // Z Axis in Blue
+        glColor3f(0.0f, 0.0f, 1.0f);
+        glVertex3f(0.0f, 0.0f, 0.0f);
+        glVertex3f(0.0f, 0.0f, axisLen);
+    glEnd();
+}
+
+void drawP2PLine(Vector3 point1, Vector3 point2) {
+    glLineWidth(4.0f);          
+    glBegin(GL_LINES);
+    glVertex3d(point1.x, point1.y, point1.z);
+    glVertex3d(point2.x, point2.y, point2.z);
+    glEnd();
+
+    //  Label axes
+    // glRasterPos3d(nearestMapItemX, nearestMapItemY, nearestMapItemZ);
+    // Print("NEAREST ITEM");
+}
+
 /*
  * Shape edges
  */
@@ -25,38 +80,38 @@ void drawPrismEdges(float rectangleWidth, float rectangleHeight, float prismBase
 
     glColor3f(0, 0, 0);
     // Draw the rectangle
+    // glBegin(GL_LINES);
+    //     glVertex3f(-rectangleWidth / 2, -rectangleHeight / 2, 0);
+    //     glVertex3f( rectangleWidth / 2, -rectangleHeight / 2, 0);
+    //     glVertex3f( rectangleWidth / 2,  rectangleHeight / 2, 0);
+    //     glVertex3f(-rectangleWidth / 2,  rectangleHeight / 2, 0);
+    // glEnd();
+
+    // Draw the prism to represent the direction
     glBegin(GL_LINES);
-        glVertex3f(-rectangleWidth / 2, -rectangleHeight / 2, 0);
-        glVertex3f( rectangleWidth / 2, -rectangleHeight / 2, 0);
-        glVertex3f( rectangleWidth / 2,  rectangleHeight / 2, 0);
-        glVertex3f(-rectangleWidth / 2,  rectangleHeight / 2, 0);
+        glVertex3f(-prismBase / 2, -prismBase / 2, 0);
+        glVertex3f( prismBase / 2, -prismBase / 2, 0);
+        glVertex3f( prismBase / 2,  prismBase / 2, 0);
+        glVertex3f(-prismBase / 2,  prismBase / 2, 0);
     glEnd();
 
-    // // Draw the prism to represent the direction
-    // glBegin(GL_LINES);
-    //     glVertex3f(-prismBase / 2, -prismBase / 2, 0);
-    //     glVertex3f( prismBase / 2, -prismBase / 2, 0);
-    //     glVertex3f( prismBase / 2,  prismBase / 2, 0);
-    //     glVertex3f(-prismBase / 2,  prismBase / 2, 0);
-    // glEnd();
+    glBegin(GL_LINES);  // Top face of the prism
+        glVertex3f(0, 0, prismHeight);
+        glVertex3f(-prismBase / 2, -prismBase / 2, 0);
+        glVertex3f(prismBase / 2, -prismBase / 2, 0);
 
-    // glBegin(GL_LINES);  // Top face of the prism
-    //     glVertex3f(0, 0, prismHeight);
-    //     glVertex3f(-prismBase / 2, -prismBase / 2, 0);
-    //     glVertex3f(prismBase / 2, -prismBase / 2, 0);
+        glVertex3f(0, 0, prismHeight);
+        glVertex3f(prismBase / 2, -prismBase / 2, 0);
+        glVertex3f(prismBase / 2,  prismBase / 2, 0);
 
-    //     glVertex3f(0, 0, prismHeight);
-    //     glVertex3f(prismBase / 2, -prismBase / 2, 0);
-    //     glVertex3f(prismBase / 2,  prismBase / 2, 0);
+        glVertex3f(0, 0, prismHeight);
+        glVertex3f(prismBase / 2,  prismBase / 2, 0);
+        glVertex3f(-prismBase / 2,  prismBase / 2, 0);
 
-    //     glVertex3f(0, 0, prismHeight);
-    //     glVertex3f(prismBase / 2,  prismBase / 2, 0);
-    //     glVertex3f(-prismBase / 2,  prismBase / 2, 0);
-
-    //     glVertex3f(0, 0, prismHeight);
-    //     glVertex3f(-prismBase / 2,  prismBase / 2, 0);
-    //     glVertex3f(-prismBase / 2, -prismBase / 2, 0);
-    // glEnd();
+        glVertex3f(0, 0, prismHeight);
+        glVertex3f(-prismBase / 2,  prismBase / 2, 0);
+        glVertex3f(-prismBase / 2, -prismBase / 2, 0);
+    glEnd();
     // GLfloat noEmission[] = {0.0f, 0.0f, 0.0f, 1.0f}; // Black (no emission)
     // glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, noEmission);
 }
@@ -201,7 +256,7 @@ void drawParallelogramEdges(GLfloat width, GLfloat height, GLfloat depth) {
  * Solid shapes
  */
 void drawCuboid(GLfloat width, GLfloat height, GLfloat depth) {
-    glPushMatrix();
+    // glPushMatrix();
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, BMPtexture);
     
@@ -215,11 +270,8 @@ void drawCuboid(GLfloat width, GLfloat height, GLfloat depth) {
     glEnd();
 
     // // Draw normals for front face
-    // GLfloat normalLength = 0.25; // Adjust this value as needed
-    // drawNormal(-width/2, -height/2,  depth/2, 0, 0, 1, normalLength);
-    // drawNormal( width/2, -height/2,  depth/2, 0, 0, 1, normalLength);
-    // drawNormal( width/2,  height/2,  depth/2, 0, 0, 1, normalLength);
-    // drawNormal(-width/2,  height/2,  depth/2, 0, 0, 1, normalLength);
+    // GLfloat normalLength = 2.0; // Adjust this value as needed
+    // drawNormal(0, 0,  depth/2, 0, 0, 1, normalLength);
 
     // Back face;
     glBegin(GL_QUADS);
@@ -229,10 +281,7 @@ void drawCuboid(GLfloat width, GLfloat height, GLfloat depth) {
     glTexCoord2f(1.0f, 1.0f); glVertex3f( width/2,  height/2, -depth/2);
     glTexCoord2f(1.0f, 0.0f); glVertex3f( width/2, -height/2, -depth/2);
     glEnd();
-    // drawNormal(-width/2, -height/2,  -depth/2, 0, 0, -1, normalLength);
-    // drawNormal(-width/2,  height/2,  -depth/2, 0, 0, -1, normalLength);
-    // drawNormal( width/2,  height/2,  -depth/2, 0, 0, -1, normalLength);
-    // drawNormal( width/2, -height/2,  -depth/2, 0, 0, -1, normalLength);
+    // drawNormal(0, 0,  -depth/2, 0, 0, -1, normalLength);
 
     // Left face
     glBegin(GL_QUADS);
@@ -242,6 +291,7 @@ void drawCuboid(GLfloat width, GLfloat height, GLfloat depth) {
     glTexCoord2f(1.0f, 1.0f); glVertex3f(-width/2,  height/2, -depth/2);
     glTexCoord2f(1.0f, 0.0f); glVertex3f(-width/2, -height/2, -depth/2);
     glEnd();
+    // drawNormal(-width/2, 0,  0, -1, 0, 0, normalLength);
 
     // Right face
     glBegin(GL_QUADS);
@@ -251,6 +301,7 @@ void drawCuboid(GLfloat width, GLfloat height, GLfloat depth) {
     glTexCoord2f(1.0f, 1.0f); glVertex3f( width/2,  height/2,  depth/2);
     glTexCoord2f(1.0f, 0.0f); glVertex3f( width/2, -height/2,  depth/2);
     glEnd();
+    // drawNormal(width/2, 0,  0, 1, 0, 0, normalLength);
 
     // Top face
     glBegin(GL_QUADS);
@@ -260,6 +311,7 @@ void drawCuboid(GLfloat width, GLfloat height, GLfloat depth) {
     glTexCoord2f(1.0f, 1.0f); glVertex3f( width/2,  height/2, -depth/2);
     glTexCoord2f(1.0f, 0.0f); glVertex3f(-width/2,  height/2, -depth/2);
     glEnd();
+    // drawNormal(0, height/2,  0, 0, 1, 0, normalLength);
 
     // Bottom face
     glBegin(GL_QUADS);
@@ -269,9 +321,10 @@ void drawCuboid(GLfloat width, GLfloat height, GLfloat depth) {
     glTexCoord2f(1.0f, 1.0f); glVertex3f( width/2, -height/2, -depth/2);
     glTexCoord2f(1.0f, 0.0f); glVertex3f( width/2, -height/2,  depth/2);
     glEnd();
-    
-    glPopMatrix();
-    glDisable(GL_TEXTURE_2D);
+    // drawNormal(0, -height/2,  0, 0, -1, 0, normalLength);
+
+    // glPopMatrix();
+    // glDisable(GL_TEXTURE_2D);
 
     // glColor3f(0.8, 0.8, 1.0);   // Purpleish color
     // glLineWidth(4.0f);          // Set line width to 2.0 pixels
@@ -420,8 +473,8 @@ void drawSemiCylinder(GLfloat radius, GLfloat height, int segments, double perce
 
     // Center vertex and its texture coordinate
     glTexCoord2f(0.5f, 0.5f);   // Texture coordinate for the center
-    glVertex3f(0, 0, height/2); // Center vertex
     glNormal3f(0.0f, 0.0f, height/2);
+    glVertex3f(0, 0, height/2); // Center vertex
     for (int i = 0; i <= segments; ++i) {
         GLfloat angle = -M_PI / 2.0 + i * percentFull * 2.0 * M_PI / segments; 
         GLfloat x = radius * sin(angle);
@@ -430,9 +483,8 @@ void drawSemiCylinder(GLfloat radius, GLfloat height, int segments, double perce
         // Calculate texture coordinates for the perimeter vertices
         GLfloat s = 0.5 + 0.5 * cos(angle); // Map the angle to [0, 1] range
         GLfloat t = 0.5 + 0.5 * sin(angle);
-
-        glTexCoord2f(s, t); // Texture coordinate for each perimeter vertex
         glNormal3f(x, y, height/2);
+        glTexCoord2f(s, t); // Texture coordinate for each perimeter vertex
         glVertex3f(x, y, height/2); // Perimeter vertex
     }
     glEnd();
@@ -447,8 +499,8 @@ void drawSemiCylinder(GLfloat radius, GLfloat height, int segments, double perce
     glBegin(GL_TRIANGLE_FAN);
 
     glTexCoord2f(0.5f, 0.5f);     // Texture coordinate for the center
-    glVertex3f(0, 0, -height/2);  // Center vertex
     glNormal3f(0.0f, 0.0f, -height/2);
+    glVertex3f(0, 0, -height/2);  // Center vertex
     for (int i = 0; i <= segments; ++i) {
         GLfloat angle = -M_PI/2.0 + i * percentFull*2.0*M_PI / segments; 
         GLfloat x = radius * sin(angle);
@@ -458,8 +510,8 @@ void drawSemiCylinder(GLfloat radius, GLfloat height, int segments, double perce
         GLfloat s = 0.5 + 0.5 * cos(angle); // Map the angle to [0, 1] range
         GLfloat t = 0.5 + 0.5 * sin(angle);
 
+        // glNormal3f(0, 0, -height/2);
         glTexCoord2f(s, t); // Texture coordinate for each perimeter vertex
-        glNormal3f(x, y, -height/2);
         glVertex3f(x, y, -height/2);
     }
     glEnd();
@@ -496,6 +548,10 @@ void drawParallelogram(GLfloat width, GLfloat height, GLfloat depth) {
     glTexCoord2f(1.0f, 0.0f); glVertex3f(-width/2,  height/2,  depth/2);
     glEnd();
 
+    // // Draw normals for front face
+    // GLfloat normalLength = 2.0; // Adjust this value as needed
+    // drawNormal(0, 0,  depth/2, 0, 0, 1, normalLength);
+    
     // Back face
     glBegin(GL_QUADS);
     glNormal3f(0, 0,-1);
@@ -504,24 +560,27 @@ void drawParallelogram(GLfloat width, GLfloat height, GLfloat depth) {
     glTexCoord2f(1.0f, 1.0f); glVertex3f( width/2,  height/2, -depth/2);
     glTexCoord2f(1.0f, 0.0f); glVertex3f( width/4, -height/2, -depth/2);
     glEnd();
+    // drawNormal(0, 0,  -depth/2, 0, 0, -1, normalLength);
 
     // Left face
     glBegin(GL_QUADS);
-    glNormal3f(-1.0f, 0.0f, 0.0f);
+    glNormal3f(-0.5f, -0.5f, 0.0f);
     glTexCoord2f(0.0f, 0.0f); glVertex3f(-width/4, -height/2,  depth/2);
     glTexCoord2f(0.0f, 1.0f); glVertex3f(-width/2,  height/2,  depth/2);
     glTexCoord2f(1.0f, 1.0f); glVertex3f(-width/2,  height/2, -depth/2);
     glTexCoord2f(1.0f, 0.0f); glVertex3f(-width/4, -height/2, -depth/2);
     glEnd();
+    // drawNormal(-width*0.75, 0, 0, -0.5, -0.5, 0, normalLength);
 
     // Right face
     glBegin(GL_QUADS);
-    glNormal3f(1.0f, 0.0f, 0.0f);
+    glNormal3f(0.5f, -0.5f, 0.0f);
     glTexCoord2f(0.0f, 0.0f); glVertex3f( width/4, -height/2, -depth/2);
     glTexCoord2f(0.0f, 1.0f); glVertex3f( width/2,  height/2, -depth/2);
     glTexCoord2f(1.0f, 1.0f); glVertex3f( width/2,  height/2,  depth/2);
     glTexCoord2f(1.0f, 0.0f); glVertex3f( width/4, -height/2,  depth/2);
     glEnd();
+    // drawNormal(width*0.75, 0, 0, 0.5, -0.5, 0, normalLength);
 
     // Top face
     glBegin(GL_QUADS);
@@ -531,6 +590,7 @@ void drawParallelogram(GLfloat width, GLfloat height, GLfloat depth) {
     glTexCoord2f(1.0f, 1.0f); glVertex3f( width/2,  height/2, -depth/2);
     glTexCoord2f(1.0f, 0.0f); glVertex3f(-width/2,  height/2, -depth/2);
     glEnd();
+    // drawNormal(0, height/2, 0, 0, 1, 0, normalLength);
 
     // Bottom face
     glBegin(GL_QUADS);
@@ -541,6 +601,7 @@ void drawParallelogram(GLfloat width, GLfloat height, GLfloat depth) {
     glTexCoord2f(1.0f, 0.0f); glVertex3f( width/4, -height/2,  depth/2);
     glEnd();
     glDisable(GL_TEXTURE_2D);
+    // drawNormal(0, -height/2, 0, 0, -1, 0, normalLength);
 
     // glColor3f(1.0, 1.0, 1.0);   // White color
     // glLineWidth(4.0f);          // Set line width to 2.0 pixels
