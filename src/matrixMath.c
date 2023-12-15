@@ -1,9 +1,5 @@
 #include "matrixMath.h"
 
-//  cos and sin in degrees
-// #define Cos(th) cos(3.14159265/180*(th))
-// #define Sin(th) sin(3.14159265/180*(th))
-
 double getEulerDistanceXZ(double pos1X, double pos1Z, double pos2X, double pos2Z) {
     double xDist = pos1X - pos2X;
     double zDist = pos1Z - pos2Z;

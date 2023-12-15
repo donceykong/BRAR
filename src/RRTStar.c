@@ -135,7 +135,7 @@ Node* createNode(double x, double z) {
         node->position.x = x;
         node->position.y = 2.0; // Assuming y is constant or not used
         node->position.z = z;
-        node->cost = 0;      // Initialize cost, adjust as necessary
+        node->cost = 0;         // Initialize cost, adjust as necessary
         node->parent = NULL;    // No parent as this is a new node
         node->children = NULL;
     }
@@ -427,7 +427,7 @@ void findPotentialParents(Node* currentNode, Node* newNode, Node** bestParent, d
     while (child != NULL) {
         findPotentialParents(child, newNode, bestParent, bestCost, searchRadius);
         ChildNode* childWrapper = findChildNode(currentNode, child); // Find the ChildNode that corresponds to the 'child'
-        if (childWrapper != NULL) {  // Ensure childWrapper is not NULL
+        if (childWrapper != NULL) {                                  // Ensure childWrapper is not NULL
             child = getNextSibling(childWrapper);
         } else {
             child = NULL;  // If childWrapper is NULL, there are no more siblings

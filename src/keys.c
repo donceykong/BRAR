@@ -1,17 +1,17 @@
-// keys library
 // Doncey Albin
+// Keys library
 #include "keys.h"
 
-bool RRTSTAR_ACTIVE = false;
-bool displayRRTSPath = false;     // Show RRT Tree
-bool lightKeyPressed = false;       // Keep track of whether '0' key is pressed
-bool lightsEnabled = false;
-bool spotlightsEnabled = false;
-bool displayRRTSearch = true;
-bool useMapArea = false;
-bool waypointTracking = false;      // follow rrt* waypoints
-bool showFrames = false;
-bool showPoseHist = false;
+bool RRTSTAR_ACTIVE = false;    //
+bool displayRRTSPath = false;   // Show RRT Tree
+bool lightKeyPressed = false;   // Keep track of whether '0' key is pressed
+bool lightsEnabled = false;     //
+bool spotlightsEnabled = false; //
+bool displayRRTSearch = true;   //
+bool useMapArea = false;        //
+bool waypointTracking = false;  // follow rrt* waypoints
+bool showFrames = false;        //
+bool showPoseHist = false;      //
 
 KeyStatesStruct keyStates;
 

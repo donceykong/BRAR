@@ -34,7 +34,7 @@
 #include "CSCIx229.h"
 #include "screenInfo.h"
 #include "textureUtils.h"
-#include "draw.h"        // isnt used here...
+#include "draw.h"
 #include "lighting.h"    
 
 // Global GAME_MODE enum
@@ -470,35 +470,6 @@ void mouseButtonCallback(int button, int state, int x, int y) {
         glutDisplayFunc(showMain ? drawButtonScreen : display);
     }
 }
-
-// int fov=55;       //  Field of view (for perspective)
-// double asp=1;     //  Aspect ratio
-// double dim=30.0;   //  Size of world
-// /*
-//  *  GLUT calls this routine when the window is resized
-//  */
-// void reshape(int width,int height)
-// {
-//    //  Ratio of the width to the height of the window
-//    asp = (height>0) ? (double)width/height : 1;
-//    //  Set the viewport to the entire window
-//    glViewport(0,0, RES*width,RES*height);
-//    //  Set projection
-//    Project(fov,asp,dim);
-// }
-
-// /*
-//  *  GLUT calls this routine when the window is resized
-//  */
-// int zh=0;         //  Azimuth of light
-// void idle()
-// {
-//    //  Elapsed time in seconds
-//    double t = glutGet(GLUT_ELAPSED_TIME)/1000.0;
-//    zh = fmod(90*t,360.0);
-//    //  Tell GLUT it is necessary to redisplay the scene
-//    glutPostRedisplay();
-// }
 
 //
 void timer(int value) {

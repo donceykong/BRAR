@@ -74,7 +74,7 @@ GLuint loadTexture(const char* filepath) {
     // Create the texture
     glTexImage2D(GL_TEXTURE_2D, 0, format, infoHeader.width, infoHeader.height, 0, format, GL_UNSIGNED_BYTE, data);
 
-    // Release the allocated memory once we have set up the texture
+    // Release the allocated memory after setting texture
     free(data);
     data = NULL; // Avoid dangling pointer
 
