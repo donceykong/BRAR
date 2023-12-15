@@ -2,7 +2,13 @@
 #define ROBOT_STATE_MODELS_H
 
 #include <stdlib.h>
-#include "miscObjects.h"
+
+#include "matrixMath.h"
+#include "draw.h"
+#include "keys.h"
+
+double WaypointPosX;
+double WaypointPosZ;
 
 enum robotType {
     RUNNER_ROBOT,         // 0
@@ -25,7 +31,7 @@ typedef struct {
     Vector3 prevAccel;
 
     double yawAngle;
-    double yawAdd;
+    double yawAdd;                                  // TODO: fix? (Used for chaser in Time Crunch)
     // // Maybe instead of GLfloat yawAngle, use:
     // Vector3 angularPos;                          // where angle.y is yawAngle
     // Vector3 angularVel;                          //
@@ -61,8 +67,6 @@ void updateRunnerPoseList(RobotStruct *robot, int i) {
     robot->poseHist[i][3] = robot->yawAngle;      // runnerYawAngle
 }
 
-bool showPoseHist = false;
-
 void displayPoseHistory(RobotStruct *robot) {
     static int iter = 0;
     static int numberPoses = 100;
@@ -79,7 +83,7 @@ void displayPoseHistory(RobotStruct *robot) {
         iter = 0;
     }
     
-    glDisable(GL_LIGHTING);
+    // glDisable(GL_LIGHTING);
     for (int i = 0; i < numberPoses; i++) {
         glPushMatrix();
         glTranslatef(robot->poseHist[i][0], robot->poseHist[i][1], robot->poseHist[i][2]);
@@ -92,7 +96,7 @@ void displayPoseHistory(RobotStruct *robot) {
         }
         glPopMatrix();
     }
-    glEnable(GL_LIGHTING);
+    // glEnable(GL_LIGHTING);
     iter++;
 }
 
@@ -116,7 +120,7 @@ double getYawOffset(double joint0Angle, double robotXPos, double robotZPos, doub
  * 
  */
 double timestep     =   0.05;   // Simulation timestep
-double gY           =  -4.40;   //-9.81;   // Gravitational accel
+double gY           =  -9.81;   // Gravitational accel
 double forceY       =   0.00;   //
 
 double getNormalForce(RobotStruct *robot) {
@@ -172,6 +176,37 @@ void checkRobotCaptured() {
     else {
         getYPosition(&runnerRobot);
     }
+}
+
+void computeForwardKinematics() {
+    Matrix4x4 transformationMatrix = identityMatrix;
+
+    // Joint0: Base
+    transformationMatrix = multiplyMatrix(transformationMatrix, translationMatrix(chaserRobot.position.x, chaserRobot.position.y, chaserRobot.position.z));
+    transformationMatrix = multiplyMatrix(transformationMatrix, rotationMatrix(chaserRobot.yawAngle + chaserRobot.yawAdd, 0.0, 1.0, 0.0));
+    transformationMatrix = multiplyMatrix(transformationMatrix, translationMatrix(0.0, 0.1, 0.0));
+
+    // Joint1 & Link1
+    transformationMatrix = multiplyMatrix(transformationMatrix, translationMatrix(0.0, 0.1, 0.0));
+    transformationMatrix = multiplyMatrix(transformationMatrix, rotationMatrix(chaserRobot.joint1Angle, 0.0, 0.0, 1.0));
+    transformationMatrix = multiplyMatrix(transformationMatrix, translationMatrix(0.5, 0.0, 0.0));
+
+    // Joint2 & Link2
+    transformationMatrix = multiplyMatrix(transformationMatrix, translationMatrix(0.5, 0.0, 0.0));
+    transformationMatrix = multiplyMatrix(transformationMatrix, rotationMatrix(chaserRobot.joint2Angle, 0.0, 0.0, 1.0));
+    transformationMatrix = multiplyMatrix(transformationMatrix, translationMatrix(0.5, 0.0, 0.0));
+
+    // Joint3 & Link3
+    transformationMatrix = multiplyMatrix(transformationMatrix, translationMatrix(0.5, 0.0, 0.0));
+    transformationMatrix = multiplyMatrix(transformationMatrix, rotationMatrix(chaserRobot.joint3Angle, 0.0, 0.0, 1.0));
+    transformationMatrix = multiplyMatrix(transformationMatrix, translationMatrix(0.25, 0.0, 0.0));
+
+    // Joint4 & End Effector
+    transformationMatrix = multiplyMatrix(transformationMatrix, translationMatrix(0.25, 0.0, 0.0));
+    transformationMatrix = multiplyMatrix(transformationMatrix, rotationMatrix(chaserRobot.gripperRollAngle, 1.0, 0.0, 0.0));
+    transformationMatrix = multiplyMatrix(transformationMatrix, translationMatrix(0.1, 0.0, 0.0));
+
+    chaserRobot.endEffectorPosition = extractPosition(transformationMatrix);
 }
 
 #endif // ROBOT_STATE_MODELS_H

@@ -19,27 +19,19 @@ FreeType
 
 --- 
 
-## Game Modes:
-
-0) User plays as robot and runs around while arm automatically adjusts to collect items. This is all done in an effort to prevent a countdown timer from reaching zero.
-
-1) User plays as item to run from robot arm as the arm gains speed and accuracy over time.
-
---- 
-
 ### Item Values:
 
 $$ RED SQUARE $$
 
-    - Increses speed of robot with arm by 1, decreases runner robot speed by 1.
+    - Decrease time for time crunch and points for runner.
 
 $$ BLUE CIRCLE $$
 
-    - Increases runner by 1 and does not affect other robot.
+    - Increases time for time crunch and points for runner.
 
 $$ GREEN PARALLELOGRAM $$
 
-    - Increases runner by 1 and decreaes speed of robot with arm by 1.
+    - Increases time for time crunch and points for runner.
 
 --- 
 

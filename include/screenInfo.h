@@ -1,96 +1,80 @@
 #ifndef SCREEN_INFO_H
 #define SCREEN_INFO_H
 
+#ifdef __APPLE__
+#include <GLUT/glut.h>
+#else
+#include <GL/glut.h>
+#endif
 
-#include "buttonHandler.h"
+#include <stdlib.h>
+#include <stdbool.h>
+#include <ft2build.h>       // FreeType (used in main screen buttons)
+#include FT_FREETYPE_H
+
+#include "textureUtils.h"
+
+// WINDOW INFO
+extern const int windowXPos;
+extern const int windowYPos;
+extern const int windowXDiff;
+extern const int windowYDiff;
 
 // First Button
-const float SIbutton1XDiff = 700;
-const float SIbutton1XMin = windowXDiff/2 - SIbutton1XDiff/2;
-const float SIbutton1XMax = SIbutton1XMin + SIbutton1XDiff;
-
-const float SIbutton1YDiff = 100.0;
-const float SIbutton1YMin = windowYDiff/2 - SIbutton1YDiff/2;
-const float SIbutton1YMax = SIbutton1YMin + SIbutton1YDiff;
-const float SIbutton1YCenter = SIbutton1YDiff/2.0 + SIbutton1YMin;
-
-const float SIbuttonSepY = 20.0;
+extern const float button1XDiff, button1XMin, button1XMax;
+extern const float button1YDiff, button1YMin, button1YMax, button1YCenter;
+extern const float buttonSepY;
 
 // Second button
-const float SIbutton2XDiff = SIbutton1XDiff;
-const float SIbutton2XMin = SIbutton1XMin;
-const float SIbutton2XMax = SIbutton2XMin + SIbutton2XDiff;
+extern const float button2XDiff, button2XMin, button2XMax;
+extern const float button2YDiff, button2YMin, button2YMax, button2YCenter;
 
-const float SIbutton2YDiff = SIbutton1YDiff;
-const float SIbutton2YMin = SIbutton1YMax + SIbuttonSepY;
-const float SIbutton2YMax = SIbutton2YMin + SIbutton2YDiff;
-const float SIbutton2YCenter = SIbutton2YDiff/2.0 + SIbutton2YMin;
+// third button
+extern const float button3XDiff, button3XMin, button3XMax;
+extern const float button3YDiff, button3YMin, button3YMax, button3YCenter;
 
-char SIstr1[50] = "";
-char SIstr2[50] = "";
-char SITopPlayer[50] = "";
+// First Button
+extern const float SIbutton1XDiff, SIbutton1XMin, SIbutton1XMax;
+extern const float SIbutton1YDiff, SIbutton1YMin, SIbutton1YMax, SIbutton1YCenter;
+extern const float SIbuttonSepY;
 
-void drawSIBackground() {
-    // Set up the view
-    glMatrixMode(GL_PROJECTION);
-    glPushMatrix();
-    glLoadIdentity();
-    gluOrtho2D(0, windowXDiff, 0, windowYDiff);
+// Second button
+extern const float SIbutton2XDiff, SIbutton2XMin, SIbutton2XMax;
+extern const float SIbutton2YDiff, SIbutton2YMin, SIbutton2YMax, SIbutton2YCenter;
 
-    glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();
-    glLoadIdentity();
+extern char SIstr1[50];
+extern char SIstr2[50];
+extern char SITopPlayer[50];
 
-    // Draw the first button
-    glColor3f(1.0, 1.0, 1.0); // Set color for the button (e.g., red)
-    glEnable(GL_TEXTURE_2D);
-    GLuint splashTex = loadTexture("./assets/robot_body.bmp");
-    glBindTexture(GL_TEXTURE_2D, splashTex);
-    glBegin(GL_QUADS);
-        glTexCoord2d(0, 0); glVertex2f(0, 0);
-        glTexCoord2d(1, 0); glVertex2f(windowXDiff, 0);
-        glTexCoord2d(1, 1); glVertex2f(windowXDiff, windowYDiff);
-        glTexCoord2d(0, 1); glVertex2f(0, windowYDiff);
-    glEnd();
-    glBindTexture(GL_TEXTURE_2D, 0);
-    glDisable(GL_TEXTURE_2D);
-    glPopMatrix();
-    glMatrixMode(GL_PROJECTION);
-    glPopMatrix();
-    glMatrixMode(GL_MODELVIEW);
-}
+// Structure to hold glyph data
+typedef struct {
+    GLuint textureID;   // ID handle of the glyph texture
+    int width;          // Glyph width
+    int height;         // Glyph height
+    int bearingX;       // Offset from baseline to left/top of glyph
+    int bearingY;       // Offset from baseline to left/top of glyph
+    GLuint advance;     // Offset to advance to next glyph
+} Character;
 
-void drawSI(const char *str1, const char *str2) {
-    glDisable(GL_LIGHTING);
-    // glDisable(GL_LIGHT0);
-    // glDisable(GL_LIGHT1);
-    // glDisable(GL_LIGHT2);
+void setupTextRendering(FT_Face face);
 
-    // Set up the view
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluOrtho2D(0.0, windowXDiff, 0.0, windowYDiff);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
+void renderText(const char* text, float x, float y, float scale);
 
-    // Draw the first button
-    glColor3f(1.0, 0.0, 0.0); // Set color for the button (e.g., red)
-    drawButton(windowXDiff-SIbutton1XDiff, windowYDiff- (SIbutton1YDiff), SIbutton1XDiff, SIbutton1YDiff);
+// Function to draw a button
+void drawButton(float x, float y, float width, float height);
 
-    // Draw the second button
-    glColor3f(0.0, 1.0, 0.0); // Set color for the button (e.g., blue)
-    drawButton(windowXDiff-SIbutton1XDiff, windowYDiff- (2*SIbutton2YDiff+SIbuttonSepY), SIbutton2XDiff, SIbutton2YDiff);
+void drawBackground();
 
-    // Render some text on the screen
-    glColor3f(0.0, 1.0, 0.0); // Set text color (green)
-    renderText(str1, windowXDiff-SIbutton1XDiff + 70, windowYDiff- (SIbutton1YDiff) + 20, 1.0);
-    glColor3f(0.0, 0.0, 1.0);
-    renderText(str2, windowXDiff-SIbutton1XDiff + 70, windowYDiff- (2*SIbutton2YDiff+SIbuttonSepY) + 20, 1.0);
-}
+void drawButtons();
 
-// void drawScreenInfo() {
-//     //drawBackground();
-//     drawSI();
-// }
+void drawButtonScreen();
+
+void drawSIBackground();
+
+void drawSI(const char *str1, const char *str2);
+
+void drawWarning(const char *str1);
+
+// void drawScreenInfo();
 
 #endif // SCREEN_INFO_H

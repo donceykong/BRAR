@@ -1,9 +1,15 @@
 #ifndef KEY_UPDATE_H
 #define KEY_UPDATE_H
 
-#include "keyHandler.h"
+// local
+#include "lighting.h"
+#include "keys.h"
 
-void updateRunner()
+double lightRotation = 0.0;
+double fpCamRotation = 0.0;
+double lightZoomInc = 0.25;
+
+void updateRunner(LightArray* lights)
 {
   double gripperRollinc     = 0.00;
   double gripperDistinc     = 0.00;
@@ -19,19 +25,6 @@ void updateRunner()
     gripperRollinc          = -5.00 * SPEED;
   if (keyStates.left)
     gripperRollinc          =  5.00 * SPEED;
-
-  // Gripper Adjust
-  if (keyStates.j)
-    gripperDistinc          = -0.01 * SPEED;
-  if (keyStates.k)
-    gripperDistinc          =  0.01 * SPEED;
-
-  if (keyStates.key1) {
-    viewMode                = 1;
-  } 
-  else if (keyStates.key2) {
-    viewMode                = 2;
-  }
 
   runnerRobot.speed = runnerRobot.speedAdjust;
 
@@ -50,8 +43,8 @@ void updateRunner()
     runnerRobot.prevPos.x = runnerRobot.position.x;
   }
   if (!chaserRobot.inCollision) {
-    chaserRobot.prevPos.z = chaserRobot.position.z;
-    chaserRobot.prevPos.x = chaserRobot.position.x;
+    chaserRobot.prevPos.z = chaserRobot.endEffectorPosition.z;
+    chaserRobot.prevPos.x = chaserRobot.endEffectorPosition.x;
   }
 
   // CHASER & RUNNER Control, depending if RUNNER captured or not
@@ -63,9 +56,19 @@ void updateRunner()
     runnerRobot.position.x += runnerRobot.speed * sin(angleYradians);
 
     // Move chaser
-    chaserRobot.position.x -= chaserRobot.speedAdjust * 0.02 * (chaserRobot.endEffectorPosition.x-runnerRobot.position.x);
-    chaserRobot.position.z -= chaserRobot.speedAdjust * 0.02 * (chaserRobot.endEffectorPosition.z-runnerRobot.position.z);
-    chaserRobot.speed       = chaserRobot.speedAdjust * getEulerDistanceXZ(chaserRobot.endEffectorPosition.x, chaserRobot.endEffectorPosition.z, runnerRobot.position.x, runnerRobot.position.z);
+    double chaserGain;
+    if (waypointTracking) {
+      chaserGain = 0.2;
+      chaserRobot.position.x -= chaserRobot.speedAdjust * chaserGain * (chaserRobot.endEffectorPosition.x-WaypointPosX);
+      chaserRobot.position.z -= chaserRobot.speedAdjust * chaserGain * (chaserRobot.endEffectorPosition.z-WaypointPosZ);
+      chaserRobot.speed       = chaserRobot.speedAdjust * getEulerDistanceXZ(chaserRobot.endEffectorPosition.x, chaserRobot.endEffectorPosition.z, WaypointPosX, WaypointPosZ);
+    }
+    else {
+      chaserGain = 0.02;
+      chaserRobot.position.x -= chaserRobot.speedAdjust * chaserGain * (chaserRobot.endEffectorPosition.x-runnerRobot.position.x);
+      chaserRobot.position.z -= chaserRobot.speedAdjust * chaserGain * (chaserRobot.endEffectorPosition.z-runnerRobot.position.z);
+      chaserRobot.speed       = chaserRobot.speedAdjust * getEulerDistanceXZ(chaserRobot.endEffectorPosition.x, chaserRobot.endEffectorPosition.z, runnerRobot.position.x, runnerRobot.position.z);
+    }
   }
   else {
     if (chaserRobot.joint1Angle <= 90.0) {
@@ -82,38 +85,61 @@ void updateRunner()
     runnerRobot.position.x = runnerRobot.prevPos.x;
   }
   if (chaserRobot.inCollision) {
-    chaserRobot.position.z = chaserRobot.prevPos.z;
-    chaserRobot.position.x = chaserRobot.prevPos.x;
+    chaserRobot.endEffectorPosition.z = chaserRobot.prevPos.z;
+    chaserRobot.endEffectorPosition.x = chaserRobot.prevPos.x;
   }
 
   // THE LIGHTING
-  double orbitRadius = 4.0;
-  light1Rotation = lightrot + runnerRobot.yawAngle + 45.0;
-  light1_X = -orbitRadius * sin(light1Rotation * PI / 180) + runnerRobot.position.x;
-  light1_Y = runnerRobot.position.y;
-  light1_Z = -orbitRadius * cos(light1Rotation * PI / 180) + runnerRobot.position.z;
+  double lightRotInc = 0.00;
 
-  light2Rotation = lightrot + runnerRobot.yawAngle - 45.0;
-  light2_X = -orbitRadius * sin(light2Rotation * PI / 180) + runnerRobot.position.x;
-  light2_Y = runnerRobot.position.y;
-  light2_Z = -orbitRadius * cos(light2Rotation * PI / 180) + runnerRobot.position.z;
-  lightrot += 0.5;
+  if (keyStates.a)
+    lightRotInc = 5.00 * SPEED;
+  if (keyStates.d)
+    lightRotInc = -5.00 * SPEED;
+  if (keyStates.i)
+    lightZoomInc -= 0.01;
+  if (keyStates.k)
+    lightZoomInc += 0.01;
+  
+  if (lightZoomInc < 0.00) {
+    lightZoomInc = 0.00;
+  }
+  if (lightZoomInc > 1.0) {
+    lightZoomInc = 1.0;
+  }
+  double orbitRadius = 2.0 + 8.0*lightZoomInc;
+  lightRotation += lightRotInc;
+  lights->light[0].angularPos.y += 0.05*(runnerRobot.yawAngle + 45.0 + lightRotation - lights->light[0].angularPos.y);
+  lights->light[0].position.x   += 0.05*(runnerRobot.position.x - lights->light[0].position.x - orbitRadius*sin(lights->light[0].angularPos.y * PI / 180));
+  lights->light[0].position.y   += 0.05*(runnerRobot.position.y - lights->light[0].position.y);
+  lights->light[0].position.z   += 0.05*(runnerRobot.position.z - lights->light[0].position.z - orbitRadius*cos(lights->light[0].angularPos.y * PI / 180));
 
-  // Camera Position & Orientation
-  // View Zoom Adjust
+  // CAMERA VIEWING
+    double fpCamRotInc = 0.00;
+  if (keyStates.key1) {
+    viewMode = 1;
+  } 
+  else if (keyStates.key2) {
+    viewMode = 2;
+  }
   if (keyStates.o)
     fpCamZoom *= 0.99;
-  if (keyStates.l)
+  else if (keyStates.l)
     fpCamZoom *= 1.1;
+  if (keyStates.key3)
+    fpCamRotInc = 5.00 * SPEED;
+  else if (keyStates.key4)
+    fpCamRotInc = -5.00 * SPEED;
 
+  fpCamRotation += fpCamRotInc;
   if (viewMode == 1) {
-    orbitCamAngleY -= 0.05*(orbitCamAngleY-runnerRobot.yawAngle + 180);
+    orbitCamAngleY -= 0.05*(orbitCamAngleY-runnerRobot.yawAngle + 180 + fpCamRotation);
     orbitCamZ      -= 0.08*(orbitCamZ-runnerRobot.position.z);
     orbitCamY      -= 0.10*(orbitCamY-runnerRobot.position.y);
     orbitCamX      -= 0.08*(orbitCamX-runnerRobot.position.x);
   }
   else if (viewMode == 2) {
-    overheadCamAngleY -= 0.04*(overheadCamAngleY - runnerRobot.yawAngle + 180.0);
+    overheadCamAngleY -= 0.04*(overheadCamAngleY - runnerRobot.yawAngle + 180.0 + fpCamRotation);
     overheadCamX -= 0.08*(overheadCamX + runnerRobot.position.x);
     overheadCamY -= 0.08*(overheadCamY + runnerRobot.position.y);
     overheadCamZ -= 0.08*(overheadCamZ + runnerRobot.position.z);
@@ -127,9 +153,17 @@ void updateRunner()
   }
 
   // Adjust joint angles
-  double yawDeg             = getYawOffset(chaserRobot.yawAngle, chaserRobot.position.x, chaserRobot.position.z, 
+  double yawDeg;
+  if (waypointTracking && RRTSTAR_ACTIVE) {
+    yawDeg = 10.0*getYawOffset(chaserRobot.yawAngle, chaserRobot.position.x, chaserRobot.position.z, 
+                          WaypointPosX, 2.0, WaypointPosZ) 
+                          * 180 / PI;
+  }
+  else {
+    yawDeg = getYawOffset(chaserRobot.yawAngle, chaserRobot.position.x, chaserRobot.position.z, 
                                            runnerRobot.position.x, runnerRobot.position.y, runnerRobot.position.z) 
                                            * 180 / PI;
+  }
 
   chaserRobot.yawAngle     -= chaserRobot.speedAdjust * 0.1 * yawDeg; 
   chaserRobot.joint1Angle  += (runnerRobot.position.y - chaserRobot.endEffectorPosition.y);
@@ -209,7 +243,7 @@ void updateRunner()
 
 
 
-void updateTimeCrunch()
+void updateTimeCrunch(LightArray* lights)
 {
 //   double robotXPosInc = 0.00;
 //   double robotZPosInc = 0.00;
@@ -227,26 +261,8 @@ void updateTimeCrunch()
     gripperRollinc = -10.00 * SPEED;
   if (keyStates.left)
     gripperRollinc = 10.00 * SPEED;
-  
-  // Gripper Adjust
-  if (keyStates.j)
-    gripperDistinc = -0.01 * SPEED;
-  if (keyStates.k)
-    gripperDistinc = 0.01 * SPEED;
 
-  // View Zoom Adjust
-  if (keyStates.o)
-    fpCamZoom *= 0.99;
-  if (keyStates.l)
-    fpCamZoom *= 1.1;
-
-  if (keyStates.key1) {
-    viewMode = 1;
-  } 
-  else if (keyStates.key2) {
-    viewMode = 2;
-  }
-
+  // JUMPING
   if (keyStates.space && !keyStates.spacePrev) {
     chaserRobot.externalForce.y = 20000;
   }
@@ -259,41 +275,74 @@ void updateTimeCrunch()
   chaserRobot.speed = chaserRobot.speedAdjust;
   chaserRobot.yawAngle += gripperRollinc;
   double angleYradians = chaserRobot.yawAngle * PI / 180;
+  computeForwardKinematics(); // call to get new endeffector pos
   if (chaserRobot.inCollision) {
-    chaserRobot.position.z = chaserRobot.prevPos.z;
-    chaserRobot.position.x = chaserRobot.prevPos.x;
+    chaserRobot.endEffectorPosition.z = chaserRobot.prevPos.z;
+    chaserRobot.endEffectorPosition.x = chaserRobot.prevPos.x;
   }
   else {
-    chaserRobot.prevPos.z = chaserRobot.position.z;
-    chaserRobot.prevPos.x = chaserRobot.position.x;
+    chaserRobot.prevPos.z = chaserRobot.endEffectorPosition.z;
+    chaserRobot.prevPos.x = chaserRobot.endEffectorPosition.x;
     chaserRobot.position.z -= chaserRobot.speed*cos(angleYradians);
     chaserRobot.position.x -= chaserRobot.speed*sin(angleYradians);
   }
 
   chaserRobot.viewableSpeed = 20.0*fabsf(chaserRobot.speed) + 5.0*fabsf(gripperRollinc);
 
-  // TODO: FIX THE LIGHTING
-  double orbitRadius = 4.0;
-  light1Rotation = lightrot + chaserRobot.yawAngle + 45.0 + 180;
-  light1_X = -orbitRadius * sin(light1Rotation * PI / 180) + chaserRobot.position.x;
-  light1_Y = chaserRobot.position.y;
-  light1_Z = -orbitRadius * cos(light1Rotation * PI / 180) + chaserRobot.position.z;
+  // LIGHTING
+  double lightRotInc = 0.00;
 
-  light2Rotation = lightrot + chaserRobot.yawAngle + -45 + 180;
-  light2_X = -orbitRadius * sin(light2Rotation * PI / 180) + chaserRobot.position.x;
-  light2_Y = chaserRobot.position.y;
-  light2_Z = -orbitRadius * cos(light2Rotation * PI / 180) + chaserRobot.position.z;
-  lightrot += 0.5;
+  if (keyStates.a)
+    lightRotInc = 5.00 * SPEED;
+  if (keyStates.d)
+    lightRotInc = -5.00 * SPEED;
+  if (keyStates.i)
+    lightZoomInc -= 0.01;
+  if (keyStates.k)
+    lightZoomInc += 0.01;
+
+  if (lightZoomInc < 0.00) {
+    lightZoomInc = 0.00;
+  }
+  if (lightZoomInc > 1.0) {
+    lightZoomInc = 1.0;
+  }
+  double orbitRadius = 2.0 + 8.0*lightZoomInc;
+  lightRotation += lightRotInc;
+  lights->light[0].angularPos.y += 0.05*(chaserRobot.yawAngle + 225.0 + lightRotation - lights->light[0].angularPos.y);
+  lights->light[0].position.x   += 0.05*(chaserRobot.position.x - lights->light[0].position.x - orbitRadius*sin(lights->light[0].angularPos.y * PI / 180));
+  lights->light[0].position.y   += 0.05*(chaserRobot.position.y - lights->light[0].position.y);
+  lights->light[0].position.z   += 0.05*(chaserRobot.position.z - lights->light[0].position.z - orbitRadius*cos(lights->light[0].angularPos.y * PI / 180));
+
+  // Camera Position & Orientation
+  // View Zoom Adjust
+  double fpCamRotInc = 0.00;
+
+  if (keyStates.key1) {
+    viewMode = 1;
+  } 
+  else if (keyStates.key2) {
+    viewMode = 2;
+  }
+  if (keyStates.o)
+    fpCamZoom *= 0.99;
+  if (keyStates.l)
+    fpCamZoom *= 1.1;
+  if (keyStates.key3)
+    fpCamRotInc = 5.00 * SPEED;
+  if (keyStates.key4)
+    fpCamRotInc = -5.00 * SPEED;
 
   // CAMERA POS CONTROL (IMITATES CAM STAYING AT LAST POSITION UNTIL SUMMONED :D)
+  fpCamRotation += fpCamRotInc;
   if (viewMode == 1) {
-    orbitCamAngleY -= 0.05*(orbitCamAngleY-chaserRobot.yawAngle);
+    orbitCamAngleY -= 0.05*(orbitCamAngleY-chaserRobot.yawAngle + fpCamRotation);
     orbitCamZ -= 0.08*(orbitCamZ-chaserRobot.position.z);
     orbitCamY -= 0.10*(orbitCamY-chaserRobot.position.y);
     orbitCamX -= 0.08*(orbitCamX-chaserRobot.position.x);
   }
   else if (viewMode == 2) {
-    overheadCamAngleY -= 0.04*(overheadCamAngleY - chaserRobot.yawAngle);
+    overheadCamAngleY -= 0.04*(overheadCamAngleY - chaserRobot.yawAngle + fpCamRotation);
     overheadCamX -= 0.08*(overheadCamX + chaserRobot.position.x);
     overheadCamY -= 0.08*(overheadCamY + chaserRobot.position.y);
     overheadCamZ -= 0.08*(overheadCamZ + chaserRobot.position.z);
@@ -363,54 +412,20 @@ void updateTimeCrunch()
 
 
 
-void updateViewRobot()
+void updateViewRobot(LightArray* lights)
 {
-//   double robotXPosInc = 0.00;
-//   double robotZPosInc = 0.00;
-  // double joint0inc = 0.00;
-  // double joint1inc = 0.00;
-//   double joint2inc = 0.00;
-//   double joint3inc = 0.00;
-  double gripperRollinc = 0.00;
-  double gripperDistinc = 0.00;
-
-//   // Joint 2 Adjust
-//   if (keyStates.y)
-//     joint2inc = 5.00 * SPEED;
-//   if (keyStates.h)
-//     joint2inc = -5.00 * SPEED;
-
-//   // Gripper Adjust
-//   if (keyStates.up)
-//     joint3inc = 5.00 * SPEED;
-//   if (keyStates.down)
-//     joint3inc = -5.00 * SPEED;
-  if (keyStates.right)
-    gripperRollinc = -5.00 * SPEED;
-  if (keyStates.left)
-    gripperRollinc = 5.00 * SPEED;
+  double lightRotInc = 0.00;
+  double fpCamRotInc = 0.00;
   
-  // Gripper Adjust
-  if (keyStates.j)
-    gripperDistinc = -0.01 * SPEED;
+  // lighting rotate
+  if (keyStates.a)
+    lightRotInc = 5.00 * SPEED;
+  if (keyStates.d)
+    lightRotInc = -5.00 * SPEED;
+  if (keyStates.i)
+    lightZoomInc -= 0.01;
   if (keyStates.k)
-    gripperDistinc = 0.01 * SPEED;
-  // Grab runner robot
-  if (!chaserRobot.gripperClosed && fabsf(runnerRobot.position.x-chaserRobot.endEffectorPosition.x)<0.1 && fabsf(runnerRobot.position.y-chaserRobot.endEffectorPosition.y)<0.1 && fabsf(runnerRobot.position.z-chaserRobot.endEffectorPosition.z)<0.1) {
-      gripperDistinc = -0.01;
-  }
-
-  // lighting Distance Adjust
-  if (keyStates.o)
-    lightingDist *= 0.99;
-  if (keyStates.l)
-    lightingDist *= 1.1;
-
-  // View Zoom Adjust
-  if (keyStates.o)
-    fpCamZoom *= 0.99;
-  if (keyStates.l)
-    fpCamZoom *= 1.1;
+    lightZoomInc += 0.01;
 
   if (keyStates.key1) {
     viewMode = 1;
@@ -418,60 +433,52 @@ void updateViewRobot()
   else if (keyStates.key2) {
     viewMode = 2;
   }
+  if (keyStates.key3)
+    fpCamRotInc = 5.00 * SPEED;
+  else if (keyStates.key4)
+    fpCamRotInc = -5.00 * SPEED;
 
-  // TODO: FIX THE LIGHTING
-  double orbitRadius = 4.0;
-  light1Rotation = lightrot + chaserRobot.yawAngle + 45.0 + 180;
-  light1_X = -orbitRadius * sin(light1Rotation * PI / 180) + chaserRobot.position.x;
-  light1_Y = chaserRobot.position.y + 1;
-  light1_Z = -orbitRadius * cos(light1Rotation * PI / 180) + chaserRobot.position.z;
+  chaserRobot.joint1Angle += 0.01;
+  chaserRobot.joint2Angle -= 0.02;
+  chaserRobot.joint3Angle += 0.02;
+  chaserRobot.gripperRollAngle += 0.05;
 
-  light2Rotation = lightrot + chaserRobot.yawAngle - 45.0 + 180;
-  light2_X = -orbitRadius * sin(light2Rotation * PI / 180) + chaserRobot.position.x;
-  light2_Y = chaserRobot.position.y + 1;
-  light2_Z = -orbitRadius * cos(light2Rotation * PI / 180) + chaserRobot.position.z;
-  lightrot += 0.8;
+  // LIGHTING
+  if (lightZoomInc < 0.00) {
+    lightZoomInc = 0.00;
+  }
+  if (lightZoomInc > 1.0) {
+    lightZoomInc = 1.0;
+  }
+  double orbitRadius = 2.0 + 8.0*lightZoomInc;
+  lightRotation += lightRotInc;
+  lights->light[0].angularPos.y = lightRotation + 180;
+  lights->light[0].position.x = -orbitRadius * sin(lights->light[0].angularPos.y * PI / 180);
+  lights->light[0].position.y = 2.0;
+  lights->light[0].position.z = -orbitRadius * cos(lights->light[0].angularPos.y * PI / 180);
 
+  if (keyStates.o)
+    fpCamZoom *= 0.99;
+  if (keyStates.l)
+    fpCamZoom *= 1.1;
+  if (keyStates.key3)
+    fpCamRotInc = 5.00 * SPEED;
+  if (keyStates.key4)
+    fpCamRotInc = -5.00 * SPEED;
+
+  // CAMERA POS CONTROL (IMITATES CAM STAYING AT LAST POSITION UNTIL SUMMONED :D)
+  fpCamRotation += fpCamRotInc;
   if (viewMode == 1) {
-    orbitCamAngleY += 0.5*gripperRollinc;
-    orbitCamZ = chaserRobot.position.z;
-    orbitCamY = 1.0;
-    orbitCamX = chaserRobot.position.x;
+    orbitCamAngleY -= 0.05*(orbitCamAngleY-chaserRobot.yawAngle + fpCamRotation);
+    orbitCamZ -= 0.08*(orbitCamZ-chaserRobot.position.z);
+    orbitCamY -= 0.10*(orbitCamY-chaserRobot.position.y);
+    orbitCamX -= 0.08*(orbitCamX-chaserRobot.position.x);
   }
-
-//   if (chaserRobot.joint1Angle >= 250.00) {
-//     chaserRobot.joint1Angle = 250.00;
-//   } else if (chaserRobot.joint1Angle <= -70.00) {
-//     chaserRobot.joint1Angle = -70.00;
-//   }
-
-//   if (chaserRobot.joint2Angle >= 90.00) {
-//     chaserRobot.joint2Angle = 90.00;
-//   } else if (chaserRobot.joint2Angle <= -90.00) {
-//     chaserRobot.joint2Angle = -90.00;
-//   }
-
-//   chaserRobot.joint3Angle += joint3inc;
-  chaserRobot.gripperDist += gripperDistinc;
-  chaserRobot.gripperRollAngle += gripperRollinc;
-
-//   if (chaserRobot.joint3Angle > 90.00) {
-//     chaserRobot.joint3Angle -= joint3inc;
-//   } else if (chaserRobot.joint3Angle < -90.00) {
-//     chaserRobot.joint3Angle -= joint3inc;
-//   }
-
-  if (chaserRobot.gripperDist >= 0.30) {
-    chaserRobot.gripperDist -= gripperDistinc;
-  } else if (chaserRobot.gripperDist <= 0.10) {
-    chaserRobot.gripperDist -= gripperDistinc;
-  }
-    
-  if (chaserRobot.gripperDist <= 0.20){
-    chaserRobot.gripperClosed = true;
-  }
-  else {
-    chaserRobot.gripperClosed = false;
+  else if (viewMode == 2) {
+    overheadCamAngleY -= 0.04*(overheadCamAngleY - chaserRobot.yawAngle + fpCamRotation);
+    overheadCamX -= 0.08*(overheadCamX + chaserRobot.position.x);
+    overheadCamY -= 0.08*(overheadCamY + chaserRobot.position.y);
+    overheadCamZ -= 0.08*(overheadCamZ + chaserRobot.position.z);
   }
 } 
 

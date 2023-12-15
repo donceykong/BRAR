@@ -1,6 +1,8 @@
 #ifndef ROBOT_ARM_H
 #define ROBOT_ARM_H
 
+#include "draw.h"
+
 void drawNormalArrow(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat scale) {
     glBegin(GL_LINES);
     glVertex3f(x, y, z);  // start point of the line (original vertex)
@@ -13,7 +15,7 @@ void robotBase(GLfloat width, GLfloat height, GLfloat depth, double faceC[3]) {
 
     glColor3f(faceC[0], faceC[1], faceC[2]);        // face color
     BMPtexture = BMPtexture5;
-    getCuboid(width, height, depth);
+    drawCuboid(width, height, depth);
     BMPtexture = BMPtexture1;
 
     float axisLen = 0.5;
@@ -33,13 +35,13 @@ void robotLink(GLfloat width, GLfloat height, GLfloat depth, double faceC[3]) {
     glPushMatrix();
 
     glColor3f(faceC[0], faceC[1], faceC[2]);        // face color
-    getCuboid(width, 0.75*height, 0.75*depth);
+    drawCuboid(width, 0.75*height, 0.75*depth);
     // glTranslatef(width/2, 0.0, 0.0);
 
     // glTranslatef(width*0.5, 0.0, 0.0);
     glColor3f(faceC[0], faceC[1], faceC[2]);        // face color
     BMPtexture = BMPtexture2;
-    getCuboid(width*0.5, height, depth);
+    drawCuboid(width*0.5, height, depth);
     BMPtexture = BMPtexture1;
 
     // Draw first semi-cylinder
@@ -58,20 +60,20 @@ void robotEndEffector(GLfloat width, GLfloat height, GLfloat depth, double faceC
 
     // Draw gripper base
     glColor3f(faceC[0], faceC[1], faceC[2]);        // face color
-    getCuboid(height, depth,  width*0.75);
+    drawCuboid(height, depth,  width*0.75);
 
     // Draw left gripper
     glTranslatef(0.3, 0.0, -chaserRobot.gripperDist);
     glRotatef(90.0, 0.0, 0.0, 1.0);
     glColor3f(faceC[0], faceC[1], faceC[2]);        // face color
-    getCuboid(height, width*0.4, depth);
+    drawCuboid(height, width*0.4, depth);
 
     // Draw right gripper
     glTranslatef(0.0, 0.0, chaserRobot.gripperDist*2);
     glRotatef(0.0, 0.0, 0.0, 1.0);
     
     glColor3f(faceC[0], faceC[1], faceC[2]);        // face color
-    getCuboid(height, width*0.4, depth);
+    drawCuboid(height, width*0.4, depth);
 
     glPopMatrix();
 }

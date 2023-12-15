@@ -1,6 +1,8 @@
 #ifndef GAME_MODES_H
 #define GAME_MODES_H
 
+#include <string.h>
+
 // GAME MODE
 enum GameMode {
     RUNNER,         // 0
