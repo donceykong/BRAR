@@ -108,7 +108,6 @@ void drawGroundPlane(Vector3 mapCenter) {
     glBegin(GL_TRIANGLES);
     glNormal3f(0.0f, 1.0f, 0.0f);
     for (int i = 0; i < 6 * 5; i += 5) {
-        // Optionally set texture coordinates if you're using them.
         glTexCoord2f(GroundPlaneVertices[i + 3], GroundPlaneVertices[i + 4]);
         glVertex3f(GroundPlaneVertices[i], GroundPlaneVertices[i + 1], GroundPlaneVertices[i + 2]);
     }

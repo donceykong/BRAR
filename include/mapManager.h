@@ -23,6 +23,7 @@ double objAbsorberZ;
 MapItem mapItemList[10];
 
 // Array to hold 10 map obstacles
+int numObstacles = 30;
 MapObstacle mapObstList[30];
 
 MapItem randMapItem;
@@ -77,7 +78,7 @@ bool isFarEnough(double x1, double z1, double x2, double z2, double minDist) {
 void addObstaclesToMapList() {
     srand(time(NULL));  // set rand generator seed
     double minDist = sqrt(200);
-    for (int i = 0; i < 30; i++) {
+    for (int i = 0; i < numObstacles; i++) {
         bool positionValid;
         double randObstPosX, randObstPosZ;
 
@@ -137,7 +138,7 @@ void addObstaclesToMapList() {
 void checkCollision () {
     chaserRobot.inCollision = false;
     runnerRobot.inCollision = false;
-    for (int i = 0; i < 30; i++) {
+    for (int i = 0; i < numObstacles; i++) {
         chaserRobot.inCollision += detect_collision_AABB_TRANS(mapObstList[i], chaserRobot.endEffectorPosition.x, chaserRobot.endEffectorPosition.y, chaserRobot.endEffectorPosition.z);
         runnerRobot.inCollision += detect_collision_AABB_TRANS(mapObstList[i], runnerRobot.position.x, runnerRobot.position.y, runnerRobot.position.z);
     }
@@ -146,7 +147,7 @@ void checkCollision () {
 void plotMapObstacles () {
     chaserRobot.inCollision = false;
     runnerRobot.inCollision = false;
-    for (int i = 0; i < 30; i++) {
+    for (int i = 0; i < numObstacles; i++) {
         bool chaserInCollisionCurr = detect_collision_AABB_TRANS(mapObstList[i], chaserRobot.endEffectorPosition.x, chaserRobot.endEffectorPosition.y, chaserRobot.endEffectorPosition.z);
         bool runnerInCollisionCurr = detect_collision_AABB_TRANS(mapObstList[i], runnerRobot.position.x, runnerRobot.position.y, runnerRobot.position.z);
         chaserRobot.inCollision += chaserInCollisionCurr; //detect_collision(mapObstList[i], chaserRobot.position.x, chaserRobot.position.y, chaserRobot.position.z);
@@ -386,10 +387,8 @@ void plotMapItems() {
                 drawCuboid(mapItemList[i].size, mapItemList[i].size, mapItemList[i].size);
                 break;
             case EMPTY:
-                //printf("    - Map obj %d is EMPTY.\n", i);
                 break;
             default:
-            //printf("    - Invalid map obj type.\n");
         }
         glPopMatrix();
     }
@@ -398,7 +397,6 @@ void plotMapItems() {
 void updateMapCenter (double robotPosX, double robotPosZ) {
     double dist = getEulerDistanceXZ(mapCenter.x, mapCenter.z, robotPosX, robotPosZ);
     if (dist > mapRadius) {
-        // printf("Map center updated\n");
         mapCenter.x = robotPosX;
         mapCenter.z = robotPosZ;
         
