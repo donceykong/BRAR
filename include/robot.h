@@ -1,201 +1,127 @@
 #ifndef ROBOT_H
 #define ROBOT_H
 
-#include "robotStateModels.h"
-#include "robotBody.h"
-#include "robotLegs.h"
-#include "robotArm.h"
+// Extern
+#ifdef __APPLE__
+#include <GLUT/glut.h>
+#else
+#include <GL/glut.h>
+#endif
 
-legStruct chaserRightLeg;
-legStruct chaserLeftLeg;
+#include <stdlib.h>
 
-legStruct runnerFrontRightLeg;
-legStruct runnerFrontLeftLeg;
-legStruct runnerRearRightLeg;
-legStruct runnerRearLeftLeg;
+// Local
+#include "matrixMath.h"
+#include "draw.h"
+#include "keys.h"
 
-void initChaserLegs () {
-    // Right Leg params
-    chaserRightLeg.type             = RIGHT_LEG;
-    chaserRightLeg.thighBendAngle   = -60.0; // Init right thigh angle
-    chaserRightLeg.thighSign        = 1.0;
-    chaserRightLeg.kneeBendAngle    = 90.0;  // Init right knee angle
-    chaserRightLeg.kneeSign         = 1.0;
-    chaserRightLeg.ankleBendAngle   = 0.0;   // Init right ankle angle
-    chaserRightLeg.ankleSign        = 1.0;
+enum legType {
+    LEFT_LEG,   // 0
+    RIGHT_LEG   // 1
+};
 
-    // Left Leg params
-    chaserLeftLeg.type              = LEFT_LEG;
-    chaserLeftLeg.thighBendAngle    = 45.0; // Init left thigh angle
-    chaserLeftLeg.thighSign         = 1.0;
-    chaserLeftLeg.kneeBendAngle     = 0.0;  // Init left knee angle
-    chaserLeftLeg.kneeSign          = 1.0;
-    chaserLeftLeg.ankleBendAngle    = 0.0;  // Init left ankle angle
-    chaserLeftLeg.ankleSign         = 1.0;
-}
+typedef struct {
+  enum legType type;
 
-void initRunnerLegs () {
-    // Front right leg params
-    runnerFrontRightLeg.type            = RIGHT_LEG;
-    runnerFrontRightLeg.thighBendAngle  = -60.0;    // Init front right thigh angle
-    runnerFrontRightLeg.thighSign       = 1.0;
-    runnerFrontRightLeg.kneeBendAngle   = 90.0;     // Init front right knee angle
-    runnerFrontRightLeg.kneeSign        = 1.0;
-    runnerFrontRightLeg.ankleBendAngle  = 0.0;      // Init front right ankle angle
-    runnerFrontRightLeg.ankleSign       = 1.0;
+  double thighBendAngle;
+  double thighSign;
 
-    // Front left leg params
-    runnerFrontLeftLeg.type             = LEFT_LEG;
-    runnerFrontLeftLeg.thighBendAngle   = 45.0;     // Init front left thigh angle
-    runnerFrontLeftLeg.thighSign        = 1.0;
-    runnerFrontLeftLeg.kneeBendAngle    = 0.0;      // Init front left knee angle
-    runnerFrontLeftLeg.kneeSign         = 1.0;
-    runnerFrontLeftLeg.ankleBendAngle   = 0.0;      // Init front left ankle angle
-    runnerFrontLeftLeg.ankleSign        = 1.0;
+  double kneeBendAngle;  // Init right knee angle
+  double kneeSign;
 
-    // Rear right reg params
-    runnerRearRightLeg.type             = RIGHT_LEG;
-    runnerRearRightLeg.thighBendAngle   = 45.0;     // Init rear right thigh angle
-    runnerRearRightLeg.thighSign        = 1.0;
-    runnerRearRightLeg.kneeBendAngle    = 0.0;      // Init rear left knee angle
-    runnerRearRightLeg.kneeSign         = 1.0;
-    runnerRearRightLeg.ankleBendAngle   = 0.0;      // Init rear left ankle angle
-    runnerRearRightLeg.ankleSign        = 1.0;
+  double ankleBendAngle;   // Init right ankle angle
+  double ankleSign;
+} legStruct;
 
-    // Rear left leg params
-    runnerRearLeftLeg.type              = LEFT_LEG;
-    runnerRearLeftLeg.thighBendAngle    = -60.0;    // Init rear right thigh angle
-    runnerRearLeftLeg.thighSign         = 1.0;
-    runnerRearLeftLeg.kneeBendAngle     = 90.0;     // Init rear left knee angle
-    runnerRearLeftLeg.kneeSign          = 1.0;
-    runnerRearLeftLeg.ankleBendAngle    = 0.0;      // Init rear left ankle angle
-    runnerRearLeftLeg.ankleSign         = 1.0;
-}
+enum robotType {
+    RUNNER_ROBOT,         // 0
+    CHASER_ROBOT,         // 1
+    TIME_CRUNCHER_ROBOT   // 2
+};
 
-void initChaserRobot() {
-    initChaserLegs();
-    chaserRobot.type            = CHASER_ROBOT; //
-    chaserRobot.speedAdjust     = 1.00;         //
-    chaserRobot.position.y      = 2.0;          //
-    chaserRobot.prevPos.y       = 2.0;          //
-    chaserRobot.mass            = 68.0;         // kg (150 lb)
-    chaserRobot.e               = 0.20;         // coeff of elasticity 
-    chaserRobot.gripperDist     = 0.3;          //
-    chaserRobot.gripperClosed   = false;        //
-}
+typedef struct {
+    enum robotType type;
+    double mass, e, speed;                          //
+    double viewableSpeed, speedAdjust;              // other items of robot ....
+    bool inCollision;                               //
 
-void initRunnerRobot() {
-    initRunnerLegs();
-    runnerRobot.type        = RUNNER_ROBOT; //
-    runnerRobot.speedAdjust = 1.00;         //
-    runnerRobot.position.x  = 2.0;          //
-    runnerRobot.position.y  = 5.0;          //
-    runnerRobot.prevPos.y   = 2.0;          //
-    runnerRobot.mass        = 68.0;         // kg (150 lb)
-    runnerRobot.e           = 0.20;         // coeff of elasticity 
-    runnerRobot.yawAngle    = 180.0;        // deg
-    runnerRobot.captured    = false;        //
-    runnerRobot.taken       = false;        //
-}
+    Vector3 position;
+    Vector3 velocity;
+    Vector3 acceleration;
 
+    Vector3 prevPos;
+    Vector3 prevVel;
+    Vector3 prevAccel;
 
-void drawChaserRobot() {
-    glPushMatrix();
-    glTranslatef(chaserRobot.position.x, chaserRobot.position.y, chaserRobot.position.z);
-    glRotatef((GLfloat)chaserRobot.yawAngle + chaserRobot.yawAdd, 0.0, 1.0, 0.0);
+    double yawAngle;
+    double yawAdd;                                  // TODO: fix? (Used for chaser in Time Crunch)
+    // // Maybe instead of GLfloat yawAngle, use:
+    // Vector3 angularPos;                          // where angle.y is yawAngle
+    // Vector3 angularVel;                          //
+    // Vector3 angularAccel;                        //
 
-    bool onGround = true;
-    if (chaserRobot.position.y > 2.5) {
-        onGround = false;
-    }
+    // Pose history
+    double poseHist[100][4];                        // 100 length pose history [x,y,z,yaw]
 
-    // robot body
-    glPushMatrix();
-    drawBody();
-    glPopMatrix();
+    // Net forces on the robot
+    Vector3 netForce;                               //
+    Vector3 externalForce;                          //
 
-    // robot left leg
-    glPushMatrix();
-    glTranslatef(0.0, 0.0, 0.5);
-    drawLeg(true, chaserRobot.viewableSpeed, &chaserRightLeg, onGround);
-    glPopMatrix();
+    // If robot has end effector
+    double joint1Angle, joint2Angle, joint3Angle;   //
+    double prevJoint1Angle, prevJoint2Angle, prevJoint3Angle;
+    Vector3 endEffectorPosition;                    //
+    double gripperRollAngle, gripperDist;           //
+    bool gripperClosed;                             //
+    bool captured;                                  // If it is a runner robot, of course
+    bool taken;                                     //
+} RobotStruct;
 
-    // robot right leg
-    glPushMatrix();
-    glTranslatef(0.0, 0.0, -0.5);
-    drawLeg(false, chaserRobot.viewableSpeed, &chaserLeftLeg, onGround);
-    glPopMatrix();
+// Global Vars
+extern RobotStruct runnerRobot;
+extern RobotStruct chaserRobot;
 
-    drawRobotArm();
-    glPopMatrix();
-}
+extern double WaypointPosX;
+extern double WaypointPosZ;
 
-void drawRunnerRobot() {
-    glPushMatrix();
-    glTranslatef(runnerRobot.position.x, runnerRobot.position.y, runnerRobot.position.z + 1.75/2);
-    glRotatef((GLfloat)runnerRobot.yawAngle - 90.0, 0.0, 1.0, 0.0);
-    
-    bool onGround = true;
-    if (runnerRobot.position.y > 2.5) {
-        onGround = false;
-    }
-    // printf("runnerRobot.viewableSpeed: %f\n", runnerRobot.viewableSpeed);
-    
-    /*
-     * Back legs 
-    */
-    // robot body
-    glPushMatrix();
-    drawBody();
-    glPopMatrix();
-    
-    // robot left leg
-    glPushMatrix();
-    glTranslatef(0.0, 0.0, 0.5);
-    drawLeg(true, runnerRobot.viewableSpeed, &runnerRearRightLeg, onGround);
-    glPopMatrix();
+extern legStruct chaserRightLeg;
+extern legStruct chaserLeftLeg;
 
-    // robot right leg
-    glPushMatrix();
-    glTranslatef(0.0, 0.0, -0.5);
-    drawLeg(false, runnerRobot.viewableSpeed, &runnerRearLeftLeg, onGround);
-    glPopMatrix();
+extern legStruct runnerFrontRightLeg;
+extern legStruct runnerFrontLeftLeg;
+extern legStruct runnerRearRightLeg;
+extern legStruct runnerRearLeftLeg;
 
-    /*
-     * Robot dog mid-section
-    */
-    glPushMatrix();
-    glTranslatef(1.0, 0.0, 0.0);  // Move cube to center between thighs
-    glColor3f(1.0, 1.0, 1.0);    // face color
-    BMPtexture = BMPtexture5;                         // TODO: Change initial texture
-    drawCuboid(1.50, 0.4, 0.4);   // Draw cube
-    glPopMatrix();
+/*
+ * FUNCTIONS
+ */
 
-    /*
-     * Front legs
-    */
-    glTranslatef(2.0, 0.0, 0.0);
-    // robot body
-    glPushMatrix();
-    drawBody();
-    glPopMatrix();
+void initChaserRobot();
+void initRunnerRobot();
 
-    // robot left leg
-    glPushMatrix();
-    glTranslatef(0.0, 0.0, 0.5);
-    drawLeg(true, runnerRobot.viewableSpeed, &runnerFrontRightLeg, onGround);
-    glPopMatrix();
+// Robot States
+void updateRunnerPoseList(RobotStruct *robot, int i);
+bool isRobotCaptured();
+void checkRobotCaptured();
+double getYawOffset(double joint0Angle, double robotXPos, double robotZPos, double objPosX, double objPosY, double objPosZ);
+void getYPosition(RobotStruct *robot); // Should be "setter"
 
-    // robot right leg
-    glPushMatrix();
-    glTranslatef(0.0, 0.0, -0.5);
-    drawLeg(false, runnerRobot.viewableSpeed, &runnerFrontLeftLeg, onGround);
-    glPopMatrix();
+// robot Draw Legs
+void drawLeg(bool rightLeg, double runSpeed, legStruct *leg, bool onGround);
 
-    // robot arm
-    //drawRobotArm();
+void drawBody();
 
-    glPopMatrix();
-}
+// robot Draw Arm
+// void robotBase(GLfloat width, GLfloat height, GLfloat depth, double faceC[3]);
+// void robotLink(GLfloat width, GLfloat height, GLfloat depth, double faceC[3]);
+// void robotEndEffector(GLfloat width, GLfloat height, GLfloat depth, double faceC[3]);
+void drawRobotArm();
+
+// robot Draw
+void displayPoseHistory(RobotStruct *robot);
+void drawRunnerRobot();
+void drawChaserRobot();
+
+void computeForwardKinematics();
 
 #endif // ROBOT_H
