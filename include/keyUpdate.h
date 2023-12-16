@@ -39,12 +39,19 @@ void updateRunner(LightArray* lights)
 
   // set CHASER & RUNNER prev XZ to current while not in collision
   if (!runnerRobot.inCollision) {
-    runnerRobot.prevPos.z = runnerRobot.position.z;
     runnerRobot.prevPos.x = runnerRobot.position.x;
+    runnerRobot.prevPos.y = runnerRobot.position.y;
+    runnerRobot.prevPos.z = runnerRobot.position.z;
   }
   if (!chaserRobot.inCollision) {
-    chaserRobot.prevPos.z = chaserRobot.endEffectorPosition.z;
-    chaserRobot.prevPos.x = chaserRobot.endEffectorPosition.x;
+    // set prev position and joint angles
+    chaserRobot.prevPos.x = chaserRobot.position.x;
+    chaserRobot.prevPos.y = chaserRobot.position.y;
+    chaserRobot.prevPos.z = chaserRobot.position.z;
+
+    chaserRobot.prevJoint1Angle = chaserRobot.joint1Angle;
+    chaserRobot.prevJoint2Angle = chaserRobot.joint2Angle;
+    chaserRobot.prevJoint3Angle = chaserRobot.joint3Angle;
   }
 
   // CHASER & RUNNER Control, depending if RUNNER captured or not
@@ -81,12 +88,18 @@ void updateRunner(LightArray* lights)
 
   // set CHASER & RUNNER current XZ to prev XZ to if in collision
   if (runnerRobot.inCollision) {
-    runnerRobot.position.z = runnerRobot.prevPos.z;
     runnerRobot.position.x = runnerRobot.prevPos.x;
+    runnerRobot.position.y = runnerRobot.prevPos.y;
+    runnerRobot.position.z = runnerRobot.prevPos.z;
   }
   if (chaserRobot.inCollision) {
-    chaserRobot.endEffectorPosition.z = chaserRobot.prevPos.z;
-    chaserRobot.endEffectorPosition.x = chaserRobot.prevPos.x;
+    chaserRobot.position.x = chaserRobot.prevPos.x;
+    chaserRobot.position.y = chaserRobot.prevPos.y;
+    chaserRobot.position.z = chaserRobot.prevPos.z;
+
+    chaserRobot.joint1Angle = chaserRobot.prevJoint1Angle;
+    chaserRobot.joint2Angle = chaserRobot.prevJoint2Angle;
+    chaserRobot.joint3Angle = chaserRobot.prevJoint3Angle;
   }
 
   // THE LIGHTING
