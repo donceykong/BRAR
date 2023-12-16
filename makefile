@@ -26,8 +26,8 @@ CFLG=-O3 -Wall -Wno-deprecated-declarations -DRES=$(RES)
 LIBS=-framework GLUT -framework OpenGL
 # Linux/Unix/Solaris
 else
-CFLG=-O3 -Wall -I/usr/include/freetype2 -g -fopenmp
-LIBS=-lglut -lGLU -lGL -lm -lfreetype -fopenmp
+CFLG=-O3 -Wall -I/usr/include/freetype2 -g
+LIBS=-lglut -lGLU -lGL -lm -lfreetype
 endif
 # OSX/Linux/Unix/Solaris
 CLEAN=rm -f $(EXE) $(OBJ)/*.o $(OBJ)/*.a
@@ -66,8 +66,11 @@ $(OBJ)/draw.a: $(OBJ)/draw.o
 $(OBJ)/lighting.a: $(OBJ)/lighting.o
 	ar -rcs $@ $^
 
+$(OBJ)/robot.a: $(OBJ)/robotController.o $(OBJ)/robotDraw.o $(OBJ)/robotDrawArm.o $(OBJ)/robotDrawLegs.o $(OBJ)/robotStates.o
+	ar -rcs $@ $^
+
 # Link
-$(EXE): $(OBJ)/$(EXE).o $(OBJ)/CSCIx229.a $(OBJ)/keys.a $(OBJ)/matrixMath.a $(OBJ)/RRTStar.a $(OBJ)/screenInfo.a $(OBJ)/textureUtils.a $(OBJ)/draw.a $(OBJ)/lighting.a
+$(EXE): $(OBJ)/$(EXE).o $(OBJ)/CSCIx229.a $(OBJ)/keys.a $(OBJ)/matrixMath.a $(OBJ)/RRTStar.a $(OBJ)/screenInfo.a $(OBJ)/textureUtils.a $(OBJ)/draw.a $(OBJ)/lighting.a $(OBJ)/robot.a
 	$(CC) $(CFLG) -o $@ $^ $(LIBS)
 
 # Clean
