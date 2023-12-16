@@ -21,7 +21,7 @@
 
 // Local includes
 // #include "GameModes.h"           // 1. EASY
-#include "robot.h"                  // 5. MEDIUM - Make 3 source, keep one header. Add robotArm/legs to draw.h and make drawArm.c, drawLegs.c???
+#include "robot.h"
 #include "mapManager.h"             // 7. HARD - merge in keyUpdate as a controller? rename to controller?
 #include "groundPlane.h"            // 4. EASY - Add to draw.h lib? maybe make a drawGround.c file
 #include "views.h"                  // 3. EASY
@@ -72,6 +72,11 @@ int waypointInc = 1;
 int doRRTInt = 0;
 Path* rrtStarResult = NULL;
 
+// Robot structs - Move to better spot?
+RobotStruct runnerRobot;
+RobotStruct chaserRobot;
+double WaypointPosX;
+double WaypointPosZ;
 
 void displayViewRobot() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

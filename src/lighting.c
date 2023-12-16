@@ -68,7 +68,8 @@ void illumLight(lightStruct* light, int lightIter) {
 
 void drawLight(lightStruct* light) {
     glEnable(GL_DEPTH_TEST);  // Enable depth testing
-    
+    glEnable(GL_COLOR_MATERIAL);
+
     glPushMatrix();
     glColor3f(0, 1, 1);
 
@@ -83,11 +84,13 @@ void drawLight(lightStruct* light) {
 
 void showLights(bool lightingEnabled, bool spotlightsEnabled, LightArray* lights) {
     for (int i = 0; i < 8; i++) {
+        illumLight(&(lights->light[i]), i); // Regular light illumination
+        
         // generate random position and angle increments for lights
         if (i > 0 && lightingEnabled) {
-            lights->light[i].ambient = 0.2*ambientLightVal;
-            lights->light[i].diffuse = 0.2*diffuseLightVal;
-            lights->light[i].specular = 0.2*specularLightVal;
+            lights->light[i].ambient = ambientLightVal;
+            lights->light[i].diffuse = diffuseLightVal;
+            lights->light[i].specular = specularLightVal;
             lights->light[i].position.x += 0.1*cos(sinInc)*(rand() % 2 - 1);     // +/- 100 units from center.x
             lights->light[i].position.z += 0.1*sin(sinInc)*(rand() % 2 - 1);     // +/- 100 units from center.z
             lights->light[i].angularPos.y += 0.1*sin(sinInc)*(rand() % 21 - 10);   // 0 to 10 increments
@@ -102,10 +105,8 @@ void showLights(bool lightingEnabled, bool spotlightsEnabled, LightArray* lights
         }
         if (spotlightsEnabled) {
             lights->light[i].spotlightOn = true;
-            illumLight(&(lights->light[i]), i); // Pass the address of the light
         } else {
             lights->light[i].spotlightOn = false;
-            illumLight(&(lights->light[i]), i); // Regular light illumination
         }
     }
     glEnable(GL_DEPTH_TEST);
@@ -137,7 +138,6 @@ void resetLightingView(LightArray* lights) {
 }
 
 // Reset lights 3 though 8: lights[2] : lights[9] as map has updated
-// TODO make sure lights are far from obstacles
 void resetLighting(Vector3 mapCenter, LightArray* lights) {
     for (int i = 0; i < 8; i++) { // Starting from 2, as the array is 0-indexed (3rd light is at index 2)
         if (i < 1) {
@@ -146,7 +146,7 @@ void resetLighting(Vector3 mapCenter, LightArray* lights) {
             lights->light[i].diffuse = diffuseLightVal;
             lights->light[i].specular = specularLightVal;
             lights->light[i].spotExponent = 1.0;
-            lights->light[i].spotCutoff = 45.0; //45
+            lights->light[i].spotCutoff = 45.0;
             lights->light[i].rectangleWidth = 0.5;
             lights->light[i].rectangleHeight = 0.5;
             lights->light[i].prismHeight = 1.0;
@@ -185,7 +185,7 @@ void initLighting(Vector3 mapCenter, LightArray* lights) {
             lights->light[i].diffuse = diffuseLightVal;
             lights->light[i].specular = specularLightVal;
             lights->light[i].spotExponent = 1.0;
-            lights->light[i].spotCutoff = 10.0; //45
+            lights->light[i].spotCutoff = 45.0;
             lights->light[i].rectangleWidth = 0.5;
             lights->light[i].rectangleHeight = 0.5;
             lights->light[i].prismHeight = 1.0;
@@ -202,8 +202,8 @@ void initLighting(Vector3 mapCenter, LightArray* lights) {
             lights->light[i].ambient = ambientLightVal;
             lights->light[i].diffuse = diffuseLightVal;
             lights->light[i].specular = specularLightVal;
-            lights->light[i].spotExponent = 0.9;
-            lights->light[i].spotCutoff = 10.0;
+            lights->light[i].spotExponent = 1.0;
+            lights->light[i].spotCutoff = 45.0;
             lights->light[i].rectangleWidth = 1.0;
             lights->light[i].rectangleHeight = 1.0;
             lights->light[i].prismHeight = 2.0;

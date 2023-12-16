@@ -321,9 +321,9 @@ bool nodesInCollision(Node* node1, Node* node2) {
 
         inCollision += detect_collision_RRT(x, 2.0, z);
 
-        // if (inCollision) {
-        //     break;
-        // }
+        if (inCollision) {
+            break;
+        }
     }
 
     return inCollision;
@@ -623,7 +623,6 @@ Path* rrtStar(int maxIterations) {
     }
 
     if (goalReached) {
-        // printf(" *GOAL REACHED!\n\n");
         path = backtrackToStart(newNode); // newNode is the node that reached the goal (may be the goal)
         // free(path->positions);
         // free(path);

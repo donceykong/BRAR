@@ -75,8 +75,8 @@ void drawP2PLine(Vector3 point1, Vector3 point2) {
  * Shape edges
  */
 void drawPrismEdges(float rectangleWidth, float rectangleHeight, float prismBase, float prismHeight) {
-    // GLfloat emissiveColor[] = {1.0f, 1.0f, 1.0f, 1.0f}; // RGBA
-    // glMaterialfv(GL_FRONT, GL_EMISSION, emissiveColor);
+    GLfloat emissiveColor[] = {1.0f, 0.0f, 0.0f, 1.0f}; // RGBA
+    glMaterialfv(GL_FRONT, GL_EMISSION, emissiveColor);
 
     glColor3f(0, 0, 0);
     // Draw the rectangle
@@ -112,8 +112,8 @@ void drawPrismEdges(float rectangleWidth, float rectangleHeight, float prismBase
         glVertex3f(-prismBase / 2,  prismBase / 2, 0);
         glVertex3f(-prismBase / 2, -prismBase / 2, 0);
     glEnd();
-    // GLfloat noEmission[] = {0.0f, 0.0f, 0.0f, 1.0f}; // Black (no emission)
-    // glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, noEmission);
+    GLfloat noEmission[] = {0.0f, 0.0f, 0.0f, 1.0f}; // Black (no emission)
+    glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, noEmission);
 }
 
 void drawCuboidEdges(GLfloat width, GLfloat height, GLfloat depth) {
@@ -334,8 +334,8 @@ void drawCuboid(GLfloat width, GLfloat height, GLfloat depth) {
 }
 
 void drawPrism(float rectangleWidth, float rectangleHeight, float prismBase, float prismHeight) {
-    // GLfloat emissiveColor[] = {1.0f, 1.0f, 1.0f, 1.0f}; // RGBA
-    // glMaterialfv(GL_FRONT, GL_EMISSION, emissiveColor);
+    GLfloat emissiveColor[] = {0.0f, 1.0f, 0.0f, 1.0f}; // RGBA
+    glMaterialfv(GL_FRONT, GL_EMISSION, emissiveColor);
 
     glColor3f(0, 1, 0);
     // glNormal3f(0, 0, -1);                                           
@@ -378,8 +378,8 @@ void drawPrism(float rectangleWidth, float rectangleHeight, float prismBase, flo
     glEnd();
 
     drawPrismEdges(rectangleWidth, rectangleHeight, prismBase, prismHeight);
-    // GLfloat noEmission[] = {0.0f, 0.0f, 0.0f, 1.0f}; // Black (no emission)
-    // glMaterialfv(GL_FRONT, GL_EMISSION, noEmission);
+    GLfloat noEmission[] = {0.0f, 0.0f, 0.0f, 1.0f}; // Black (no emission)
+    glMaterialfv(GL_FRONT, GL_EMISSION, noEmission);
 }
 
 void drawRightTriPrism(GLfloat width, GLfloat height, GLfloat depth) {
