@@ -81,8 +81,11 @@ $(OBJ)/mapManager.a: $(OBJ)/mapManager.o
 $(OBJ)/collision.a: $(OBJ)/collision.o
 	ar -rcs $@ $^
 
+$(OBJ)/controller.a: $(OBJ)/controller.o
+	ar -rcs $@ $^
+
 # Link
-$(EXE): $(OBJ)/$(EXE).o $(OBJ)/CSCIx229.a $(OBJ)/keys.a $(OBJ)/matrixMath.a $(OBJ)/RRTStar.a $(OBJ)/screenInfo.a $(OBJ)/textureUtils.a $(OBJ)/draw.a $(OBJ)/lighting.a $(OBJ)/robot.a $(OBJ)/views.a $(OBJ)/game.a $(OBJ)/mapManager.a $(OBJ)/collision.a
+$(EXE): $(OBJ)/$(EXE).o $(OBJ)/CSCIx229.a $(OBJ)/keys.a $(OBJ)/matrixMath.a $(OBJ)/RRTStar.a $(OBJ)/screenInfo.a $(OBJ)/textureUtils.a $(OBJ)/draw.a $(OBJ)/lighting.a $(OBJ)/robot.a $(OBJ)/views.a $(OBJ)/game.a $(OBJ)/mapManager.a $(OBJ)/collision.a $(OBJ)/controller.a
 	$(CC) $(CFLG) -o $@ $^ $(LIBS)
 
 # Clean

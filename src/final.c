@@ -19,15 +19,12 @@
 #include <stdbool.h>  // Add this include for bool type
 #include <stdio.h>
 
-// Local includes
-#include "keyUpdate.h"              // 6. HARD - merge with mapMan? rename to controller?
-
-// fixed headers
+// Internal includes
 #include "keys.h"               // Not needed here
 #include "game.h"
 #include "views.h"
 #include "robot.h"
-#include "mapManager.h"         // merge in keyUpdate as a controller? rename to controller?
+#include "mapManager.h"         // merge in controller.c/.h as a controller?
 #include "RRTStar.h"
 #include "matrixMath.h"
 #include "CSCIx229.h"
@@ -35,6 +32,7 @@
 #include "textureUtils.h"
 #include "draw.h"
 #include "lighting.h"    
+#include "controller.h"         // merge with mapMan?
 
 char warning[100] = "";
 
