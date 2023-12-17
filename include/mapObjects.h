@@ -1,7 +1,14 @@
 #ifndef MAP_OBJECTS_H
 #define MAP_OBJECTS_H
 
-#include "draw.h"
+// External 
+#ifdef __APPLE__
+#include <GLUT/glut.h>
+#else
+#include <GL/glut.h>
+#endif
+
+// Internal
 #include "matrixMath.h"
 
 /*
@@ -51,51 +58,4 @@ typedef struct {
     bool showEasy;
 } MapObstacle;
 
-void setObstacleBounds(MapObstacle *obstacle) {
-    // Matrix4x4 minPosXObject;
-    // Matrix4x4 maxPosXObject;
-    // Matrix4x4 minPosZObject;
-    // Matrix4x4 maxPosZObject;
-
-    if (obstacle->width == 0.0 || obstacle->height == 0.0 || obstacle->depth == 0.0) {
-        printf("OBSTACLE HAS DIMENSION WITH 0 LENGTH! \n");
-    }
-    else {
-        obstacle->minPos.x = (obstacle->position.x - obstacle->width / 2.0);
-        obstacle->maxPos.x = (obstacle->position.x + obstacle->width / 2.0);
-
-        obstacle->minPos.y = obstacle->position.y - obstacle->height / 2.0;
-        obstacle->maxPos.y = obstacle->position.y + obstacle->height / 2.0;
-
-        obstacle->minPos.z = (obstacle->position.z - obstacle->depth / 2.0);
-        obstacle->maxPos.z = (obstacle->position.z + obstacle->depth / 2.0);
-
-        // // // NOW ROTATE ABOUT obstacleYawRad
-        // Matrix4x4 transformationMatrix = identityMatrix;
-        // transformationMatrix = multiplyMatrix(transformationMatrix, translationMatrix(obstacle->position.x, obstacle->position.y, obstacle->position.z));
-        // transformationMatrix = multiplyMatrix(transformationMatrix, rotationMatrix(obstacle->yawAngle, 0.0, 1.0, 0.0));
-
-        // minPosXObject = multiplyMatrix(transformationMatrix, translationMatrix(-obstacle->width/2, 0.0, 0.0));
-        // maxPosXObject = multiplyMatrix(transformationMatrix, translationMatrix (obstacle->width/2, 0.0, 0.0));
-
-        // minPosZObject = multiplyMatrix(transformationMatrix, translationMatrix(0.0, -obstacle->depth/2, 0.0));
-        // maxPosZObject = multiplyMatrix(transformationMatrix, translationMatrix(0.0,  obstacle->depth/2, 0.0));
-    }
-
-    // glColor3f(1, 0, 0); 
-    // // minX
-    // glPushMatrix();
-    // glTranslatef(extractPosition(minPosXObject).x, extractPosition(minPosXObject).y, extractPosition(minPosXObject).z);
-    // Sphere(1.0, 10, 10); 
-    // glPopMatrix();
-
-    // // maxX
-    // glPushMatrix();
-    // glTranslatef(extractPosition(maxPosXObject).x, extractPosition(maxPosXObject).y, extractPosition(maxPosXObject).z);
-    // Sphere(1.0, 10, 10); 
-    // glPopMatrix();
-    // glColor3f(1, 1, 1); 
-    // obstacle->showEasy = true;
-}
-
-#endif // MAP_OBJECTS_H
+#endif // MAP_OBJECTS

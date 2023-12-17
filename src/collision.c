@@ -1,10 +1,7 @@
-/*
- *      COLLISION DETECTION
-*/
-/************************************************/
+// Doncey Albin
+// Collision lib
 
-#include "mapObjects.h"
-#include "matrixMath.h"
+#include "collision.h"
 
 bool detect_collisionAABB(MapObstacle obstacle, double robotX, double robotY, double robotZ) {
     if (obstacle.type == WALL || obstacle.type == BOX) {

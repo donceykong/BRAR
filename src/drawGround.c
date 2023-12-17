@@ -1,5 +1,7 @@
-#ifndef GROUND_PLANE_H
-#define GROUND_PLANE_H
+// Doncey Albin
+// CS, Fall 2023
+
+#include "draw.h"
 
 GLfloat GroundPlaneVertices[] = {
     // Position Indices:            (0 - 2)         
@@ -117,5 +119,3 @@ void drawGroundPlane(Vector3 mapCenter) {
     drawPortals();
     glPopMatrix();
 }
-
-#endif // GROUND_PLANE_H

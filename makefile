@@ -60,7 +60,7 @@ $(OBJ)/screenInfo.a: $(OBJ)/screenInfo.o
 $(OBJ)/textureUtils.a: $(OBJ)/textureUtils.o
 	ar -rcs $@ $^
 
-$(OBJ)/draw.a: $(OBJ)/draw.o
+$(OBJ)/draw.a: $(OBJ)/draw.o $(OBJ)/drawGround.o
 	ar -rcs $@ $^
 
 $(OBJ)/lighting.a: $(OBJ)/lighting.o
@@ -69,8 +69,20 @@ $(OBJ)/lighting.a: $(OBJ)/lighting.o
 $(OBJ)/robot.a: $(OBJ)/robotController.o $(OBJ)/robotDraw.o $(OBJ)/robotDrawArm.o $(OBJ)/robotDrawLegs.o $(OBJ)/robotStates.o
 	ar -rcs $@ $^
 
+$(OBJ)/views.a: $(OBJ)/views.o
+	ar -rcs $@ $^
+
+$(OBJ)/game.a: $(OBJ)/game.o
+	ar -rcs $@ $^
+
+$(OBJ)/mapManager.a: $(OBJ)/mapManager.o
+	ar -rcs $@ $^
+
+$(OBJ)/collision.a: $(OBJ)/collision.o
+	ar -rcs $@ $^
+
 # Link
-$(EXE): $(OBJ)/$(EXE).o $(OBJ)/CSCIx229.a $(OBJ)/keys.a $(OBJ)/matrixMath.a $(OBJ)/RRTStar.a $(OBJ)/screenInfo.a $(OBJ)/textureUtils.a $(OBJ)/draw.a $(OBJ)/lighting.a $(OBJ)/robot.a
+$(EXE): $(OBJ)/$(EXE).o $(OBJ)/CSCIx229.a $(OBJ)/keys.a $(OBJ)/matrixMath.a $(OBJ)/RRTStar.a $(OBJ)/screenInfo.a $(OBJ)/textureUtils.a $(OBJ)/draw.a $(OBJ)/lighting.a $(OBJ)/robot.a $(OBJ)/views.a $(OBJ)/game.a $(OBJ)/mapManager.a $(OBJ)/collision.a
 	$(CC) $(CFLG) -o $@ $^ $(LIBS)
 
 # Clean

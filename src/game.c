@@ -1,15 +1,7 @@
-#ifndef GAME_MODES_H
-#define GAME_MODES_H
+// Doncey Albin
+// game lib
 
-#include <string.h>
-
-// GAME MODE
-enum GameMode {
-    RUNNER,         // 0
-    TIME_CRUNCH,    // 1
-    VIEW_ROBOT,    // 2
-    NONE
-};
+#include "game.h"
 
 const char* GameModeNames[] = {
     "RUNNER",
@@ -18,21 +10,10 @@ const char* GameModeNames[] = {
     "NONE"
 };
 
-extern enum GameMode GAME_MODE;
-
-/*
- *
- */
-char topPlayerName[12];
-float topScore = 0.0;
-
-typedef struct {
-    enum GameMode mode;
-    char playerName[100];
-    double score;
-} GameStruct;
-
-GameStruct game;
+enum GameMode GAME_MODE;    //
+GameStruct game;            //
+char topPlayerName[12];     //
+float topScore = 0.0;       //
 
 void setGameMode (int mode) {
     GAME_MODE = (enum GameMode)mode;
@@ -94,5 +75,3 @@ void readScores(GameStruct *game) {
         fclose(file);
     }
 }
-
-#endif // GAME_MODES_H

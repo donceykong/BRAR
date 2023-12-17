@@ -20,15 +20,14 @@
 #include <stdio.h>
 
 // Local includes
-// #include "GameModes.h"           // 1. EASY
-#include "robot.h"
-#include "mapManager.h"             // 7. HARD - merge in keyUpdate as a controller? rename to controller?
-#include "groundPlane.h"            // 4. EASY - Add to draw.h lib? maybe make a drawGround.c file
-#include "views.h"                  // 3. EASY
 #include "keyUpdate.h"              // 6. HARD - merge with mapMan? rename to controller?
 
 // fixed headers
-// #include "keys.h"
+#include "keys.h"               // Not needed here
+#include "game.h"
+#include "views.h"
+#include "robot.h"
+#include "mapManager.h"         // merge in keyUpdate as a controller? rename to controller?
 #include "RRTStar.h"
 #include "matrixMath.h"
 #include "CSCIx229.h"
@@ -36,9 +35,6 @@
 #include "textureUtils.h"
 #include "draw.h"
 #include "lighting.h"    
-
-// Global GAME_MODE enum
-enum GameMode GAME_MODE;
 
 char warning[100] = "";
 
@@ -53,7 +49,7 @@ GLfloat mat_diffuse_map[] = {0.0f, 0.0f, 0.0f, 1.0f};
 GLfloat shininess_map = 120.0f;
 
 // Global Framerate variables
-int previousTime = 0;
+int previousFrameTime = 0;
 const int desiredFPS = 60;
 const int timePerFrame = 1000 / desiredFPS; // milliseconds
 
@@ -73,10 +69,10 @@ int doRRTInt = 0;
 Path* rrtStarResult = NULL;
 
 // Robot structs - Move to better spot?
-RobotStruct runnerRobot;
-RobotStruct chaserRobot;
-double WaypointPosX;
-double WaypointPosZ;
+// RobotStruct runnerRobot;
+// RobotStruct chaserRobot;
+// double WaypointPosX;
+// double WaypointPosZ;
 
 void displayViewRobot() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -483,14 +479,14 @@ void timer(int value) {
 
 void idle() {
     int currentTime = glutGet(GLUT_ELAPSED_TIME);
-    int elapsedTime = currentTime - previousTime;
+    int elapsedTime = currentTime - previousFrameTime;
 
     if (elapsedTime < timePerFrame) {
         // Sleep for remaining time
         int sleepTime = timePerFrame - elapsedTime;
         glutTimerFunc(sleepTime, timer, 0);
     } else {
-        previousTime = currentTime;
+        previousFrameTime = currentTime;
         glutPostRedisplay(); // Request to redraw the scene
     }
 }
@@ -560,7 +556,7 @@ int main(int argc, char** argv) {
     initMap();
     initLighting(mapCenter, &lights);
 
-    previousTime = glutGet(GLUT_ELAPSED_TIME);
+    previousFrameTime = glutGet(GLUT_ELAPSED_TIME);
     glutIdleFunc(idle);
 
     // // Initialize mutex

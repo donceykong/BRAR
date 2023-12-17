@@ -2,6 +2,8 @@
 #define KEY_UPDATE_H
 
 // local
+#include "mapManager.h"         // merge in keyUpdate as a controller? rename to controller?
+#include "views.h"
 #include "lighting.h"
 #include "keys.h"
 

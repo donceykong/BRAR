@@ -9,6 +9,7 @@
 
 #include <math.h>
 #include <stdbool.h>
+#include <time.h>
 
 #include "matrixMath.h"
 #include "textureUtils.h"
@@ -26,6 +27,15 @@ void drawFrame(float length);
 void drawPoseFrame(float axisLen, float lineThickness);
 
 void drawP2PLine(Vector3 point1, Vector3 point2);
+
+/*
+ ****************************Ground Plane & Portal Walls ***************
+*/
+void drawLorenzAttractor();
+
+void drawPortals();
+
+void drawGroundPlane(Vector3 mapCenter);
 
 /*
  ***************************** Shape edges *****************************
