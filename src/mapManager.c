@@ -233,7 +233,6 @@ void plotMapObstacles () {
                 BMPtexture = BMPtexture6;
                 drawCuboid(mapObstList[i].width, mapObstList[i].height, mapObstList[i].depth);
                 break;
-            default:
         }
         glPopMatrix();
     }
@@ -433,7 +432,6 @@ void plotMapItems() {
                 break;
             case EMPTY:
                 break;
-            default:
         }
         glPopMatrix();
     }

@@ -16,13 +16,13 @@ void updateRunner(LightArray* lights)
 
   // Gripper Adjust
   if (keyStates.up)
-    runnerRobot.speedAdjust =  2.00 * SPEED;
+    runnerRobot.speedAdjust =  2.00 * 0.2;
   if (keyStates.down)
-    runnerRobot.speedAdjust = -2.00 * SPEED;
+    runnerRobot.speedAdjust = -2.00 * 0.2;
   if (keyStates.right)
-    gripperRollinc          = -5.00 * SPEED;
+    gripperRollinc          = -5.00 * 0.2;
   if (keyStates.left)
-    gripperRollinc          =  5.00 * SPEED;
+    gripperRollinc          =  5.00 * 0.2;
 
   runnerRobot.speed = runnerRobot.speedAdjust;
 
@@ -104,9 +104,9 @@ void updateRunner(LightArray* lights)
   double lightRotInc = 0.00;
 
   if (keyStates.a)
-    lightRotInc = 5.00 * SPEED;
+    lightRotInc = 5.00 * 0.2;
   if (keyStates.d)
-    lightRotInc = -5.00 * SPEED;
+    lightRotInc = -5.00 * 0.2;
   if (keyStates.i)
     lightZoomInc -= 0.01;
   if (keyStates.k)
@@ -138,9 +138,9 @@ void updateRunner(LightArray* lights)
   else if (keyStates.l)
     fpCamZoom *= 1.1;
   if (keyStates.key3)
-    fpCamRotInc = 5.00 * SPEED;
+    fpCamRotInc = 5.00 * 0.2;
   else if (keyStates.key4)
-    fpCamRotInc = -5.00 * SPEED;
+    fpCamRotInc = -5.00 * 0.2;
 
   fpCamRotation += fpCamRotInc;
   if (viewMode == 1) {
@@ -241,13 +241,13 @@ void updateTimeCrunch(LightArray* lights)
 
   // ROBOT POS ADJUST
   if (keyStates.up)
-    chaserRobot.speedAdjust =  2.00 * SPEED;
+    chaserRobot.speedAdjust =  2.00 * 0.2;
   if (keyStates.down)
-    chaserRobot.speedAdjust = -2.00 * SPEED;
+    chaserRobot.speedAdjust = -2.00 * 0.2;
   if (keyStates.right)
-    gripperRollinc = -10.00 * SPEED;
+    gripperRollinc = -10.00 * 0.2;
   if (keyStates.left)
-    gripperRollinc = 10.00 * SPEED;
+    gripperRollinc = 10.00 * 0.2;
 
   // JUMPING
   if (keyStates.space && !keyStates.spacePrev) {
@@ -280,9 +280,9 @@ void updateTimeCrunch(LightArray* lights)
   double lightRotInc = 0.00;
 
   if (keyStates.a)
-    lightRotInc = 5.00 * SPEED;
+    lightRotInc = 5.00 * 0.2;
   if (keyStates.d)
-    lightRotInc = -5.00 * SPEED;
+    lightRotInc = -5.00 * 0.2;
   if (keyStates.i)
     lightZoomInc -= 0.01;
   if (keyStates.k)
@@ -316,9 +316,9 @@ void updateTimeCrunch(LightArray* lights)
   if (keyStates.l)
     fpCamZoom *= 1.1;
   if (keyStates.key3)
-    fpCamRotInc = 5.00 * SPEED;
+    fpCamRotInc = 5.00 * 0.2;
   if (keyStates.key4)
-    fpCamRotInc = -5.00 * SPEED;
+    fpCamRotInc = -5.00 * 0.2;
 
   // CAMERA POS CONTROL (IMITATES CAM STAYING AT LAST POSITION UNTIL SUMMONED :D)
   fpCamRotation += fpCamRotInc;
@@ -382,9 +382,9 @@ void updateViewRobot(LightArray* lights)
   
   // lighting rotate
   if (keyStates.a)
-    lightRotInc = 5.00 * SPEED;
+    lightRotInc = 5.00 * 0.2;
   if (keyStates.d)
-    lightRotInc = -5.00 * SPEED;
+    lightRotInc = -5.00 * 0.2;
   if (keyStates.i)
     lightZoomInc -= 0.01;
   if (keyStates.k)
@@ -397,9 +397,9 @@ void updateViewRobot(LightArray* lights)
     viewMode = 2;
   }
   if (keyStates.key3)
-    fpCamRotInc = 5.00 * SPEED;
+    fpCamRotInc = 5.00 * 0.2;
   else if (keyStates.key4)
-    fpCamRotInc = -5.00 * SPEED;
+    fpCamRotInc = -5.00 * 0.2;
 
   chaserRobot.joint1Angle += 0.01;
   chaserRobot.joint2Angle -= 0.02;
@@ -425,9 +425,9 @@ void updateViewRobot(LightArray* lights)
   if (keyStates.l)
     fpCamZoom *= 1.1;
   if (keyStates.key3)
-    fpCamRotInc = 5.00 * SPEED;
+    fpCamRotInc = 5.00 * 0.2;
   if (keyStates.key4)
-    fpCamRotInc = -5.00 * SPEED;
+    fpCamRotInc = -5.00 * 0.2;
 
   // CAMERA POS CONTROL (IMITATES CAM STAYING AT LAST POSITION UNTIL SUMMONED :D)
   fpCamRotation += fpCamRotInc;
