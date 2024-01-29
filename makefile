@@ -22,8 +22,8 @@ else
 # OSX
 ifeq ($(shell uname),Darwin)
 RES=$(shell uname -r|sed -E 's/(.).*/\1/'|tr 12 21)
-CFLG=-O3 -Wall -Wno-deprecated-declarations -DRES=$(RES)
-LIBS=-framework GLUT -framework OpenGL
+CFLG=-O3 -Wall -Wno-deprecated-declarations -DRES=$(RES) -Iinclude -I/opt/homebrew/Cellar/freetype/2.13.2/include/freetype2/
+LIBS=-framework GLUT -framework OpenGL -L/opt/homebrew/Cellar/freetype/2.13.2/lib -lfreetype
 # Linux/Unix/Solaris
 else
 CFLG=-O3 -Wall -I/usr/include/freetype2 -g
