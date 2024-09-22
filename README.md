@@ -15,7 +15,14 @@ BRAR is an OpenGL-based game that kinematically simulates a bipedal 5-DOF roboti
 
 FreeType
 
->> sudo apt-get install libfreetype6-dev
+- Debian-based systems:
+
+    - > sudo apt-get install libfreetype6-dev
+
+- MacOS
+
+    - > brew install freetype
+
 
 --- 
 
